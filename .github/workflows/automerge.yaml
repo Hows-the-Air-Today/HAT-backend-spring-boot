@@ -1,0 +1,28 @@
+name: automerge
+
+on:
+  pull_request_review:
+    types: [ submitted ]
+  check_suite:
+    types: [ completed ]
+
+jobs:
+  automerge:
+    if: github.event.review.state == 'approved'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Merge pull requests (automerge-action)
+        uses: "pascalgn/automerge-action@v0.15.6"
+        env:
+          GITHUB_TOKEN: ${{ secrets.HAT_BE_ACTIONS }}
+          MERGE_LABELS: "!wontfix"
+          MERGE_METHOD: "squash"
+          MERGE_FORKS: "true"
+          MERGE_DELETE_BRANCH: "true"
+          MERGE_COMMIT_MESSAGE: "pull-request-title"
+          MERGE_REQUIRED_APPROVALS: 4
+          UPDATE_LABELS: "automerge"
+      - name: feedback
+        if: steps.automerge.outputs.mergeResult == 'merged'
+        run: |
+          ehco "Pull Request ${{ steps.automerge.outputs.pullRequestNumber }} merged!"
