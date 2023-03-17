@@ -1,0 +1,29 @@
+plugins {
+    id 'java'
+}
+
+group = 'io.howstheairtoday'
+version = '1.0-SNAPSHOT'
+
+bootJar {
+    enabled = false
+}
+
+jar {
+    enabled = true
+}
+
+repositories {
+    maven {
+        url 'https://jitpack.io'
+    }
+}
+
+dependencies {
+    api 'com.github.kingbbode:spring-boot-custom-yaml-importer:0.3.0'
+}
+
+test {
+    useJUnitPlatform()
+}
+

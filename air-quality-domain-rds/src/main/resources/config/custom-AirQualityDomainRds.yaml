@@ -1,0 +1,10 @@
+# 현우 프로필
+spring:
+  config:
+    activate:
+      on-profile: "hyyena"
+  datasource:
+    driver-class-name: org.mariadb.jdbc.Driver
+    url:
+    username:
+    password:
