@@ -1,0 +1,148 @@
+buildscript {
+    ext {
+        springBootVersion = '3.0.4'
+    }
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath "org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}"
+        classpath "io.spring.gradle:dependency-management-plugin:1.1.0.RELEASE"
+    }
+}
+
+plugins {
+    id 'java'
+    id 'org.springframework.boot' version '3.0.4'
+    id 'io.spring.dependency-management' version '1.1.0'
+}
+
+repositories {
+    mavenCentral()
+}
+
+bootJar {
+    enabled = false
+}
+
+jar {
+    enabled = true
+}
+
+allprojects {
+    group = 'io.howstheairtoday'
+    version = '1.0-SNAPSHOT'
+    sourceCompatibility = '17'
+
+    apply plugin: 'java'
+    apply plugin: 'java-library'
+    apply plugin: 'org.springframework.boot'
+    apply plugin: 'io.spring.dependency-management'
+
+    repositories {
+        mavenCentral()
+    }
+}
+
+subprojects {
+    configurations {
+        compileOnly {
+            extendsFrom annotationProcessor
+        }
+    }
+
+    // 하위 모듈의 공통 의존성
+    dependencies {
+        implementation 'org.springframework.boot:spring-boot-starter'
+        testImplementation 'org.springframework.boot:spring-boot-starter-test'
+        compileOnly 'org.projectlombok:lombok'
+        annotationProcessor 'org.projectlombok:lombok'
+    }
+
+    test {
+        useJUnitPlatform()
+    }
+}
+
+project('module-common') {
+    dependencies {
+    }
+}
+
+project('module-core') {
+    dependencies {
+        implementation project(':module-common')
+    }
+}
+
+project('air-quality-domain-service') {
+    dependencies {
+        implementation project(':module-common')
+    }
+}
+
+project('air-quality-domain-rds') {
+    dependencies {
+        implementation project(':module-common')
+    }
+}
+
+project('air-quality-domain-redis') {
+    dependencies {
+        implementation project(':module-common')
+    }
+}
+
+project('member-domain-service') {
+    dependencies {
+        implementation project(':module-common')
+    }
+}
+
+project('member-domain-rds') {
+    dependencies {
+        implementation project(':module-common')
+    }
+}
+
+project('member-domain-redis') {
+    dependencies {
+        implementation project(':module-common')
+    }
+}
+
+project('community-domain-rds') {
+    dependencies {
+        implementation project(':module-common')
+    }
+}
+
+project('community-domain-redis') {
+    dependencies {
+        implementation project(':module-common')
+    }
+}
+
+project('air-quality-app-batch') {
+    dependencies {
+        implementation project(':module-common')
+    }
+}
+
+project('air-quality-app-external-api') {
+    dependencies {
+        implementation project(':module-common')
+    }
+}
+
+project('member-app-external-api') {
+    dependencies {
+        implementation project(':module-common')
+    }
+}
+
+project('community-app-external-api') {
+    dependencies {
+        implementation project(':module-common')
+    }
+}

@@ -1,0 +1,27 @@
+rootProject.name = 'HAT-backend-spring-boot'
+
+// 독립 모듈 계층
+include 'modules'
+
+// 공통 모듈 계층
+include 'module-common'
+
+// 내부 모듈 계층
+include 'module-core'
+
+// 도메인 모듈 계층
+include 'air-quality-domain-service'
+include 'air-quality-domain-rds'
+include 'air-quality-domain-redis'
+include 'member-domain-service'
+include 'member-domain-rds'
+include 'member-domain-redis'
+include 'community-domain-service'
+include 'community-domain-rds'
+include 'community-domain-redis'
+
+// 애플리케이션 모듈 계층
+include 'air-quality-app-batch'
+include 'air-quality-app-external-api'
+include 'member-app-external-api'
+include 'community-app-external-api'
