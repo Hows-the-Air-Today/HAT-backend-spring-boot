@@ -33,13 +33,6 @@ dependencies {
 
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
 
-    //JPA
-    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-    implementation 'org.springframework.boot:spring-boot-starter-jdbc'
-    runtimeOnly 'org.mariadb.jdbc:mariadb-java-client'
-
-
-
 }
 
 tasks.named('test') {
