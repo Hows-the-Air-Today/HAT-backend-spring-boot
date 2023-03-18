@@ -153,11 +153,12 @@ project('community-app-external-api') {
         implementation project(":module-core")
 
         api project(":community-domain-service")
-        implementation project(":community-domain-rds")
+        api project(":community-domain-rds")
 
         //JPA
         implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
         implementation 'org.springframework.boot:spring-boot-starter-jdbc'
         runtimeOnly 'org.mariadb.jdbc:mariadb-java-client'
+
     }
 }
