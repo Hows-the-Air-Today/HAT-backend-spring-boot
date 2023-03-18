@@ -41,6 +41,7 @@ allprojects {
 
     repositories {
         mavenCentral()
+
     }
 }
 
@@ -53,6 +54,7 @@ subprojects {
 
     // 하위 모듈의 공통 의존성
     dependencies {
+
         implementation 'org.springframework.boot:spring-boot-starter'
         testImplementation 'org.springframework.boot:spring-boot-starter-test'
         compileOnly 'org.projectlombok:lombok'
@@ -138,11 +140,19 @@ project('air-quality-app-external-api') {
 project('member-app-external-api') {
     dependencies {
         implementation project(':module-common')
+
     }
 }
 
+
 project('community-app-external-api') {
+
+
     dependencies {
         implementation project(':module-common')
+        implementation project(":module-core")
+
+        api project(":community-domain-service")
+        implementation project(":community-domain-rds")
     }
 }

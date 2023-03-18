@@ -1,5 +1,2 @@
 rootProject.name = 'app-community-external-api'
 
-include "community-domain-service"
-include "community-domain-rds"
-include "community-domain-redis"
