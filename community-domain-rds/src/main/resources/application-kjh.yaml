@@ -1,6 +1,7 @@
 
 # 정훈
 spring:
+
   config:
     activate:
       on-profile: kjh
@@ -16,4 +17,7 @@ spring:
       hibernate:
         format_sql: true
         show_sql: true
+
+
+
 ---
