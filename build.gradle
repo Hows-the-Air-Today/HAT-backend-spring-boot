@@ -166,7 +166,7 @@ def targetModules = project.subprojects.findAll {
 targetModules.each { module ->
     tasks.register("copyGitSubmodulesTo${module.name.capitalize()}", Copy) {
         from project(':module-common').file('src/main/resources/security')
-        into module.file('src/main/resources/security')
+        into module.file('src/main/resources/security-env')
         dependsOn module.tasks.named('processResources')
     }
 }
