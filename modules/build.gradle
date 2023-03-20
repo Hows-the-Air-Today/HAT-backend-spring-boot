@@ -14,13 +14,10 @@ jar {
 }
 
 repositories {
-    maven {
-        url 'https://jitpack.io'
-    }
+    mavenCentral()
 }
 
 dependencies {
-    api 'com.github.kingbbode:spring-boot-custom-yaml-importer:0.3.0'
 }
 
 test {

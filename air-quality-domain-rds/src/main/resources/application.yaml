@@ -1,3 +1,5 @@
 spring:
   config:
-    import: config/custom-AirQualityDomainRds.yaml
+    import:
+      - classpath:security-env/common/application.yaml
+      - classpath:security-env/mariadb/application.yaml

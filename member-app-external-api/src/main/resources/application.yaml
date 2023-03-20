@@ -1,3 +1,5 @@
-server:
-  port:
-    11000
+spring:
+  config:
+    import:
+      - classpath:security-env/common/application.yaml
+      - classpath:security-env/member-app-external-api/application.yaml

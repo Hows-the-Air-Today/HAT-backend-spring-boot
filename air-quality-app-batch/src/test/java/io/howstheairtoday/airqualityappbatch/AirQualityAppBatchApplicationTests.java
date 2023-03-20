@@ -1,4 +1,4 @@
-package io.howstheairtoday.airqualitydomainredis;
+package io.howstheairtoday.airqualityappbatch;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -6,7 +6,7 @@ import org.springframework.test.context.ActiveProfiles;
 
 @SpringBootTest
 @ActiveProfiles("test")
-class AirQualityDomainRedisApplicationTests {
+class AirQualityAppBatchApplicationTests {
 
     @Test
     void contextLoads() {

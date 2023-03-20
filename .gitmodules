@@ -1,0 +1,3 @@
+[submodule "module-common/src/main/resources/security"]
+	path = module-common/src/main/resources/security
+	url = https://github.com/Hows-the-Air-Today/security.git
