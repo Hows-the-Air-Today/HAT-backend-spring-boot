@@ -1,6 +1,7 @@
 # Created by https://www.toptal.com/developers/gitignore/api/intellij+all,java,gradle
 # Edit at https://www.toptal.com/developers/gitignore?templates=intellij+all,java,gradle
 
+*.DS_Store
 security-env/
 
 ### Intellij+all ###
