@@ -4,10 +4,10 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class AppAirQualityBatchApplication {
+public class AirQualityAppBatchApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(AppAirQualityBatchApplication.class, args);
+        SpringApplication.run(AirQualityAppBatchApplication.class, args);
     }
 
 }
