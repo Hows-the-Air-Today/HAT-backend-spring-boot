@@ -40,8 +40,6 @@ jobs:
         with:
           gradle-version: release-candidate
           cache-disabled: true
-          arguments: build
-      - run: gradle build
 
       - name: Execute Gradle build
         uses: ./gradlew build --scan
