@@ -1,2 +1,5 @@
-server:
-  port: 9000
+spring:
+  config:
+    import:
+      - classpath:security-env/common/application.yaml
+      - classpath:security-env/air-quality-app-external-api/application.yaml
