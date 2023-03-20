@@ -64,6 +64,11 @@ subprojects {
     }
 }
 
+project('modules') {
+    dependencies {
+    }
+}
+
 project('module-common') {
     dependencies {
     }
@@ -144,5 +149,30 @@ project('member-app-external-api') {
 project('community-app-external-api') {
     dependencies {
         implementation project(':module-common')
+    }
+}
+
+
+def excludeModules = ['module-common', 'modules', 'module-core']
+
+
+def targetModules = project.subprojects.findAll {
+    it.name !in excludeModules
+}.collect {
+    project(":${it.name}")
+}
+
+
+targetModules.each { module ->
+    tasks.register("copyGitSubmodulesTo${module.name.capitalize()}", Copy) {
+        from project(':module-common').file('src/main/resources/security')
+        into module.file('src/main/resources/security')
+        dependsOn module.tasks.named('processResources')
+    }
+}
+
+tasks.named('build') {
+    dependsOn targetModules.collect {
+        "copyGitSubmodulesTo${it.name.capitalize()}"
     }
 }
