@@ -7,7 +7,7 @@
 # To get a newer version, you will need to update the SHA.
 # You can also reference a tag or branch, but the action may change without warning.
 
-name: Java CI
+name: Gradle Build Test
 
 on:
   push:
@@ -37,10 +37,9 @@ jobs:
 
       - name: Setup Gradle
         uses: gradle/gradle-build-action@v2.4.0
-        env:
-          CI: true
         with:
           gradle-version: release-candidate
+          cache-disabled: true
       - run: gradle build
 
       - name: Execute Gradle build
