@@ -176,3 +176,9 @@ tasks.named('build') {
         "copyGitSubmodulesTo${it.name.capitalize()}"
     }
 }
+
+tasks.named('test') {
+    dependsOn targetModules.collect {
+        "copyGitSubmodulesTo${it.name.capitalize()}"
+    }
+}
