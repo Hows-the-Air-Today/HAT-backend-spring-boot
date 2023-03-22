@@ -1,5 +1,5 @@
 spring:
   config:
     import:
-      - classpath:security-env/common/application.yaml
-      - classpath:security-env/mariadb/application.yaml
+      - classpath:security/common/application.yaml
+      - classpath:security/mariadb/application.yaml

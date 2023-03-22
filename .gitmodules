@@ -1,3 +1,39 @@
-[submodule "module-common/src/main/resources/security"]
-	path = module-common/src/main/resources/security
+[submodule "air-quality-app-batch/src/main/resources/security"]
+	path = air-quality-app-batch/src/main/resources/security
+	url = https://github.com/Hows-the-Air-Today/security.git
+[submodule "air-quality-app-external-api/src/main/resources/security"]
+	path = air-quality-app-external-api/src/main/resources/security
+	url = https://github.com/Hows-the-Air-Today/security.git
+[submodule "air-quality-domain-rds/src/main/resources/security"]
+	path = air-quality-domain-rds/src/main/resources/security
+	url = https://github.com/Hows-the-Air-Today/security.git
+[submodule "air-quality-domain-redis/src/main/resources/security"]
+	path = air-quality-domain-redis/src/main/resources/security
+	url = https://github.com/Hows-the-Air-Today/security.git
+[submodule "air-quality-domain-service/src/main/resources/security"]
+	path = air-quality-domain-service/src/main/resources/security
+	url = https://github.com/Hows-the-Air-Today/security.git
+[submodule "community-app-external-api/src/main/resources/security"]
+	path = community-app-external-api/src/main/resources/security
+	url = https://github.com/Hows-the-Air-Today/security.git
+[submodule "community-domain-rds/src/main/resources/security"]
+	path = community-domain-rds/src/main/resources/security
+	url = https://github.com/Hows-the-Air-Today/security.git
+[submodule "community-domain-redis/src/main/resources/security"]
+	path = community-domain-redis/src/main/resources/security
+	url = https://github.com/Hows-the-Air-Today/security.git
+[submodule "community-domain-service/src/main/resources/security"]
+	path = community-domain-service/src/main/resources/security
+	url = https://github.com/Hows-the-Air-Today/security.git
+[submodule "member-app-external-api/src/main/resources/security"]
+	path = member-app-external-api/src/main/resources/security
+	url = https://github.com/Hows-the-Air-Today/security.git
+[submodule "member-domain-rds/src/main/resources/security"]
+	path = member-domain-rds/src/main/resources/security
+	url = https://github.com/Hows-the-Air-Today/security.git
+[submodule "member-domain-redis/src/main/resources/security"]
+	path = member-domain-redis/src/main/resources/security
+	url = https://github.com/Hows-the-Air-Today/security.git
+[submodule "member-domain-service/src/main/resources/security"]
+	path = member-domain-service/src/main/resources/security
 	url = https://github.com/Hows-the-Air-Today/security.git
