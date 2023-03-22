@@ -1,5 +1,5 @@
 spring:
   config:
     import:
-      - classpath:security-env/common/application.yaml
-      - classpath:security-env/member-app-external-api/application.yaml
+      - classpath:security/common/application.yaml
+      - classpath:security/member-app-external-api/application.yaml
