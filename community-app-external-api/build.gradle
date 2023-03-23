@@ -27,6 +27,11 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
 
 
+
+    //junit5
+    api 'org.junit.jupiter:junit-jupiter-api:5.9.2'
+    api 'org.junit.jupiter:junit-jupiter-engine'
+
     //Valid
     implementation 'org.springframework.boot:spring-boot-starter-validation'
 
