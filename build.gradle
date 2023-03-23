@@ -149,5 +149,17 @@ project('member-app-external-api') {
 project('community-app-external-api') {
     dependencies {
         implementation project(':module-common')
+
+        implementation project(":module-core")
+
+        api project(":community-domain-service")
+        api project(":community-domain-rds")
+
+
+        //junit5
+        testImplementation 'org.junit.jupiter:junit-jupiter-api:5.9.2'
+        testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
+
+
     }
 }
