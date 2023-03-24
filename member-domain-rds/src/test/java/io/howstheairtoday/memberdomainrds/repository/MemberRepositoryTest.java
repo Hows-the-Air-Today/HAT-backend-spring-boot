@@ -45,7 +45,7 @@ class MemberRepositoryTest {
     @Rollback(false)
     void saveMemberInfo() {
 
-        //given
+        // given
         memberRepository.save(Member.builder()
             .loginId("hat_id")
             .loginPassword("test123")
@@ -57,10 +57,10 @@ class MemberRepositoryTest {
             .token("TEST.REFRESH.TOKEN")
             .build());
 
-        //when
+        // when
         List<Member> memberList = memberRepository.findAll();
 
-        //then
+        // then
         Member member = memberList.get(0);
         assertThat(member.getLoginId()).isEqualTo("hat_id");
     }
@@ -69,7 +69,7 @@ class MemberRepositoryTest {
     @DisplayName("회원 정보 삭제")
     public void deleteMemberInfo() {
 
-        //given
+        // given
         Member member = Member.builder()
             .loginId("hat_id")
             .loginPassword("test123")
@@ -82,9 +82,9 @@ class MemberRepositoryTest {
             .build();
         memberRepository.save(member);
 
-        //when
+        // when
         memberRepository.delete(member);
-        //then
+        // then
         Optional<Member> deletedMember = memberRepository.findByMemberId(member.getMemberId());
         assertThat(deletedMember.isPresent()).isFalse();
     }
@@ -93,7 +93,7 @@ class MemberRepositoryTest {
     @DisplayName("회원 정보 수정")
     public void modifyMemberInfo() {
 
-        //given
+        // given
         Member savedmember = Member.builder()
             .loginId("hat_id")
             .loginPassword("test123")
@@ -106,7 +106,7 @@ class MemberRepositoryTest {
             .build();
         memberRepository.save(savedmember);
 
-        //when
+        // when
         String modifiedPassword = "modtest123";
         String modifiedNickname = "modHat";
         String modifiedProfileImage = "mod.jpg";
@@ -114,7 +114,7 @@ class MemberRepositoryTest {
         Member modifiedMember = savedmember.modifiedMember(modifiedPassword, modifiedNickname, modifiedProfileImage);
         memberRepository.save(modifiedMember);
 
-        //then
+        // then
         Optional<Member> findMember = memberRepository.findByMemberId(savedmember.getMemberId());
         assertThat(findMember.isPresent()).isTrue();
 
@@ -128,7 +128,7 @@ class MemberRepositoryTest {
     @DisplayName("회원 정보 조회")
     public void getMemberInfo() {
 
-        //given
+        // given
         Member savedmember = Member.builder()
             .loginId("hat_id")
             .loginPassword("test123")
@@ -141,10 +141,10 @@ class MemberRepositoryTest {
             .build();
         memberRepository.save(savedmember);
 
-        //when
+        // when
         Optional<Member> foundMember = memberRepository.findByMemberId(savedmember.getMemberId());
 
-        //then
+        // then
         assertThat(foundMember.get().getLoginId()).isEqualTo("hat_id");
     }
 }

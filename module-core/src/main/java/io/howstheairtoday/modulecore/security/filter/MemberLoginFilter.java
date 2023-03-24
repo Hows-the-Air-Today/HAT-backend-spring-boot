@@ -26,10 +26,10 @@ public class MemberLoginFilter extends AbstractAuthenticationProcessingFilter {
         super(defaultFilterProcessesUrl);
     }
 
-    //파라미터를 읽어서 Map으로 만들어주는 메서드
+    // 파라미터를 읽어서 Map으로 만들어주는 메서드
     private Map<String, String> parseRequestJSON(HttpServletRequest request) {
 
-        //JSON 데이터를 분석해 loginId, loginPassword 전달 값을 Map으로 처리
+        // JSON 데이터를 분석해 loginId, loginPassword 전달 값을 Map으로 처리
         try (Reader reader = new InputStreamReader(request.getInputStream())) {
             Gson gson = new Gson();
             return gson.fromJson(reader, Map.class);
@@ -53,7 +53,7 @@ public class MemberLoginFilter extends AbstractAuthenticationProcessingFilter {
 
         Map<String, String> jsonData = parseRequestJSON(request);
         log.info("💡 jsonData =====> " + jsonData);
-        //회원 가입 Service 로직 단계에서 확인 예정
+        // 회원 가입 Service 로직 단계에서 확인 예정
         /*
         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
             jsonData.get("loginId"), jsonData.get("loginPassword"));

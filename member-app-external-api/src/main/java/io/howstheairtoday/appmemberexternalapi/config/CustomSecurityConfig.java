@@ -43,27 +43,27 @@ public class CustomSecurityConfig {
 
         log.info("🛠️ configure -------------------- 🛠️");
 
-        //filter.MemberLoginFilter - AuthenticationManager 설정
+        // filter.MemberLoginFilter - AuthenticationManager 설정
         AuthenticationManagerBuilder authenticationManagerBuilder =
             httpSecurity.getSharedObject(AuthenticationManagerBuilder.class);
         authenticationManagerBuilder
             .userDetailsService(memberDetailsService)
             .passwordEncoder(passwordEncoder());
 
-        //Get AuthenticationManager
+        // Get AuthenticationManager
         AuthenticationManager authenticationManager = authenticationManagerBuilder.build();
         httpSecurity.authenticationManager(authenticationManager);
 
-        //MemberLoginFilter
-        //Spring Security에서 username과 password를 처리하는 UsernamePasswordAuthenticationFilter의 앞쪽에서 동작하도록 설정
+        // MemberLoginFilter
+        // Spring Security에서 username과 password를 처리하는 UsernamePasswordAuthenticationFilter의 앞쪽에서 동작하도록 설정
         MemberLoginFilter memberLoginFilter = new MemberLoginFilter("/generateToken");
         memberLoginFilter.setAuthenticationManager(authenticationManager);
 
-        //MemberLoginSuccessHandler - 로그인 인증 성공 이후 작업 처리 설정
+        // MemberLoginSuccessHandler - 로그인 인증 성공 이후 작업 처리 설정
         MemberLoginSuccessHandler successHandler = new MemberLoginSuccessHandler();
         memberLoginFilter.setAuthenticationManager(authenticationManager);
 
-        //MemberLoginFilter 위치 조정
+        // MemberLoginFilter 위치 조정
         httpSecurity.addFilterBefore(memberLoginFilter, UsernamePasswordAuthenticationFilter.class);
 
         httpSecurity.csrf().disable();

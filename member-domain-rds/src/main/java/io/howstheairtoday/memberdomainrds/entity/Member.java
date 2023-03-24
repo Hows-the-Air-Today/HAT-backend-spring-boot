@@ -31,7 +31,7 @@ public class Member extends BaseTimeEntity {
     @JdbcTypeCode(SqlTypes.VARCHAR)
     private UUID memberId;
     @Column(nullable = false, length = 40)
-    private String loginId; //아이디
+    private String loginId; // 아이디
     @Column(nullable = false, length = 128)
     private String loginPassword;
     @Column(nullable = false, length = 50)
@@ -46,7 +46,7 @@ public class Member extends BaseTimeEntity {
     @Column(nullable = false)
     private LoginRole loginRole;
     @Column(length = 255)
-    private String token; //refreshToken
+    private String token; // refreshToken
 
     @Builder
     public Member(String loginId, String loginPassword, String email, String nickname, String memberProfileImage,
