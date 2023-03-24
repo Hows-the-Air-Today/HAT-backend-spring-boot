@@ -12,4 +12,6 @@ import io.howstheairtoday.memberdomainrds.entity.Member;
 public interface MemberRepository extends JpaRepository<Member, UUID> {
 
     Optional<Member> findByMemberId(UUID memberId);
+
+    Optional<Member> findByLoginId(String loginId);
 }

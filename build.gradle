@@ -143,6 +143,8 @@ project('air-quality-app-external-api') {
 project('member-app-external-api') {
     dependencies {
         implementation project(':module-common')
+        implementation project(':member-domain-rds')
+        implementation project(':module-core')
     }
 }
 
