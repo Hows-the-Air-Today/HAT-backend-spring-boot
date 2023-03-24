@@ -16,7 +16,6 @@ import lombok.NoArgsConstructor;
 public class PostRequestDto {
 
     @AllArgsConstructor
-    @NoArgsConstructor
     @Getter
     @Builder
     public static class SaveRequestDto {
