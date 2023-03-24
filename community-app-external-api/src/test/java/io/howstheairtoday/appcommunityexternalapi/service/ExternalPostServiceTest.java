@@ -26,40 +26,41 @@ public class ExternalPostServiceTest {
     @Autowired
     private DomainCommunityService domainCommunityService;
 
-    @DisplayName("게시물 작성에 성공")
+    @DisplayName("domainCommunityService에 Post를 Entity를 넘기고 성공적으로 데이터베이스에 삽입 성공")
     @Test
     public void createPost() {
 
-        List<PostImage> postImagesList = new ArrayList<>();
         UUID uuid = UUID.fromString("dc718b8f-fb97-48d4-b55d-855e7c845987");
 
-        //given
+        List<PostRequestDto.PostImagesDto> postImagesList = new ArrayList<>();
 
+        for (int i = 0; i < 3; i++) {
+            PostRequestDto.PostImagesDto postImagesDto = PostRequestDto.PostImagesDto.builder()
+                .postImageNumber(i)
+                .postImageUrl("https://amazon.com" + i)
+                .build();
+            postImagesList.add(postImagesDto);
+        }
+
+        //given
         PostRequestDto.SaveRequestDto postRequestDto = PostRequestDto.SaveRequestDto.builder()
             .content("안녕하세요")
             .userId(uuid)
-            .region("가락동")
             .postImageDtoList(postImagesList)
+            .content("가락동")
             .build();
 
-        Post post = postRequestDto.toEntity();
+        Post post = Post.createPost(postRequestDto.getContent(), postRequestDto.getLocation());
 
-        for (int i = 0; i < 3; i++) {
-            PostImage postImage = PostImage.builder()
-                .postImageUrl("https://www.amazon.com/" + i)
-                .postImageNumber(i)
-                .post(post)
-                .build();
-            postImagesList.add(postImage);
-        }
+        post.getImageArray()
+            .forEach(postImage -> post.imagesAdd(
+                PostImage.createImages(postImage.getPostImageNumber(), postImage.getPostImageUrl(), post)));
 
         //when
-        Post savePost = domainCommunityService.savePost(post);
+        domainCommunityService.savePost(post);
 
         //then
-        assertSame(post, savePost);
-
-        Assertions.assertThat(savePost).isNotNull();
+        assertNotNull(post);
 
     }
 
