@@ -33,7 +33,7 @@ public class PostImage extends BaseTimeEntity {
     @Column(name = "post_image_id",columnDefinition = "BINARY(16)")
     private UUID id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "post_id")
     private Post post;
 
