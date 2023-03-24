@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -36,11 +35,10 @@ public class PostRepositoryTest {
     @Test
     public void savePost() {
         //given
-        List<PostImage> list = new ArrayList<>();
 
         UUID uuid = UUID.fromString("dc718b8f-fb97-48d4-b55d-855e7c845987");
 
-        Post post = Post.builder().region("동남로").userId(uuid).imageArray(list).content("게시글 내용").build();
+        Post post = Post.builder().location("동남로").userId(uuid).content("게시글 내용").build();
 
         for (int i = 0; i < 3; i++) {
             PostImage postImage = PostImage.builder()
@@ -49,17 +47,18 @@ public class PostRepositoryTest {
                 .postImageUrl("https://amazons3.com/kjh" + i)
                 .build();
 
-            list.add(postImage);
+            post.imagesAdd(postImage);
+
         }
 
         //when
         Post savePost = postRepository.save(post);
 
-        //then
+        // //then
         assertSame(post, savePost);
-
+        //
         Assertions.assertThat(savePost.getContent()).isEqualTo("게시글 내용");
-        Assertions.assertThat(savePost.getRegion()).isEqualTo("동남로");
+        Assertions.assertThat(savePost.getLocation()).isEqualTo("동남로");
         Assertions.assertThat(savePost.getImageArray().get(0).getPostImageNumber()).isEqualTo(0);
 
     }
