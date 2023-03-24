@@ -3,14 +3,20 @@ package io.howstheairtoday.appmemberexternalapi.config;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+import io.howstheairtoday.appmemberexternalapi.service.MemberDetailsService;
+import io.howstheairtoday.modulecore.security.filter.MemberLoginFilter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 
@@ -21,7 +27,10 @@ import lombok.extern.log4j.Log4j2;
 @Log4j2
 @RequiredArgsConstructor
 @EnableGlobalMethodSecurity(prePostEnabled = true)
+@EnableWebSecurity
 public class CustomSecurityConfig {
+
+    private final MemberDetailsService memberDetailsService;
 
     @Bean
     PasswordEncoder passwordEncoder() {
@@ -32,6 +41,25 @@ public class CustomSecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
 
         log.info("🛠️ configure -------------------- 🛠️");
+
+        //filter.MemberLoginFilter - AuthenticationManager 설정
+        AuthenticationManagerBuilder authenticationManagerBuilder =
+            httpSecurity.getSharedObject(AuthenticationManagerBuilder.class);
+        authenticationManagerBuilder
+            .userDetailsService(memberDetailsService)
+            .passwordEncoder(passwordEncoder());
+
+        //Get AuthenticationManager
+        AuthenticationManager authenticationManager = authenticationManagerBuilder.build();
+        httpSecurity.authenticationManager(authenticationManager);
+
+        //MemberLoginFilter
+        //Spring Security에서 username과 password를 처리하는 UsernamePasswordAuthenticationFilter의 앞쪽에서 동작하도록 설정
+        MemberLoginFilter memberLoginFilter = new MemberLoginFilter("/generateToken");
+        memberLoginFilter.setAuthenticationManager(authenticationManager);
+
+        //MemberLoginFilter 위치 조정
+        httpSecurity.addFilterBefore(memberLoginFilter, UsernamePasswordAuthenticationFilter.class);
 
         httpSecurity.csrf().disable();
         httpSecurity.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
