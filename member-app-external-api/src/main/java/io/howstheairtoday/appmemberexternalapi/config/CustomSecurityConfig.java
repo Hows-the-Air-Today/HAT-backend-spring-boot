@@ -16,6 +16,7 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import io.howstheairtoday.appmemberexternalapi.service.MemberDetailsService;
+import io.howstheairtoday.appmemberexternalapi.service.handler.MemberLoginSuccessHandler;
 import io.howstheairtoday.modulecore.security.filter.MemberLoginFilter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -56,6 +57,10 @@ public class CustomSecurityConfig {
         //MemberLoginFilter
         //Spring Security에서 username과 password를 처리하는 UsernamePasswordAuthenticationFilter의 앞쪽에서 동작하도록 설정
         MemberLoginFilter memberLoginFilter = new MemberLoginFilter("/generateToken");
+        memberLoginFilter.setAuthenticationManager(authenticationManager);
+
+        //MemberLoginSuccessHandler - 로그인 인증 성공 이후 작업 처리 설정
+        MemberLoginSuccessHandler successHandler = new MemberLoginSuccessHandler();
         memberLoginFilter.setAuthenticationManager(authenticationManager);
 
         //MemberLoginFilter 위치 조정
