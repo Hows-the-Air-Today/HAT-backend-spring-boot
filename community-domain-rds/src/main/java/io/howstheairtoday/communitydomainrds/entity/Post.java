@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import org.hibernate.annotations.GenericGenerator;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import io.howstheairtoday.communitydomainrds.common.BaseTimeEntity;
@@ -30,8 +31,9 @@ import lombok.NoArgsConstructor;
 public class Post extends BaseTimeEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "post_id")
+    @GeneratedValue(generator = "uuid2")
+    @GenericGenerator(name = "uuid2", strategy = "uuid2")
+    @Column(name = "post_id", columnDefinition = "BINARY(16)")
     private UUID id;
 
     @Column(name = "member_id")
