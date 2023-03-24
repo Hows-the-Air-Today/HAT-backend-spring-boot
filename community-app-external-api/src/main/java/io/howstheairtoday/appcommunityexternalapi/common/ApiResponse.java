@@ -15,20 +15,20 @@ import lombok.Data;
 public class ApiResponse<T> {
 
     private String msg;
-    private Integer code;
+    private Integer statusCode;
     private T data;
 
     public static <T> ApiResponse<T> res(final Integer statusCode, final String msg) {
         return ApiResponse.<T>builder()
             .msg(msg)
-            .code(statusCode)
+            .statusCode(statusCode)
             .build();
     }
 
     public static <T> ApiResponse<T> res(final Integer statusCode, final String msg, final T data) {
         return ApiResponse.<T>builder()
             .msg(msg)
-            .code(statusCode)
+            .statusCode(statusCode)
             .data(data)
             .build();
     }

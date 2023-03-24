@@ -54,12 +54,10 @@ public class PostRepositoryTest {
         //when
         Post savePost = postRepository.save(post);
 
-        // // //then
-        // assertSame(post, savePost);
-        // //
-        // Assertions.assertThat(savePost.getContent()).isEqualTo("게시글 내용");
-        // Assertions.assertThat(savePost.getLocation()).isEqualTo("동남로");
-        // Assertions.assertThat(savePost.getImageArray().get(0).getPostImageNumber()).isEqualTo(0);
+        assertSame(post, savePost);
+        Assertions.assertThat(savePost.getContent()).isEqualTo("게시글 내용");
+        Assertions.assertThat(savePost.getLocation()).isEqualTo("동남로");
+        Assertions.assertThat(savePost.getImageArray().get(0).getPostImageNumber()).isEqualTo(0);
 
     }
 
