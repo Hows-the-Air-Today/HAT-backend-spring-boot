@@ -6,6 +6,8 @@ import java.util.UUID;
 import io.howstheairtoday.communitydomainrds.entity.Post;
 import io.howstheairtoday.communitydomainrds.entity.PostImage;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -19,44 +21,31 @@ public class PostRequestDto {
     @Builder
     public static class SaveRequestDto {
 
-        @NotBlank(message = "내용을 입력해주세요")
+        @NotBlank(message = "내용을 입력해주세요.")
         private String content;
 
-        @NotBlank(message = "지역을 입력해주세요")
-        private String region;
+        @NotBlank(message = "지역을 입력해주세요.")
+        private String location;
 
-        @NotBlank(message = "유저아이디가 존재하지 않습니다.")
+        @NotNull(message = "유저아이디가 존재하지 않습니다.")
         private UUID userId;
 
-        @NotBlank(message = "이미지가 존재하지 않습니다")
-        private List<PostImage> postImageDtoList;
+        private List<PostImagesDto> postImageDtoList;
 
-        private UUID id;
-
-        public Post toEntity() {
-            return Post.builder()
-                .userId(this.userId)
-                .region(this.region)
-                .id(id)
-                .imageArray(this.postImageDtoList)
-                .content(this.content)
-                .build();
-        }
-
-        public void updatePost(String content, String region) {
+        public void updatePost(String content, String location) {
             this.content = content;
-            this.region = region;
+            this.location = location;
 
         }
     }
 
     @Getter
     @Builder
-    public static class PostImageDto {
-        private Integer postImageNumber;
+    public static class PostImagesDto {
+
         private String postImageUrl;
-        private Post post;
-        private UUID id;
+
+        private Integer postImageNumber;
 
     }
 
