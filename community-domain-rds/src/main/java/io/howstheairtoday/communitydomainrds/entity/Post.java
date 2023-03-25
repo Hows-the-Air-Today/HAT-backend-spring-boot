@@ -62,7 +62,7 @@ public class Post extends BaseTimeEntity {
             .build();
     }
 
-    public void updateFeed(Post post, List<PostImage> imageArray) {
+    public void updatePst(Post post, List<PostImage> imageArray) {
         this.content = post.getContent();
         this.location = post.getLocation();
         this.imageArray = imageArray;
