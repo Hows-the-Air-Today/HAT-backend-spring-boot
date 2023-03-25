@@ -10,6 +10,9 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import io.howstheairtoday.appcommunityexternalapi.common.ApiResponse;
 
+/**
+ * @Valid 어노테이션을 처리하기 위한 클래스
+ */
 @ControllerAdvice
 public class ValidExceptionController {
 

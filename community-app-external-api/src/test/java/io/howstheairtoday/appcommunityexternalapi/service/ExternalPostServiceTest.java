@@ -53,7 +53,7 @@ public class ExternalPostServiceTest {
 
         post.getImageArray()
             .forEach(postImage -> post.imagesAdd(
-                PostImage.createImages(postImage.getPostImageNumber(), postImage.getPostImageUrl(), post)));
+                PostImage.create(postImage.getPostImageNumber(), postImage.getPostImageUrl(), post)));
 
         //when
         domainCommunityService.savePost(post);

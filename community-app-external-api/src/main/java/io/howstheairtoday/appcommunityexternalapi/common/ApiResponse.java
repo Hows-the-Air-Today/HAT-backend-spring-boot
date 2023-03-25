@@ -33,8 +33,7 @@ public class ApiResponse<T> {
      * @param msg 응답 메시지.
      * @return ApiResponse 객체.
      */
-    public static <T> ApiResponse<T> res(final Integer statusCode,
-        final String msg) {
+    public static <T> ApiResponse<T> res(final Integer statusCode, final String msg) {
         return ApiResponse.<T>builder()
             .statusCode(statusCode)
             .msg(msg)

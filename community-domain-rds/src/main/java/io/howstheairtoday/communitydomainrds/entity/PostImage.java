@@ -17,6 +17,9 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+/**
+ *  게시물의 이미지 정보를 관리합니다.
+ */
 @Entity
 @Table(name = "post_image")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -32,22 +35,16 @@ public class PostImage extends BaseTimeEntity {
     @Column(name = "post_image_id", columnDefinition = "BINARY(16)")
     private UUID id;
 
-    /**
-     *  Post 엔티티와 연관된 PostImage 엔티티
-     */
+    // PostImage 엔티티는 Post 엔티티와 다대일 관계입니다.
     @ManyToOne
     @JoinColumn(name = "post_id")
     private Post post;
 
-    /**
-     * 포스트의 이미지 번호
-     */
+    // 포스트의 이미지 번호
     @Column(name = "post_image_number")
     private Integer postImageNumber;
 
-    /**
-     * 포스트 이미지 URL
-     */
+    // 포스트 이미지 URL
     @Column(name = "post_image")
     private String postImageUrl;
 
@@ -71,20 +68,12 @@ public class PostImage extends BaseTimeEntity {
      * @param post              해당 이미지와 연관된 포스트 엔티티
      * @return 생성된 PostImage 인스턴스
      */
-    public static PostImage createImages(Integer postImageNumber, String postImageUrl, Post post) {
+    public static PostImage create(Integer postImageNumber, String postImageUrl, Post post) {
         return PostImage.builder()
-            .postImageNumber(postImageNumber).postImageUrl(postImageUrl).post(post).build();
+            .postImageNumber(postImageNumber)
+            .postImageUrl(postImageUrl)
+            .post(post)
+            .build();
     }
-
-    /**
-     * 이미지 정보를 업데이트하는 메서드
-     * @param postImageUrl      업데이트할 이미지 URL
-     * @param postImageNumber   업데이트할 이미지 순서 번호
-     */
-    public void updatePostImage(String postImageUrl, Integer postImageNumber) {
-        this.postImageUrl = postImageUrl;
-        this.postImageNumber = postImageNumber;
-    }
-
 }
 

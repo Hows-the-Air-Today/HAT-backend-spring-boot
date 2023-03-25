@@ -10,8 +10,11 @@ import io.howstheairtoday.communitydomainrds.entity.PostImage;
 import io.howstheairtoday.communitydomainrds.service.DomainCommunityService;
 import lombok.RequiredArgsConstructor;
 
-@RequiredArgsConstructor
+/**
+ * api-external post service
+ */
 @Service
+@RequiredArgsConstructor
 public class ExternalPostService {
 
     private final DomainCommunityService domainCommunityService;
@@ -29,7 +32,7 @@ public class ExternalPostService {
 
         postImages.forEach(
             postImg -> post.imagesAdd(
-                PostImage.createImages(postImg.getPostImageNumber(), postImg.getPostImageUrl(), post)));
+                PostImage.create(postImg.getPostImageNumber(), postImg.getPostImageUrl(), post)));
 
         domainCommunityService.savePost(post);
     }

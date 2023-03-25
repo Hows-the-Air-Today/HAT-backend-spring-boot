@@ -12,6 +12,9 @@ import io.howstheairtoday.appcommunityexternalapi.service.dto.request.PostReques
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
+/**
+ * 게시글 컨트롤러
+ */
 @RequiredArgsConstructor
 @RequestMapping("/api/v1")
 @RestController
@@ -26,7 +29,7 @@ public class PostController {
      * @return ApiResponse
      */
     @PostMapping("/post")
-    public ApiResponse<Object> createFeed(@Valid @RequestBody PostRequestDto.SaveRequestDto saveRequestDto) {
+    public ApiResponse<Object> createPost(@Valid @RequestBody final PostRequestDto.SaveRequestDto saveRequestDto) {
         externalPostService.createPost(saveRequestDto);
         return ApiResponse.res(HttpStatus.CREATED.value(), "success");
     }

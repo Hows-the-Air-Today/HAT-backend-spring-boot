@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+
 import org.hibernate.annotations.GenericGenerator;
 
 import io.howstheairtoday.communitydomainrds.common.BaseTimeEntity;
@@ -19,7 +20,6 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
 /**
  * 게시글 엔티티 클래스
  */
