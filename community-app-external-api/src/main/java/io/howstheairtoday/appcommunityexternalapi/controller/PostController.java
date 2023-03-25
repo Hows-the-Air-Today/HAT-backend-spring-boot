@@ -31,6 +31,9 @@ public class PostController {
     @PostMapping("/post")
     public ApiResponse<Object> createPost(@Valid @RequestBody final PostRequestDto.SaveRequestDto saveRequestDto) {
         externalPostService.createPost(saveRequestDto);
-        return ApiResponse.res(HttpStatus.CREATED.value(), "success");
+        return ApiResponse.<Object>builder()
+            .statusCode(HttpStatus.CREATED.value())
+            .msg("success")
+            .build();
     }
 }

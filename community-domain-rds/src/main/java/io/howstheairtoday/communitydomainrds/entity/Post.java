@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-
 import org.hibernate.annotations.GenericGenerator;
 
 import io.howstheairtoday.communitydomainrds.common.BaseTimeEntity;
@@ -20,6 +19,7 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
 /**
  * 게시글 엔티티 클래스
  */
@@ -64,7 +64,9 @@ public class Post extends BaseTimeEntity {
      * Post Builder
      */
     @Builder
-    public Post(UUID id, String content, String location, UUID userId) {
+    public Post(final UUID id, final String content, final String location,
+        final UUID userId) {
+
         this.userId = userId;
         this.content = content;
         this.location = location;
@@ -73,11 +75,15 @@ public class Post extends BaseTimeEntity {
 
     /**
      * 게시글 생성 메소드
+     *
+     * @param content 게시글 내용
+     * @param location 게시글 위치
+     * @return 생성된 게시글
      */
-    public static Post createPost(String content, String location) {
+    public static Post createPost(final String content, final String location) {
         return Post.builder()
-            .location(location)
             .content(content)
+            .location(location)
             .build();
     }
 
@@ -87,12 +93,15 @@ public class Post extends BaseTimeEntity {
     public void deletePost() {
         this.setDeletedAt(LocalDateTime.now());
         if (imageArray != null) {
-            imageArray.forEach(images -> images.setDeletedAt(LocalDateTime.now()));
+            imageArray.forEach(images ->
+                images.setDeletedAt(LocalDateTime.now()));
         }
     }
 
     /**
      * 게시글 이미지 추가 메소드
+     *
+     * @param postImage 추가할 게시글 이미지
      */
 
     public void imagesAdd(PostImage postImage) {

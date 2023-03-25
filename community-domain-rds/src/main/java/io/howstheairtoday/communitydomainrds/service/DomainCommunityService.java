@@ -24,7 +24,7 @@ public class DomainCommunityService {
      * @param post 저장할 게시글 엔티티
      */
     @Transactional
-    public void savePost(Post post) {
+    public void savePost(final Post post) {
 
         postRepository.save(post);
     }

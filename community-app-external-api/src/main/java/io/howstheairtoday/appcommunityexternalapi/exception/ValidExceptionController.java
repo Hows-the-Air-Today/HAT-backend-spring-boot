@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import io.howstheairtoday.appcommunityexternalapi.common.ApiResponse;
 
 /**
- * @Valid 어노테이션을 처리하기 위한 클래스
+ *  @apiNote 유효성 검증에 대한 예외처리를 담당하는 클래스
  */
 @ControllerAdvice
 public class ValidExceptionController {
@@ -38,8 +38,11 @@ public class ValidExceptionController {
             builder.append("]");
         }
 
-        final ApiResponse<String> apiResponse = ApiResponse.res(HttpStatus.BAD_REQUEST.value(), "유효성 검증 실패",
-            builder.toString());
+        final ApiResponse<String> apiResponse = ApiResponse.<String>builder()
+            .statusCode(HttpStatus.BAD_REQUEST.value())
+            .msg("유효성 검증 실패")
+            .data(builder.toString())
+            .build();
         return new ResponseEntity<>(apiResponse, HttpStatus.BAD_REQUEST);
     }
 

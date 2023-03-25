@@ -5,7 +5,6 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Builder;
 import lombok.Data;
 
-
 /**
  * API 응답 객체.
  *
@@ -26,7 +25,7 @@ public class ApiResponse<T> {
     private T data;
 
     /**
-     * 응답 객체 생성
+     * 응답 객체 생성.
      *
      * @param <T> 데이터 타입.
      * @param statusCode 응답 코드.
@@ -41,7 +40,7 @@ public class ApiResponse<T> {
     }
 
     /**
-     * 응답 객체 생성
+     * 응답 객체 생성.
      *
      * @param <T> 데이터 타입.
      * @param statusCode 응답 코드.

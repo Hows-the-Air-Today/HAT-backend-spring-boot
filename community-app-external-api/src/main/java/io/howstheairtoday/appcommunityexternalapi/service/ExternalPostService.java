@@ -24,15 +24,18 @@ public class ExternalPostService {
      *
      * @param saveRequestDto 생성할 게시글 정보
      */
-    public void createPost(PostRequestDto.SaveRequestDto saveRequestDto) {
+    public void createPost(final PostRequestDto.SaveRequestDto saveRequestDto) {
 
-        List<PostRequestDto.PostImagesDto> postImages = saveRequestDto.getPostImageDtoList();
+        final List<PostRequestDto.PostImagesDto> postImages =
+            saveRequestDto.getPostImageDtoList();
 
-        Post post = Post.createPost(saveRequestDto.getContent(), saveRequestDto.getLocation());
+        final Post post = Post.createPost(saveRequestDto.getContent(),
+            saveRequestDto.getLocation());
 
         postImages.forEach(
             postImg -> post.imagesAdd(
-                PostImage.create(postImg.getPostImageNumber(), postImg.getPostImageUrl(), post)));
+                PostImage.create(postImg.getPostImageNumber(), postImg.getPostImageUrl(),
+                    post)));
 
         domainCommunityService.savePost(post);
     }
