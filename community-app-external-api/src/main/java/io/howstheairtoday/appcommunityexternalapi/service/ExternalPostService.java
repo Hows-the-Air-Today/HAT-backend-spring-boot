@@ -16,6 +16,11 @@ public class ExternalPostService {
 
     private final DomainCommunityService domainCommunityService;
 
+    /**
+     * 게시글 생성을 처리합니다.
+     *
+     * @param saveRequestDto 생성할 게시글 정보
+     */
     public void createPost(PostRequestDto.SaveRequestDto saveRequestDto) {
 
         List<PostRequestDto.PostImagesDto> postImages = saveRequestDto.getPostImageDtoList();

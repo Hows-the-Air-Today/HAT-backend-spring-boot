@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-
 import org.hibernate.annotations.GenericGenerator;
 
 import io.howstheairtoday.communitydomainrds.common.BaseTimeEntity;
@@ -80,15 +79,6 @@ public class Post extends BaseTimeEntity {
             .location(location)
             .content(content)
             .build();
-    }
-
-    /**
-     * 게시글 수정 메소드
-     */
-    public void updatePost(Post updatePost, List<PostImage> imageArray) {
-        this.content = updatePost.getContent();
-        this.location = updatePost.getLocation();
-        this.imageArray = imageArray;
     }
 
     /**

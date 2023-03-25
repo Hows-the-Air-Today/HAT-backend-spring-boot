@@ -52,7 +52,10 @@ public class PostImage extends BaseTimeEntity {
     private String postImageUrl;
 
     /**
-     * postImage builder
+     * PostImage 인스턴스를 생성하는 빌더 메서드
+     * @param postImageNumber    이미지 순서 번호
+     * @param postImageUrl      이미지 URL
+     * @param post              해당 이미지와 연관된 포스트 엔티티
      */
     @Builder
     public PostImage(Integer postImageNumber, String postImageUrl, Post post) {
@@ -61,18 +64,22 @@ public class PostImage extends BaseTimeEntity {
         this.post = post;
     }
 
-
     /**
-     * dto로 넣어온값 바로 postImage를 만들어주는메서드
+     * 이미지 정보를 받아서 PostImage 인스턴스를 생성하는 메서드
+     * @param postImageNumber    이미지 순서 번호
+     * @param postImageUrl      이미지 URL
+     * @param post              해당 이미지와 연관된 포스트 엔티티
+     * @return 생성된 PostImage 인스턴스
      */
-
     public static PostImage createImages(Integer postImageNumber, String postImageUrl, Post post) {
         return PostImage.builder()
             .postImageNumber(postImageNumber).postImageUrl(postImageUrl).post(post).build();
     }
 
     /**
-     * 추후
+     * 이미지 정보를 업데이트하는 메서드
+     * @param postImageUrl      업데이트할 이미지 URL
+     * @param postImageNumber   업데이트할 이미지 순서 번호
      */
     public void updatePostImage(String postImageUrl, Integer postImageNumber) {
         this.postImageUrl = postImageUrl;

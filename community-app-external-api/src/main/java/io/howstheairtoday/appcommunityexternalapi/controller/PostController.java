@@ -19,6 +19,12 @@ public class PostController {
 
     private final ExternalPostService externalPostService;
 
+    /**
+     * 게시글을 생성
+     *
+     * @param saveRequestDto 생성할 게시글 정보
+     * @return ApiResponse
+     */
     @PostMapping("/post")
     public ApiResponse<Object> createFeed(@Valid @RequestBody PostRequestDto.SaveRequestDto saveRequestDto) {
         externalPostService.createPost(saveRequestDto);

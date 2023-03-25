@@ -46,7 +46,7 @@ public class ExternalPostServiceTest {
             .content("안녕하세요")
             .userId(uuid)
             .postImageDtoList(postImagesList)
-            .content("가락동")
+            .location("가락동")
             .build();
 
         Post post = Post.createPost(postRequestDto.getContent(), postRequestDto.getLocation());
