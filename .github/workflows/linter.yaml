@@ -46,8 +46,10 @@ jobs:
       - name: Lint Code Base
         uses: github/super-linter@v4.10.1
         env:
+          LINTER_RULES_PATH: /
+          JAVA_FILE_NAME: naver-checkstyle-rules.xml
           VALIDATE_ALL_CODEBASE: false
-          DEFAULT_BRANCH: master
+          DEFAULT_BRANCH: main
           GITHUB_TOKEN: ${{ secrets.HAT_BE_ACTIONS }}
           FILTER_REGEX_INCLUDE: .*src/.*
           FILTER_REGEX_EXCLUDE: .*test/.*
