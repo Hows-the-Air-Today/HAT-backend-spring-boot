@@ -66,6 +66,9 @@ public class CustomSecurityConfig {
         // MemberLoginFilter 위치 조정
         httpSecurity.addFilterBefore(memberLoginFilter, UsernamePasswordAuthenticationFilter.class);
 
+        // post 기능에 인증된 회원만 접속 가능토록 설정
+        httpSecurity.authorizeRequests().requestMatchers("/api/v1/post/**").authenticated().anyRequest().permitAll();
+
         httpSecurity.csrf().disable();
         httpSecurity.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
         return httpSecurity.build();
