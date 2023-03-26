@@ -48,6 +48,7 @@ jobs:
         env:
           LINTER_RULES_PATH: .github/workflows/linters
           JAVA_FILE_NAME: naver-checkstyle-rules.xml
+          VALIDATE_GOOGLE_JAVA_FORMAT: false
           VALIDATE_ALL_CODEBASE: false
           DEFAULT_BRANCH: main
           GITHUB_TOKEN: ${{ secrets.HAT_BE_ACTIONS }}
