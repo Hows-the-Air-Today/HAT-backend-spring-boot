@@ -25,7 +25,6 @@ public class MemberDetailsService implements UserDetailsService {
 
     private final MemberRepository memberRepository;
 
-    @SuppressWarnings("checkstyle:AbbreviationAsWordInName")
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 
