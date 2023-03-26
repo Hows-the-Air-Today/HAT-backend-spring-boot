@@ -12,11 +12,8 @@ import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
-import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
 
 import io.howstheairtoday.memberdomainrds.entity.LoginRole;
 import io.howstheairtoday.memberdomainrds.entity.LoginType;
@@ -28,7 +25,7 @@ import io.howstheairtoday.memberdomainrds.entity.Member;
 @ContextConfiguration(classes = {MemberRepository.class})
 @EnableJpaRepositories(basePackages = "io.howstheairtoday.memberdomainrds.repository")
 @EntityScan("io.howstheairtoday.memberdomainrds.entity")
-@Transactional(propagation = Propagation.NOT_SUPPORTED)
+    // @Transactional(propagation = Propagation.NOT_SUPPORTED)
 class MemberRepositoryTest {
 
     @Autowired
@@ -39,10 +36,8 @@ class MemberRepositoryTest {
     //     memberRepository.deleteAll();
     // }
 
-    @Test
     @DisplayName("회원 정보 저장")
-    @Transactional
-    @Rollback(false)
+    @Test
     void saveMemberInfo() {
 
         // given
@@ -65,8 +60,8 @@ class MemberRepositoryTest {
         assertThat(member.getLoginId()).isEqualTo("hat_id");
     }
 
-    @Test
     @DisplayName("회원 정보 삭제")
+    @Test
     public void deleteMemberInfo() {
 
         // given
@@ -89,8 +84,8 @@ class MemberRepositoryTest {
         assertThat(deletedMember.isPresent()).isFalse();
     }
 
-    @Test
     @DisplayName("회원 정보 수정")
+    @Test
     public void modifyMemberInfo() {
 
         // given
@@ -124,8 +119,8 @@ class MemberRepositoryTest {
         assertThat(member.getMemberProfileImage()).isEqualTo(modifiedProfileImage);
     }
 
-    @Test
     @DisplayName("회원 정보 조회")
+    @Test
     public void getMemberInfo() {
 
         // given
