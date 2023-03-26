@@ -19,6 +19,8 @@ public class ExternalApiService {
 
     //TM 좌표 찾아오기
     public List<String> getTM(String umdName) {
+
+        //공공데이터 포털에서 TM좌표를 받아오기 위한 url
         String url = "https://apis.data.go.kr/B552584/MsrstnInfoInqireSvc/getTMStdrCrdnt";
 
         //RestTemplate를 통한 API 호출
@@ -28,15 +30,18 @@ public class ExternalApiService {
         HttpEntity<String> entity = new HttpEntity<>(headers);
 
         RestTemplate restTemplate = new RestTemplate();
+
+        //url 뒤에 붙일 내용들을 String으로 정의
         String queryParams = "?serviceKey=" + informationkey
             + "&returnType=json"
             + "&numOfRows=100"
             + "&pageNo=1"
             + "&umdName=" + umdName;
+
         ResponseEntity<String> response = restTemplate.exchange(url + queryParams, HttpMethod.GET, entity,
             String.class);
 
-        //JSON 파싱
+        //JSON 객체에 있는 값을 사용하기 위한 작업
         JSONArray items = JsonToString(response.getBody());
         JSONObject item = items.getJSONObject(0);
 
@@ -53,9 +58,11 @@ public class ExternalApiService {
 
     //TM 좌표를 통해 근접 측정소 찾기
     public String getNear(String umdName) {
+
+        //공공데이터 포털에서 근처 측정소 위치를 받아오기 위한 url
         String url = "https://apis.data.go.kr/B552584/MsrstnInfoInqireSvc/getNearbyMsrstnList";
 
-        // 임의의 위치
+        // 위치 배열을 문자열 변수로 변경
         List<String> tm;
         tm = getTM(umdName);
         String tmX = tm.get(0);
@@ -68,11 +75,14 @@ public class ExternalApiService {
         HttpEntity<String> entity = new HttpEntity<>(headers);
 
         RestTemplate restTemplate = new RestTemplate();
+
+        //url 뒤에 붙일 내용들을 String으로 정의
         String queryParams = "?serviceKey=" + informationkey
             + "&returnType=json"
             + "&tmX=" + tmX
             + "&tmY=" + tmY
             + "&ver=1.1";
+
         ResponseEntity<String> response = restTemplate.exchange(url + queryParams, HttpMethod.GET, entity,
             String.class);
 
@@ -85,6 +95,7 @@ public class ExternalApiService {
         return stationName;
     }
 
+    //JSON 파싱을 위한 메서드 선언
     public JSONArray JsonToString(String response) {
         JSONObject root = new JSONObject(response);
         JSONObject res = root.getJSONObject("response");

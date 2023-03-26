@@ -46,8 +46,7 @@ public class ServiceTests {
             + "&numOfRows=100"
             + "&pageNo=1"
             + "&umdName=" + umdName;
-
-        //restTemplate를 통한 API 호출
+        
         ResponseEntity<String> response = restTemplate.exchange(url + queryParams, HttpMethod.GET, entity,
             String.class);
 
