@@ -93,7 +93,5 @@ public class ServiceTests {
         assertNotNull(no2Grade);
         assertNotNull(pm10Grade);
         assertNotNull(pm25Grade);
-
     }
-
 }
