@@ -2,10 +2,13 @@ package io.howstheairtoday.airqualityappbatch.service;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.util.List;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpEntity;
@@ -16,12 +19,21 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.web.client.RestTemplate;
 
+import io.howstheairtoday.airqualitydomainrds.entity.AirQualityRealTime;
+import io.howstheairtoday.airqualitydomainrds.repository.AirQualityRealTimeRepository;
+import io.howstheairtoday.service.AirQualityRealTimeService;
+import io.howstheairtoday.service.dto.AirResponseDTO;
+
 @ActiveProfiles("test")
 @SpringBootTest
 public class ServiceTests {
 
     @Value("${air.apikey}") // application.yml에 저장된 서비스키 값
     private String airapiKey;
+    @Autowired
+    private AirQualityRealTimeService airQualityRealTimeService;
+    @Autowired
+    private AirQualityRealTimeRepository airQualityRealTimeRepository;
 
     @DisplayName("시도별 대기 정보를 찾는 API 호출")
     @Test
@@ -93,5 +105,68 @@ public class ServiceTests {
         assertNotNull(no2Grade);
         assertNotNull(pm10Grade);
         assertNotNull(pm25Grade);
+    }
+
+    @DisplayName("시도별 대기 정보를 데이터베이스에 저장")
+    @Test
+    public void insertTest() {
+        // Given
+        List<AirResponseDTO> airResponseDTOList = airQualityRealTimeService.getAirQualityData();
+
+        // When
+
+        // 데이터베이스에 값을 저장하기 위한 작성
+        AirQualityRealTime airQualityRealTime;
+        for (int i = 0; i < airResponseDTOList.size(); i++) {
+            airQualityRealTime = AirQualityRealTime.builder()
+                .air_quality_real_time_measurement_id((long)i)
+                .sido_name(airResponseDTOList.get(i).getSido_name())
+                .station_name(airResponseDTOList.get(i).getStation_name())
+                .so2_value(airResponseDTOList.get(i).getSo2_value())
+                .co_value(airResponseDTOList.get(i).getCo_value())
+                .o3_value(airResponseDTOList.get(i).getO3_value())
+                .no2_value(airResponseDTOList.get(i).getNo2_value())
+                .pm10_value(airResponseDTOList.get(i).getPm10_value())
+                .pm25_value(airResponseDTOList.get(i).getPm25_value())
+                .khai_value(airResponseDTOList.get(i).getKhai_value())
+                .khai_grade(airResponseDTOList.get(i).getKhai_grade())
+                .so2_grade(airResponseDTOList.get(i).getSo2_grade())
+                .co_grade(airResponseDTOList.get(i).getCo_grade())
+                .o3_grade(airResponseDTOList.get(i).getO3_grade())
+                .no2_grade(airResponseDTOList.get(i).getNo2_grade())
+                .pm10_grade(airResponseDTOList.get(i).getPm10_grade())
+                .pm25_grade(airResponseDTOList.get(i).getPm25_grade())
+                .data_time(airResponseDTOList.get(i).getData_time())
+                .build();
+            airQualityRealTimeRepository.save(airQualityRealTime);
+        }
+
+        // Then
+
+        // 데이터 베이스 값을 조회해서 확인
+        List<AirQualityRealTime> airQualityRealTimeList = airQualityRealTimeRepository.findAll();
+
+        assertNotNull(airQualityRealTimeList);
+
+        for (int i = 0; i < airResponseDTOList.size(); i++) {
+            assertEquals((long)i, airQualityRealTimeList.get(i).getAir_quality_real_time_measurement_id());
+            assertEquals(airResponseDTOList.get(i).getSido_name(), airQualityRealTimeList.get(i).getSido_name());
+            assertEquals(airResponseDTOList.get(i).getStation_name(), airQualityRealTimeList.get(i).getStation_name());
+            assertEquals(airResponseDTOList.get(i).getSo2_value(), airQualityRealTimeList.get(i).getSo2_value());
+            assertEquals(airResponseDTOList.get(i).getCo_value(), airQualityRealTimeList.get(i).getCo_value());
+            assertEquals(airResponseDTOList.get(i).getO3_value(), airQualityRealTimeList.get(i).getO3_value());
+            assertEquals(airResponseDTOList.get(i).getNo2_value(), airQualityRealTimeList.get(i).getNo2_value());
+            assertEquals(airResponseDTOList.get(i).getPm10_value(), airQualityRealTimeList.get(i).getPm10_value());
+            assertEquals(airResponseDTOList.get(i).getPm25_value(), airQualityRealTimeList.get(i).getPm25_value());
+            assertEquals(airResponseDTOList.get(i).getKhai_value(), airQualityRealTimeList.get(i).getKhai_value());
+            assertEquals(airResponseDTOList.get(i).getKhai_grade(), airQualityRealTimeList.get(i).getKhai_grade());
+            assertEquals(airResponseDTOList.get(i).getSo2_grade(), airQualityRealTimeList.get(i).getSo2_grade());
+            assertEquals(airResponseDTOList.get(i).getCo_grade(), airQualityRealTimeList.get(i).getCo_grade());
+            assertEquals(airResponseDTOList.get(i).getO3_grade(), airQualityRealTimeList.get(i).getO3_grade());
+            assertEquals(airResponseDTOList.get(i).getNo2_grade(), airQualityRealTimeList.get(i).getNo2_grade());
+            assertEquals(airResponseDTOList.get(i).getPm10_grade(), airQualityRealTimeList.get(i).getPm10_grade());
+            assertEquals(airResponseDTOList.get(i).getPm25_grade(), airQualityRealTimeList.get(i).getPm25_grade());
+            assertEquals(airResponseDTOList.get(i).getData_time(), airQualityRealTimeList.get(i).getData_time());
+        }
     }
 }

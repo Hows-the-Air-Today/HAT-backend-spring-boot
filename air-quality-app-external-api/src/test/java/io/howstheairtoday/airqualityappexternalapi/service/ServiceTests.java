@@ -1,4 +1,4 @@
-package io.howstheairtoday.airqualityappexternalapi;
+package io.howstheairtoday.airqualityappexternalapi.service;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -46,7 +46,7 @@ public class ServiceTests {
             + "&numOfRows=100"
             + "&pageNo=1"
             + "&umdName=" + umdName;
-        
+
         ResponseEntity<String> response = restTemplate.exchange(url + queryParams, HttpMethod.GET, entity,
             String.class);
 

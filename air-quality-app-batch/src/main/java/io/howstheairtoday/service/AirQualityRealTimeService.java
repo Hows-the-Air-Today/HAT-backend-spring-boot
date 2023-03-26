@@ -14,12 +14,15 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import io.howstheairtoday.airqualitydomainrds.entity.AirQualityRealTime;
 import io.howstheairtoday.airqualitydomainrds.repository.AirQualityRealTimeRepository;
 import io.howstheairtoday.service.dto.AirResponseDTO;
 import lombok.RequiredArgsConstructor;
 
+@Service
 @RequiredArgsConstructor
 public class AirQualityRealTimeService {
     private final AirQualityRealTimeRepository airQualityRealTimeRepository;
@@ -91,6 +94,36 @@ public class AirQualityRealTimeService {
         }
         airResponseDTOList.sort(Comparator.comparing(AirResponseDTO::getKhai_value));
         return airResponseDTOList;
+    }
+
+    //배치에서 전국 대기 정보를 DB에 넣을 때 값이 있다면 insert 없다면 update를 해주는 메서드
+    public void Save() {
+        List<AirResponseDTO> airResponseDTOList = getAirQualityData();
+
+        AirQualityRealTime airQualityRealTime;
+        for (int i = 0; i < airResponseDTOList.size(); i++) {
+            airQualityRealTime = AirQualityRealTime.builder()
+                .air_quality_real_time_measurement_id((long)i)
+                .sido_name(airResponseDTOList.get(i).getSido_name())
+                .station_name(airResponseDTOList.get(i).getStation_name())
+                .so2_value(airResponseDTOList.get(i).getSo2_value())
+                .co_value(airResponseDTOList.get(i).getCo_value())
+                .o3_value(airResponseDTOList.get(i).getO3_value())
+                .no2_value(airResponseDTOList.get(i).getNo2_value())
+                .pm10_value(airResponseDTOList.get(i).getPm10_value())
+                .pm25_value(airResponseDTOList.get(i).getPm25_value())
+                .khai_value(airResponseDTOList.get(i).getKhai_value())
+                .khai_grade(airResponseDTOList.get(i).getKhai_grade())
+                .so2_grade(airResponseDTOList.get(i).getSo2_grade())
+                .co_grade(airResponseDTOList.get(i).getCo_grade())
+                .o3_grade(airResponseDTOList.get(i).getO3_grade())
+                .no2_grade(airResponseDTOList.get(i).getNo2_grade())
+                .pm10_grade(airResponseDTOList.get(i).getPm10_grade())
+                .pm25_grade(airResponseDTOList.get(i).getPm25_grade())
+                .data_time(airResponseDTOList.get(i).getData_time())
+                .build();
+            airQualityRealTimeRepository.save(airQualityRealTime);
+        }
     }
 
 }
