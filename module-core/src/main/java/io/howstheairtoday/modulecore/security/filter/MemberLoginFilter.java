@@ -22,12 +22,12 @@ import lombok.extern.log4j.Log4j2;
 @Log4j2
 public class MemberLoginFilter extends AbstractAuthenticationProcessingFilter {
 
-    public MemberLoginFilter(String defaultFilterProcessesUrl) {
+    public MemberLoginFilter(final String defaultFilterProcessesUrl) {
         super(defaultFilterProcessesUrl);
     }
 
     // 파라미터를 읽어서 Map으로 만들어주는 메서드
-    private Map<String, String> parseRequestJSON(HttpServletRequest request) {
+    private Map<String, String> parseRequestJSON(final HttpServletRequest request) {
 
         // JSON 데이터를 분석해 loginId, loginPassword 전달 값을 Map으로 처리
         try (Reader reader = new InputStreamReader(request.getInputStream())) {
@@ -41,7 +41,7 @@ public class MemberLoginFilter extends AbstractAuthenticationProcessingFilter {
 
     @Override
     public Authentication attemptAuthentication(
-        HttpServletRequest request, HttpServletResponse response)
+        final HttpServletRequest request, final HttpServletResponse response)
         throws AuthenticationException, IOException {
 
         log.info("🛠️ MemberLoginFilter -------------------- 🛠️");

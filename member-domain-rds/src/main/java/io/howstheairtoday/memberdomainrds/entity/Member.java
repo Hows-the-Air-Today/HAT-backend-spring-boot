@@ -62,7 +62,10 @@ public class Member extends BaseTimeEntity {
         this.token = token;
     }
 
-    public Member modifiedMember(String modifiedPassword, String modifiedNickname, String modifiedProfileImage) {
+    public Member modifiedMember(
+        final String modifiedPassword,
+        final String modifiedNickname,
+        final String modifiedProfileImage) {
         this.loginPassword = modifiedPassword;
         this.nickname = modifiedNickname;
         this.memberProfileImage = modifiedProfileImage;
