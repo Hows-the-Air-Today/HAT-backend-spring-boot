@@ -131,12 +131,15 @@ project('community-domain-redis') {
 project('air-quality-app-batch') {
     dependencies {
         implementation project(':module-common')
+        implementation project(':air-quality-domain-rds')
+        implementation project(':module-core')
     }
 }
 
 project('air-quality-app-external-api') {
     dependencies {
         implementation project(':module-common')
+        implementation project(':module-core')
     }
 }
 
