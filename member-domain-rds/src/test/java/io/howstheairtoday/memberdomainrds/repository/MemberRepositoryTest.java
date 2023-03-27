@@ -2,7 +2,6 @@ package io.howstheairtoday.memberdomainrds.repository;
 
 import static org.assertj.core.api.Assertions.*;
 
-import java.util.List;
 import java.util.Optional;
 
 import org.junit.jupiter.api.DisplayName;
@@ -41,23 +40,22 @@ class MemberRepositoryTest {
     void saveMemberInfo() {
 
         // given
-        memberRepository.save(Member.builder()
-            .loginId("hat_id")
+        Member member = Member.builder()
+            .loginId("testId")
             .loginPassword("test123")
-            .email("kcshat@gmail.com")
-            .nickname("hat")
+            .email("test@test.com")
+            .nickname("testNick")
             .memberProfileImage("default.jpg")
             .loginType(LoginType.LOCAL)
             .loginRole(LoginRole.ROLE_USER)
-            .token("TEST.REFRESH.TOKEN")
-            .build());
+            .refreshToken("TEST.REFRESH.TOKEN")
+            .build();
 
         // when
-        List<Member> memberList = memberRepository.findAll();
+        Member savedMember = memberRepository.save(member);
 
         // then
-        Member member = memberList.get(0);
-        assertThat(member.getLoginId()).isEqualTo("hat_id");
+        assertThat(savedMember).isEqualTo(member);
     }
 
     @DisplayName("회원 정보 삭제")
@@ -66,22 +64,23 @@ class MemberRepositoryTest {
 
         // given
         Member member = Member.builder()
-            .loginId("hat_id")
+            .loginId("testId")
             .loginPassword("test123")
-            .email("kcshat@gmail.com")
-            .nickname("hat")
+            .email("test@test.com")
+            .nickname("testNick")
             .memberProfileImage("default.jpg")
             .loginType(LoginType.LOCAL)
             .loginRole(LoginRole.ROLE_USER)
-            .token("TEST.REFRESH.TOKEN")
+            .refreshToken("TEST.REFRESH.TOKEN")
             .build();
         memberRepository.save(member);
 
         // when
         memberRepository.delete(member);
+
         // then
         Optional<Member> deletedMember = memberRepository.findByMemberId(member.getMemberId());
-        assertThat(deletedMember.isPresent()).isFalse();
+        assertThat(deletedMember).isEmpty();
     }
 
     @DisplayName("회원 정보 수정")
@@ -89,28 +88,28 @@ class MemberRepositoryTest {
     public void modifyMemberInfo() {
 
         // given
-        Member savedmember = Member.builder()
-            .loginId("hat_id")
+        Member oldMember = Member.builder()
+            .loginId("testId")
             .loginPassword("test123")
-            .email("kcshat@gmail.com")
-            .nickname("hat")
+            .email("test@test.com")
+            .nickname("testNick")
             .memberProfileImage("default.jpg")
             .loginType(LoginType.LOCAL)
             .loginRole(LoginRole.ROLE_USER)
-            .token("TEST.REFRESH.TOKEN")
+            .refreshToken("TEST.REFRESH.TOKEN")
             .build();
-        memberRepository.save(savedmember);
+        memberRepository.save(oldMember);
 
         // when
         String modifiedPassword = "modtest123";
-        String modifiedNickname = "modHat";
-        String modifiedProfileImage = "mod.jpg";
+        String modifiedNickname = "modtestnick";
+        String modifiedProfileImage = "modimage.jpg";
 
-        Member modifiedMember = savedmember.modifiedMember(modifiedPassword, modifiedNickname, modifiedProfileImage);
+        Member modifiedMember = oldMember.modifiedMember(modifiedPassword, modifiedNickname, modifiedProfileImage);
         memberRepository.save(modifiedMember);
 
         // then
-        Optional<Member> findMember = memberRepository.findByMemberId(savedmember.getMemberId());
+        Optional<Member> findMember = memberRepository.findByMemberId(oldMember.getMemberId());
         assertThat(findMember.isPresent()).isTrue();
 
         Member member = findMember.get();
@@ -123,16 +122,15 @@ class MemberRepositoryTest {
     @Test
     public void getMemberInfo() {
 
-        // given
         Member savedmember = Member.builder()
-            .loginId("hat_id")
+            .loginId("testId")
             .loginPassword("test123")
-            .email("kcshat@gmail.com")
-            .nickname("hat")
+            .email("test@test.com")
+            .nickname("testNick")
             .memberProfileImage("default.jpg")
             .loginType(LoginType.LOCAL)
             .loginRole(LoginRole.ROLE_USER)
-            .token("TEST.REFRESH.TOKEN")
+            .refreshToken("TEST.REFRESH.TOKEN")
             .build();
         memberRepository.save(savedmember);
 
@@ -140,6 +138,6 @@ class MemberRepositoryTest {
         Optional<Member> foundMember = memberRepository.findByMemberId(savedmember.getMemberId());
 
         // then
-        assertThat(foundMember.get().getLoginId()).isEqualTo("hat_id");
+        assertThat(foundMember.get().getLoginId()).isEqualTo("testId");
     }
 }

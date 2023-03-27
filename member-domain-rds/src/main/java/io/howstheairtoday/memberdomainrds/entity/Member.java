@@ -30,28 +30,36 @@ public class Member extends BaseTimeEntity {
     @GenericGenerator(name = "uuid2", strategy = "org.hibernate.id.UUIDGenerator")
     @JdbcTypeCode(SqlTypes.VARCHAR)
     private UUID memberId;
+
     @Column(nullable = false, length = 40)
     private String loginId; // 아이디
+
     @Column(nullable = false, length = 128)
     private String loginPassword;
+
     @Column(nullable = false, length = 50)
     private String email;
+
     @Column(nullable = false, length = 40)
     private String nickname;
+
     @Column(length = 128)
     private String memberProfileImage;
+
     @Enumerated(EnumType.STRING)
     private LoginType loginType;
+
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private LoginRole loginRole;
+
     @Column(length = 255)
-    private String token; // refreshToken
+    private String refreshToken;
 
     @Builder
     public Member(String loginId, String loginPassword, String email, String nickname, String memberProfileImage,
         LoginType loginType,
-        LoginRole loginRole, String token) {
+        LoginRole loginRole, String refreshToken) {
         this.loginId = loginId;
         this.loginPassword = loginPassword;
         this.email = email;
@@ -59,7 +67,7 @@ public class Member extends BaseTimeEntity {
         this.memberProfileImage = memberProfileImage;
         this.loginType = loginType;
         this.loginRole = loginRole;
-        this.token = token;
+        this.refreshToken = refreshToken;
     }
 
     public Member modifiedMember(
