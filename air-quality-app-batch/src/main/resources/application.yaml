@@ -3,3 +3,4 @@ spring:
     import:
       - classpath:security/common/application.yaml
       - classpath:security/air-quality-app-batch/application.yaml
+      - classpath:security/mariadb/application.yaml
