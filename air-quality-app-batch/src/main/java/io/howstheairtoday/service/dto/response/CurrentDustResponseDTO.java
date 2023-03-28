@@ -1,22 +1,14 @@
-package io.howstheairtoday.airqualitydomainrds.entity;
+package io.howstheairtoday.service.dto.response;
 
 import java.time.LocalDateTime;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.Data;
 
-@Entity
 @Builder
-@Getter
-@NoArgsConstructor
-@AllArgsConstructor
-public class AirQualityRealTime extends BaseEntity {
-    
-    @Id
+@Data
+public class CurrentDustResponseDTO {
+
     // PK 및 랭킹
     private Long airQualityRealTimeMeasurementId;
     // 시도별 이름
@@ -53,4 +45,8 @@ public class AirQualityRealTime extends BaseEntity {
     private String pm25Grade;
     // 측정일시
     private LocalDateTime dataTime;
+    // 작성일시
+    private LocalDateTime createdAt;
+    // 수정일시
+    private LocalDateTime updatedAt;
 }

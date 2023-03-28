@@ -14,13 +14,14 @@ import lombok.Getter;
 @MappedSuperclass
 @EntityListeners(value = {AuditingEntityListener.class})
 @Getter
-//생성날짜와 수정날짜를 기록하는 기초 엔티티
+// 생성날짜와 수정날짜를 기록하는 기초 엔티티
 public class BaseEntity {
+    
     @CreatedDate
-    @Column(name = "regdate", updatable = false)
-    private LocalDateTime regDate;
+    @Column(name = "createdAt", updatable = false)
+    private LocalDateTime createdAt;
 
     @LastModifiedDate
-    @Column(name = "moddate")
-    private LocalDateTime modDate;
+    @Column(name = "updatedAt")
+    private LocalDateTime updatedAt;
 }

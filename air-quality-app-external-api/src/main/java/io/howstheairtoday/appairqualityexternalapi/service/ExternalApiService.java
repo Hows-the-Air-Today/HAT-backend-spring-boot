@@ -11,19 +11,31 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import lombok.RequiredArgsConstructor;
+
+@Service
+@RequiredArgsConstructor
 public class ExternalApiService {
+
+    // TM 좌표 및 근처 측정소 정보를 찾기 위한 API 키
     @Value("${air.informationkey}")
-    private String informationkey;
+    private String informationKey;
 
-    //TM 좌표 찾아오기
-    public List<String> getTM(String umdName) {
+    // 공공데이터 포털에서 TM좌표를 받아오기 위한 url
+    @Value("${air.tmUrl}")
+    private String tmUrl;
 
-        //공공데이터 포털에서 TM좌표를 받아오기 위한 url
-        String url = "https://apis.data.go.kr/B552584/MsrstnInfoInqireSvc/getTMStdrCrdnt";
+    // 공공데이터 포털에서 근처 측정소 위치를 받아오기 위한 url
+    @Value("${air.nearUrl}")
+    private String nearUrl;
 
-        //RestTemplate를 통한 API 호출
+    // TM 좌표 찾아오기
+    public List<String> getTM(final String umdName) {
+
+        // RestTemplate를 통한 API 호출
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
 
@@ -31,21 +43,21 @@ public class ExternalApiService {
 
         RestTemplate restTemplate = new RestTemplate();
 
-        //url 뒤에 붙일 내용들을 String으로 정의
-        String queryParams = "?serviceKey=" + informationkey
+        // url 뒤에 붙일 내용들을 String으로 정의
+        String queryParams = "?serviceKey=" + informationKey
             + "&returnType=json"
             + "&numOfRows=100"
             + "&pageNo=1"
             + "&umdName=" + umdName;
 
-        ResponseEntity<String> response = restTemplate.exchange(url + queryParams, HttpMethod.GET, entity,
+        ResponseEntity<String> response = restTemplate.exchange(tmUrl + queryParams, HttpMethod.GET, entity,
             String.class);
 
-        //JSON 객체에 있는 값을 사용하기 위한 작업
+        // JSON 객체에 있는 값을 사용하기 위한 작업
         JSONArray items = JsonToString(response.getBody());
         JSONObject item = items.getJSONObject(0);
 
-        //tmX, tmY 좌표
+        // tmX, tmY 좌표
         String tmX = item.getString("tmX");
         String tmY = item.getString("tmY");
 
@@ -56,11 +68,8 @@ public class ExternalApiService {
         return tm;
     }
 
-    //TM 좌표를 통해 근접 측정소 찾기
-    public String getNear(String umdName) {
-
-        //공공데이터 포털에서 근처 측정소 위치를 받아오기 위한 url
-        String url = "https://apis.data.go.kr/B552584/MsrstnInfoInqireSvc/getNearbyMsrstnList";
+    // TM 좌표를 통해 근접 측정소 찾기
+    public String getNear(final String umdName) {
 
         // 위치 배열을 문자열 변수로 변경
         List<String> tm;
@@ -68,7 +77,7 @@ public class ExternalApiService {
         String tmX = tm.get(0);
         String tmY = tm.get(1);
 
-        //RestTemplate를 통한 API 호출
+        // RestTemplate를 통한 API 호출
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
 
@@ -76,14 +85,14 @@ public class ExternalApiService {
 
         RestTemplate restTemplate = new RestTemplate();
 
-        //url 뒤에 붙일 내용들을 String으로 정의
-        String queryParams = "?serviceKey=" + informationkey
+        // url 뒤에 붙일 내용들을 String으로 정의
+        String queryParams = "?serviceKey=" + informationKey
             + "&returnType=json"
             + "&tmX=" + tmX
             + "&tmY=" + tmY
             + "&ver=1.1";
 
-        ResponseEntity<String> response = restTemplate.exchange(url + queryParams, HttpMethod.GET, entity,
+        ResponseEntity<String> response = restTemplate.exchange(nearUrl + queryParams, HttpMethod.GET, entity,
             String.class);
 
         //JSON 파싱
@@ -95,7 +104,7 @@ public class ExternalApiService {
         return stationName;
     }
 
-    //JSON 파싱을 위한 메서드 선언
+    // JSON 파싱을 위한 메서드 선언
     public JSONArray JsonToString(String response) {
         JSONObject root = new JSONObject(response);
         JSONObject res = root.getJSONObject("response");
