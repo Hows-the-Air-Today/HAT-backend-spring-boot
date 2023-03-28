@@ -56,7 +56,7 @@ public class CustomSecurityConfig {
 
         // MemberLoginFilter
         // Spring Security에서 username과 password를 처리하는 UsernamePasswordAuthenticationFilter의 앞쪽에서 동작하도록 설정
-        MemberLoginFilter memberLoginFilter = new MemberLoginFilter("/generateToken");
+        MemberLoginFilter memberLoginFilter = new MemberLoginFilter("/api/**/auth/login");
         memberLoginFilter.setAuthenticationManager(authenticationManager);
 
         // MemberLoginSuccessHandler - 로그인 인증 성공 이후 작업 처리 설정
