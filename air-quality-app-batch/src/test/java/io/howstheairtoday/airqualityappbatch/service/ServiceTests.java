@@ -2,6 +2,12 @@ package io.howstheairtoday.airqualityappbatch.service;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.junit.jupiter.api.DisplayName;
@@ -15,6 +21,8 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.web.client.RestTemplate;
+
+import io.howstheairtoday.service.dto.response.CurrentDustResponseDTO;
 
 @ActiveProfiles("test")
 @SpringBootTest
@@ -102,4 +110,76 @@ public class ServiceTests {
         assertNotNull(dataTime);
     }
 
+    @DisplayName("데이터 가공 테스트")
+    @Test
+    void testStringToDTOList() {
+
+        //Given
+        // 예제 API JSON 데이터
+        String response = "{ \"response\": { \"body\": { \"items\": [ { \"sidoName\": \"서울\", \"stationName\": \"종로구\", \"dataTime\": \"2022-03-24 14:00\", \"so2Value\": \"0.003\", \"coValue\": \"0.4\", \"o3Value\": \"0.027\", \"no2Value\": \"0.014\", \"pm10Value\": \"37\", \"pm25Value\": \"21\", \"khaiValue\": \"64\", \"khaiGrade\": \"2\", \"so2Grade\": \"1\", \"coGrade\": \"2\", \"o3Grade\": \"2\", \"no2Grade\": \"1\", \"pm10Grade\": \"1\", \"pm25Grade\": \"2\" },  { \"sidoName\": \"서울\", \"stationName\": \"서초구\", \"dataTime\": \"2022-03-24 14:00\", \"so2Value\": \"0.003\", \"coValue\": \"0.4\", \"o3Value\": \"0.027\", \"no2Value\": \"0.014\", \"pm10Value\": \"37\", \"pm25Value\": \"21\", \"khaiValue\": \"65\", \"khaiGrade\": \"2\", \"so2Grade\": \"1\", \"coGrade\": \"2\", \"o3Grade\": \"2\", \"no2Grade\": \"1\", \"pm10Grade\": \"1\", \"pm25Grade\": \"2\" } ] } } }";
+
+        // JSON 데이터 파싱
+        JSONObject root = new JSONObject(response);
+        JSONObject res = root.getJSONObject("response");
+        JSONObject body = res.getJSONObject("body");
+        JSONArray items = body.getJSONArray("items");
+
+        // StringToDateTime
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+        List<CurrentDustResponseDTO> currentDustResponseDTOList = new ArrayList<>();
+
+        // When
+        // 반복문을 통해 리스트에 저장
+        for (int i = 0; i < items.length(); i++) {
+            JSONObject item = items.getJSONObject(i);
+            LocalDateTime dateTime = null;
+            if (!item.optString("dataTime").isEmpty()) {
+                dateTime = LocalDateTime.parse(item.getString("dataTime"), formatter);
+            }
+            CurrentDustResponseDTO currentDustResponseDTO = CurrentDustResponseDTO.builder()
+                .sidoName(item.getString("sidoName"))
+                .stationName(item.getString("stationName"))
+                .so2Value(item.optString("so2Value"))
+                .coValue(item.optString("coValue"))
+                .o3Value(item.optString("o3Value"))
+                .no2Value(item.optString("no2Value"))
+                .pm10Value(item.optString("pm10Value"))
+                .pm25Value(item.optString("pm25Value"))
+                .khaiValue(item.optString("khaiValue"))
+                .khaiGrade(item.optString("khaiGrade"))
+                .so2Grade(item.optString("so2Grade"))
+                .coGrade(item.optString("coGrade"))
+                .o3Grade(item.optString("o3Grade"))
+                .no2Grade(item.optString("no2Grade"))
+                .pm10Grade(item.optString("pm10Grade"))
+                .pm25Grade(item.optString("pm25Grade"))
+                .dataTime(dateTime)
+                .build();
+            currentDustResponseDTOList.add(currentDustResponseDTO);
+        }
+
+        // KhaiValue를 기준으로 정렬
+        currentDustResponseDTOList.sort(Comparator.comparing(CurrentDustResponseDTO::getKhaiValue));
+
+        // Then
+        // 비교
+        assertNotNull(currentDustResponseDTOList);
+        assertEquals("서울", currentDustResponseDTOList.get(0).getSidoName());
+        assertEquals("종로구", currentDustResponseDTOList.get(0).getStationName());
+        assertEquals("2022-03-24T14:00", currentDustResponseDTOList.get(0).getDataTime().toString());
+        assertEquals("0.003", currentDustResponseDTOList.get(0).getSo2Value());
+        assertEquals("0.4", currentDustResponseDTOList.get(0).getCoValue());
+        assertEquals("0.027", currentDustResponseDTOList.get(0).getO3Value());
+        assertEquals("0.014", currentDustResponseDTOList.get(0).getNo2Value());
+        assertEquals("37", currentDustResponseDTOList.get(0).getPm10Value());
+        assertEquals("21", currentDustResponseDTOList.get(0).getPm25Value());
+        assertEquals("64", currentDustResponseDTOList.get(0).getKhaiValue());
+        assertEquals("2", currentDustResponseDTOList.get(0).getKhaiGrade());
+        assertEquals("1", currentDustResponseDTOList.get(0).getSo2Grade());
+        assertEquals("2", currentDustResponseDTOList.get(0).getCoGrade());
+        assertEquals("2", currentDustResponseDTOList.get(0).getO3Grade());
+        assertEquals("1", currentDustResponseDTOList.get(0).getNo2Grade());
+        assertEquals("1", currentDustResponseDTOList.get(0).getPm10Grade());
+        assertEquals("2", currentDustResponseDTOList.get(0).getPm25Grade());
+    }
 }
