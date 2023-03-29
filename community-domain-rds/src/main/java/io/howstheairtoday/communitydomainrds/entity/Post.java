@@ -107,4 +107,9 @@ public class Post extends BaseTimeEntity {
         this.imageArray.add(postImage);
     }
 
+    public void updatePost(String content, String region, List<PostImage> imageArray) {
+        this.content = content;
+        this.region = region;
+        this.imageArray = imageArray;
+    }
 }
