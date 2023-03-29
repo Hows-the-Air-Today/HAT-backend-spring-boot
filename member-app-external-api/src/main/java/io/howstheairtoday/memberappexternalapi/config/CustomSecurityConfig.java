@@ -1,4 +1,4 @@
-package io.howstheairtoday.appmemberexternalapi.config;
+package io.howstheairtoday.memberappexternalapi.config;
 
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
@@ -15,8 +15,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import io.howstheairtoday.appmemberexternalapi.service.MemberDetailsService;
-import io.howstheairtoday.appmemberexternalapi.service.handler.MemberLoginSuccessHandler;
+import io.howstheairtoday.memberappexternalapi.service.MemberDetailsService;
+import io.howstheairtoday.memberappexternalapi.service.handler.MemberLoginSuccessHandler;
 import io.howstheairtoday.modulecore.security.filter.MemberLoginFilter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;

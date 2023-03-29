@@ -1,4 +1,4 @@
-package io.howstheairtoday.appmemberexternalapi.service.handler;
+package io.howstheairtoday.memberappexternalapi.service.handler;
 
 import java.io.IOException;
 
