@@ -154,5 +154,15 @@ project('member-app-external-api') {
 project('community-app-external-api') {
     dependencies {
         implementation project(':module-common')
+
+        implementation project(":module-core")
+
+        api project(":community-domain-service")
+        implementation project(":community-domain-rds")
+
+
+
+
+
     }
 }
