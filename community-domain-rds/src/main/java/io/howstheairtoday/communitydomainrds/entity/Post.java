@@ -57,7 +57,7 @@ public class Post extends BaseTimeEntity {
     /**
      * 게시글 이미지 목록
      */
-    @OneToMany(mappedBy = "postId", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "postId")
     private List<PostImage> imageArray;
 
     /**
