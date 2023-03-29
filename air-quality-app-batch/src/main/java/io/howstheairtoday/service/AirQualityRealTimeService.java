@@ -73,7 +73,7 @@ public class AirQualityRealTimeService {
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
         List<CurrentDustResponseDTO> currentDustResponseDTOList = new ArrayList<>();
-
+        
         // 반복문을 통해 리스트에 저장
         for (int i = 0; i < items.length(); i++) {
             JSONObject item = items.getJSONObject(i);
