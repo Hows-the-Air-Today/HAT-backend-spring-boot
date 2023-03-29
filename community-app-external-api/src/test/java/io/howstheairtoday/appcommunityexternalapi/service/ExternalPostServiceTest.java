@@ -25,7 +25,10 @@ public class ExternalPostServiceTest {
     @Autowired
     private DomainCommunityService domainCommunityService;
 
-    @DisplayName("domainCommunityService에 Post를 Entity를 넘기고 성공적으로 데이터베이스에 삽입 성공")
+    /*
+     * domainCommunityService에 Post를 Entity를 넘기고 성공적으로 데이터베이스에 삽입 성공
+     */
+    @DisplayName("게시물 삽입")
     @Test
     public void createPost() {
 
@@ -44,15 +47,15 @@ public class ExternalPostServiceTest {
         //given
         PostRequestDto.SaveRequestDto postRequestDto = PostRequestDto.SaveRequestDto.builder()
             .content("안녕하세요")
-            .userId(uuid)
+            .memberId(uuid)
             .postImageDtoList(postImagesList)
-            .location("가락동")
+            .region("가락동")
             .build();
 
-        Post post = Post.createPost(postRequestDto.getContent(), postRequestDto.getLocation());
+        Post post = Post.createPost(postRequestDto.getContent(), postRequestDto.getRegion());
 
         post.getImageArray()
-            .forEach(postImage -> post.imagesAdd(
+            .forEach(postImage -> post.insertImages(
                 PostImage.create(postImage.getPostImageNumber(), postImage.getPostImageUrl(), post)));
 
         //when

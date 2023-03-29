@@ -35,19 +35,19 @@ public class PostImage extends BaseTimeEntity {
     @GeneratedValue(generator = "uuid2")
     @GenericGenerator(name = "uuid2", strategy = "uuid2")
     @Column(name = "post_image_id", columnDefinition = "BINARY(16)")
-    private UUID id;
+    private UUID postImageId;
 
     // PostImage 엔티티는 Post 엔티티와 다대일 관계입니다.
     @ManyToOne
     @JoinColumn(name = "post_id")
-    private Post post;
+    private Post postId;
 
     // 포스트의 이미지 번호
     @Column(name = "post_image_number")
     private Integer postImageNumber;
 
     // 포스트 이미지 URL
-    @Column(name = "post_image")
+    @Column(name = "post_image_url")
     private String postImageUrl;
 
     /**
@@ -61,7 +61,7 @@ public class PostImage extends BaseTimeEntity {
     public PostImage(Integer postImageNumber, String postImageUrl, Post post) {
         this.postImageNumber = postImageNumber;
         this.postImageUrl = postImageUrl;
-        this.post = post;
+        this.postId = post;
     }
 
     /**

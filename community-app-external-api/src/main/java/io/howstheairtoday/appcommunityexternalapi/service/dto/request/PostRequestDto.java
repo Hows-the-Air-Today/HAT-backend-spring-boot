@@ -26,13 +26,13 @@ public class PostRequestDto {
          * 게시글이 작성된 지역
          */
         @NotBlank(message = "지역을 입력해주세요.")
-        private String location;
+        private String region;
 
         /**
          * 게시글을 작성한 사용자의 아이디
          */
         @NotNull(message = "유저아이디가 존재하지 않습니다.")
-        private UUID userId;
+        private UUID memberId;
 
         /**
          * 게시글에 첨부된 이미지 목록

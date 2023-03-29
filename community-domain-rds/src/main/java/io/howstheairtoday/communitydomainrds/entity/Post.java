@@ -42,7 +42,7 @@ public class Post extends BaseTimeEntity {
      * 작성자 ID
      */
     @Column(name = "member_id")
-    private UUID userId;
+    private UUID memberId;
 
     /**
      * 게시글 내용
@@ -52,24 +52,23 @@ public class Post extends BaseTimeEntity {
     /**
      * 게시글 위치
      */
-    private String location;
+    private String region;
 
     /**
      * 게시글 이미지 목록
      */
-    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "postId", cascade = CascadeType.ALL)
     private List<PostImage> imageArray;
 
     /**
      * Post Builder
      */
     @Builder
-    public Post(final UUID id, final String content, final String location,
+    public Post(final UUID id, final String content, final String region,
         final UUID userId) {
-
-        this.userId = userId;
+        this.memberId = userId;
         this.content = content;
-        this.location = location;
+        this.region = region;
         this.imageArray = new ArrayList<>();
     }
 
@@ -77,13 +76,13 @@ public class Post extends BaseTimeEntity {
      * 게시글 생성 메소드
      *
      * @param content 게시글 내용
-     * @param location 게시글 위치
+     * @param region 게시글 위치
      * @return 생성된 게시글
      */
-    public static Post createPost(final String content, final String location) {
+    public static Post createPost(final String content, final String region) {
         return Post.builder()
             .content(content)
-            .location(location)
+            .region(region)
             .build();
     }
 
@@ -104,7 +103,7 @@ public class Post extends BaseTimeEntity {
      * @param postImage 추가할 게시글 이미지
      */
 
-    public void imagesAdd(PostImage postImage) {
+    public void insertImages(PostImage postImage) {
         this.imageArray.add(postImage);
     }
 

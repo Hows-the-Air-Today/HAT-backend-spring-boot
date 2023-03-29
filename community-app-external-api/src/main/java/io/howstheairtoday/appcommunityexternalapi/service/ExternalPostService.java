@@ -30,10 +30,10 @@ public class ExternalPostService {
             saveRequestDto.getPostImageDtoList();
 
         final Post post = Post.createPost(saveRequestDto.getContent(),
-            saveRequestDto.getLocation());
+            saveRequestDto.getRegion());
 
         postImages.forEach(
-            postImg -> post.imagesAdd(
+            postImg -> post.insertImages(
                 PostImage.create(postImg.getPostImageNumber(), postImg.getPostImageUrl(),
                     post)));
 

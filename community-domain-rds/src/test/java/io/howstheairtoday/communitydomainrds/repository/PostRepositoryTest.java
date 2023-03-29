@@ -30,14 +30,15 @@ public class PostRepositoryTest {
     @Autowired
     private PostRepository postRepository;
 
-    @DisplayName("게시물 삽입을 할때 테스트 URL 을 3개를 넣고 작성")
+    //게시물 삽입을 할때 테스트 URL 을 3개를 넣고 작성
+    @DisplayName("게시물 삽입")
     @Test
     public void savePost() {
         //given
 
         UUID uuid = UUID.fromString("dc718b8f-fb97-48d4-b55d-855e7c845987");
 
-        Post post = Post.builder().location("동남로").content("게시글 내용").build();
+        Post post = Post.builder().region("동남로").content("게시글 내용").build();
 
         for (int i = 0; i < 3; i++) {
             PostImage postImage = PostImage.builder()
@@ -46,7 +47,7 @@ public class PostRepositoryTest {
                 .postImageUrl("https://amazons3.com/kjh" + i)
                 .build();
 
-            post.imagesAdd(postImage);
+            post.insertImages(postImage);
 
         }
 
@@ -55,7 +56,7 @@ public class PostRepositoryTest {
 
         assertSame(post, savePost);
         Assertions.assertThat(savePost.getContent()).isEqualTo("게시글 내용");
-        Assertions.assertThat(savePost.getLocation()).isEqualTo("동남로");
+        Assertions.assertThat(savePost.getRegion()).isEqualTo("동남로");
         Assertions.assertThat(savePost.getImageArray().get(0).getPostImageNumber()).isEqualTo(0);
 
     }
