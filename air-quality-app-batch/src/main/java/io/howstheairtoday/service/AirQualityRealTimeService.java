@@ -102,9 +102,10 @@ public class AirQualityRealTimeService {
                 .dataTime(dateTime)
                 .build();
 
-            // KhaiValue를 기준으로 정렬
             currentDustResponseDTOList.add(currentDustResponseDTO);
         }
+
+        // KhaiValue를 기준으로 정렬
         currentDustResponseDTOList.sort(Comparator.comparing(CurrentDustResponseDTO::getKhaiValue));
         return currentDustResponseDTOList;
     }
