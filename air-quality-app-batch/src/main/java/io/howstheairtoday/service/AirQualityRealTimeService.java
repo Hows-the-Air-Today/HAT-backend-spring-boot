@@ -17,6 +17,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import io.howstheairtoday.airqualitydomainrds.entity.AirQualityRealTime;
+import io.howstheairtoday.airqualitydomainrds.repository.AirQualityRealTimeRepository;
 import io.howstheairtoday.service.dto.response.CurrentDustResponseDTO;
 import lombok.RequiredArgsConstructor;
 
@@ -33,6 +35,9 @@ public class AirQualityRealTimeService {
     // 공공데이터 포털에서 시도별 대기 정보를 받아오기 위한 url
     @Value("${air.sidoUrl}")
     private String url;
+
+    // 레포지토리 사용을 위한 선언
+    private final AirQualityRealTimeRepository airQualityRealTimeRepository;
 
     // 시도별 대기정보 찾기
     public List<CurrentDustResponseDTO> getAirQualityData() {
@@ -108,6 +113,41 @@ public class AirQualityRealTimeService {
         // KhaiValue를 기준으로 정렬
         currentDustResponseDTOList.sort(Comparator.comparing(CurrentDustResponseDTO::getKhaiValue));
         return currentDustResponseDTOList;
+    }
+
+    // 배치에서 전국 대기 정보를 저장할 때 사용하는 메서드
+    public void Save() {
+        
+        // 시도별 데이터 List에 담기
+        List<CurrentDustResponseDTO> airResponseDTOList = getAirQualityData();
+
+        // Entity 선언
+        AirQualityRealTime airQualityRealTime;
+
+        // 반복문을 통해 객체 초기화 후 데이터베이스 삽입
+        for (int i = 0; i < airResponseDTOList.size(); i++) {
+            airQualityRealTime = AirQualityRealTime.builder()
+                .airQualityRealTimeMeasurementId((long)i)
+                .sidoName(airResponseDTOList.get(i).getSidoName())
+                .stationName(airResponseDTOList.get(i).getStationName())
+                .so2Value(airResponseDTOList.get(i).getSo2Value())
+                .coValue(airResponseDTOList.get(i).getCoValue())
+                .o3Value(airResponseDTOList.get(i).getO3Value())
+                .no2Value(airResponseDTOList.get(i).getNo2Value())
+                .pm10Value(airResponseDTOList.get(i).getPm10Value())
+                .pm25Value(airResponseDTOList.get(i).getPm25Value())
+                .khaiValue(airResponseDTOList.get(i).getKhaiValue())
+                .khaiGrade(airResponseDTOList.get(i).getKhaiGrade())
+                .so2Grade(airResponseDTOList.get(i).getSo2Grade())
+                .coGrade(airResponseDTOList.get(i).getCoGrade())
+                .o3Grade(airResponseDTOList.get(i).getO3Grade())
+                .no2Grade(airResponseDTOList.get(i).getNo2Grade())
+                .pm10Grade(airResponseDTOList.get(i).getPm10Grade())
+                .pm25Grade(airResponseDTOList.get(i).getPm25Grade())
+                .dataTime(airResponseDTOList.get(i).getDataTime())
+                .build();
+            airQualityRealTimeRepository.save(airQualityRealTime);
+        }
     }
 
 }

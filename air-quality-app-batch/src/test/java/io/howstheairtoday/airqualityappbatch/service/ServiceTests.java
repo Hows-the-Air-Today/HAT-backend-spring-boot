@@ -12,6 +12,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpEntity;
@@ -22,6 +23,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.web.client.RestTemplate;
 
+import io.howstheairtoday.airqualitydomainrds.entity.AirQualityRealTime;
+import io.howstheairtoday.airqualitydomainrds.repository.AirQualityRealTimeRepository;
+import io.howstheairtoday.service.AirQualityRealTimeService;
 import io.howstheairtoday.service.dto.response.CurrentDustResponseDTO;
 
 @ActiveProfiles("test")
@@ -181,5 +185,56 @@ public class ServiceTests {
         assertEquals("1", currentDustResponseDTOList.get(0).getNo2Grade());
         assertEquals("1", currentDustResponseDTOList.get(0).getPm10Grade());
         assertEquals("2", currentDustResponseDTOList.get(0).getPm25Grade());
+    }
+
+    @Autowired
+    private AirQualityRealTimeRepository airQualityRealTimeRepository;
+
+    @Autowired
+    private AirQualityRealTimeService airQualityRealTimeService;
+
+    @DisplayName("대기오염 실시간 API 내역 저장")
+    @Test
+    public void saveTest() {
+
+        // Given
+        // 시도별 데이터 List에 담기
+        List<CurrentDustResponseDTO> airResponseDTOList = airQualityRealTimeService.getAirQualityData();
+
+        // Entity 선언
+        AirQualityRealTime airQualityRealTime;
+
+        // 반복문을 통해 객체 초기화 후 데이터베이스 삽입
+        for (int i = 0; i < airResponseDTOList.size(); i++) {
+            airQualityRealTime = AirQualityRealTime.builder()
+                .airQualityRealTimeMeasurementId((long)i)
+                .sidoName(airResponseDTOList.get(i).getSidoName())
+                .stationName(airResponseDTOList.get(i).getStationName())
+                .so2Value(airResponseDTOList.get(i).getSo2Value())
+                .coValue(airResponseDTOList.get(i).getCoValue())
+                .o3Value(airResponseDTOList.get(i).getO3Value())
+                .no2Value(airResponseDTOList.get(i).getNo2Value())
+                .pm10Value(airResponseDTOList.get(i).getPm10Value())
+                .pm25Value(airResponseDTOList.get(i).getPm25Value())
+                .khaiValue(airResponseDTOList.get(i).getKhaiValue())
+                .khaiGrade(airResponseDTOList.get(i).getKhaiGrade())
+                .so2Grade(airResponseDTOList.get(i).getSo2Grade())
+                .coGrade(airResponseDTOList.get(i).getCoGrade())
+                .o3Grade(airResponseDTOList.get(i).getO3Grade())
+                .no2Grade(airResponseDTOList.get(i).getNo2Grade())
+                .pm10Grade(airResponseDTOList.get(i).getPm10Grade())
+                .pm25Grade(airResponseDTOList.get(i).getPm25Grade())
+                .dataTime(airResponseDTOList.get(i).getDataTime())
+                .build();
+            airQualityRealTimeRepository.save(airQualityRealTime);
+        }
+
+        // When
+
+        // 데이터베이스에서 입력한 값이 입력되었는지 조회
+        List<AirQualityRealTime> airQualityRealTimeList = airQualityRealTimeRepository.findAll();
+
+        // then
+        assertEquals(642, airQualityRealTimeList.size());
     }
 }
