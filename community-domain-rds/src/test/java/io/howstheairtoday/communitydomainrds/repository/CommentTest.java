@@ -1,6 +1,7 @@
 package io.howstheairtoday.communitydomainrds.repository;
 
 import static org.assertj.core.api.AssertionsForClassTypes.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.Optional;
 import java.util.UUID;
@@ -95,15 +96,16 @@ public class CommentTest {
         //given
         Comment comment = Comment.builder()
             .memberId(UUID.randomUUID())
-            .content("댓글4")
+            .content("댓글15")
             .postId(UUID.randomUUID())
             .build();
 
         //when
-        Comment savedComment = commentRepository.save(comment);
+        commentRepository.save(comment);
+        commentRepository.delete(comment);
 
         //then
-        commentRepository.delete(comment);
+        assertFalse(commentRepository.existsById(comment.getCommentId()));
     }
 }
 
