@@ -43,39 +43,11 @@ public class CommentTest {
             .build();
 
         //when
-        commentRepository.save(comment);
+        Comment savedComment = commentRepository.save(comment);
 
-    }
+        //then
+        assertThat(savedComment).isEqualTo(comment);
 
-    @DisplayName("댓글 삭제")
-    @Test
-    public void deleteComment() {
-        //given
-        Comment comment = Comment.builder()
-            .memberId(UUID.randomUUID())
-            .content("댓글4")
-            .postId(UUID.randomUUID())
-            .build();
-        commentRepository.save(comment);
-
-        //when
-        commentRepository.delete(comment);
-    }
-
-    @DisplayName("댓글 수정")
-    @Test
-    public void modifyComment() {
-        //given
-        Comment comment1 = Comment.builder()
-            .memberId(UUID.randomUUID())
-            .content("댓글4")
-            .postId(UUID.randomUUID())
-            .build();
-        commentRepository.save(comment1);
-
-        Comment changecomment = comment1.changeContent("댓글 수정");
-
-        commentRepository.save(changecomment);
     }
 
     @DisplayName("댓글 조회")
@@ -89,11 +61,49 @@ public class CommentTest {
             .build();
         commentRepository.save(comment2);
 
+        //when
         Optional<Comment> getComment =
             commentRepository.findById(comment2.getCommentId());
 
+        //then
         assertThat(getComment.get().getContent()).isEqualTo("댓글6");
 
+    }
+
+    @DisplayName("댓글 수정")
+    @Test
+    public void modifyComment() {
+        //given
+        Comment comment1 = Comment.builder()
+            .memberId(UUID.randomUUID())
+            .content("댓글4")
+            .postId(UUID.randomUUID())
+            .build();
+        commentRepository.save(comment1);
+
+        //when
+        Comment changecomment = comment1.changeContent("댓글 수정");
+        Comment savedComment = commentRepository.save(changecomment);
+
+        //then
+        assertThat(savedComment).isEqualTo(changecomment);
+    }
+
+    @DisplayName("댓글 삭제")
+    @Test
+    public void deleteComment() {
+        //given
+        Comment comment = Comment.builder()
+            .memberId(UUID.randomUUID())
+            .content("댓글4")
+            .postId(UUID.randomUUID())
+            .build();
+
+        //when
+        Comment savedComment = commentRepository.save(comment);
+
+        //then
+        commentRepository.delete(comment);
     }
 }
 

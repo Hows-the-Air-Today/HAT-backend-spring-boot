@@ -1,11 +1,13 @@
 package io.howstheairtoday.communitydomainrds.entity;
 
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 
+import io.howstheairtoday.communitydomainrds.common.BaseTimeEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -21,7 +23,7 @@ import lombok.ToString;
 @Getter
 @NoArgsConstructor
 @ToString
-public class Comment extends BaseEntity {
+public class Comment extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(generator = "uuid2")
@@ -40,12 +42,12 @@ public class Comment extends BaseEntity {
     private UUID memberId; //댓글 작성자 ID
 
     @Builder
-    public Comment(final UUID commentId, final String content, final UUID postId, final UUID memberId) {
+    public Comment(final String content, final UUID postId, final UUID memberId) {
         this.content = content;
         this.postId = postId;
         this.memberId = memberId;
     }
-
+    //내용 수정 테스트 메소드
     public Comment changeContent(String content) {
         this.content = content;
         return this;
