@@ -19,6 +19,7 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 /**
  * 게시글 엔티티 클래스
@@ -57,7 +58,8 @@ public class Post extends BaseTimeEntity {
     /**
      * 게시글 이미지 목록
      */
-    @OneToMany(mappedBy = "postId")
+    @OneToMany(mappedBy = "postId", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Setter
     private List<PostImage> imageArray;
 
     /**
@@ -65,8 +67,8 @@ public class Post extends BaseTimeEntity {
      */
     @Builder
     public Post(final UUID id, final String content, final String region,
-        final UUID userId) {
-        this.memberId = userId;
+        final UUID memberId) {
+        this.memberId = memberId;
         this.content = content;
         this.region = region;
         this.imageArray = new ArrayList<>();
@@ -79,10 +81,11 @@ public class Post extends BaseTimeEntity {
      * @param region 게시글 위치
      * @return 생성된 게시글
      */
-    public static Post createPost(final String content, final String region) {
+    public static Post createPost(final String content, final String region, final UUID memberId) {
         return Post.builder()
             .content(content)
             .region(region)
+            .memberId(memberId)
             .build();
     }
 
@@ -110,6 +113,8 @@ public class Post extends BaseTimeEntity {
     public void updatePost(String content, String region, List<PostImage> imageArray) {
         this.content = content;
         this.region = region;
-        this.imageArray = imageArray;
+        this.imageArray.clear();
+        this.imageArray.addAll(imageArray);
+        this.imageArray.forEach(image -> image.setPostId(this));
     }
 }
