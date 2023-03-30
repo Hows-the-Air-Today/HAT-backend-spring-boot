@@ -57,4 +57,11 @@ public class PostRequestDto {
 
     }
 
+    public static class PostUUIDDto {
+
+        @NotNull(message = "postUUID가 존재하지 않습니다.")
+        @Getter
+        private UUID postUUID;
+    }
+
 }
