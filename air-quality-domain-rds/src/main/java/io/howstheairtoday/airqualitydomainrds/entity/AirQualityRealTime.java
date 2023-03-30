@@ -36,7 +36,7 @@ public class AirQualityRealTime extends BaseEntity {
     // 미세먼지(PM2.5) 농도
     private String pm25Value;
     // 통합 대기 환경 수치
-    private String khaiValue;
+    private Integer khaiValue;
     // 통합 대기 환경 지수
     private String khaiGrade;
     // 아황산가스 지수

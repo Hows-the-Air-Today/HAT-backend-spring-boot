@@ -57,8 +57,8 @@ public class AirQualityRealTimeService {
         ResponseEntity<String> response = restTemplate.exchange(url + queryParams, HttpMethod.GET, entity,
             String.class);
 
-        List<CurrentDustResponseDTO> currentDustResponseDTOList = StringToDTOList(response.getBody());
-        return currentDustResponseDTOList;
+        return StringToDTOList(response.getBody());
+
     }
 
     // 시도별 대기 정보 전국 데이터 가공(khaiValue 순으로 정렬)
@@ -74,14 +74,25 @@ public class AirQualityRealTimeService {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
         List<CurrentDustResponseDTO> currentDustResponseDTOList = new ArrayList<>();
 
+        int khaiValue;
+        LocalDateTime dateTime = null;
+
         // 반복문을 통해 리스트에 저장
         for (int i = 0; i < items.length(); i++) {
             JSONObject item = items.getJSONObject(i);
-            LocalDateTime dateTime = null;
+
             if (!item.optString("dataTime").isEmpty()) {
                 // StringToDateTime
                 dateTime = LocalDateTime.parse(item.getString("dataTime"), formatter);
             }
+
+            // khaiVaule의 정렬을 위해 Int 타입으로 변환 중 숫자가 아닌 문자가 있으면 나올 수 없는 수로 처리
+            try{
+                khaiValue = Integer.parseInt(item.optString("khaiValue"));
+            }catch (NumberFormatException e){
+                khaiValue = -1;
+            }
+            
             CurrentDustResponseDTO currentDustResponseDTO = CurrentDustResponseDTO.builder()
                 .sidoName(item.getString("sidoName"))
                 .stationName(item.getString("stationName"))
@@ -91,7 +102,7 @@ public class AirQualityRealTimeService {
                 .no2Value(item.optString("no2Value"))
                 .pm10Value(item.optString("pm10Value"))
                 .pm25Value(item.optString("pm25Value"))
-                .khaiValue(item.optString("khaiValue"))
+                .khaiValue(khaiValue)
                 .khaiGrade(item.optString("khaiGrade"))
                 .so2Grade(item.optString("so2Grade"))
                 .coGrade(item.optString("coGrade"))
