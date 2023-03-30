@@ -58,6 +58,7 @@ public class AirQualityRealTimeService {
             String.class);
 
         return StringToDTOList(response.getBody());
+
     }
 
     // 시도별 대기 정보 전국 데이터 가공(khaiValue 순으로 정렬)
@@ -72,15 +73,19 @@ public class AirQualityRealTimeService {
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
         List<CurrentDustResponseDTO> currentDustResponseDTOList = new ArrayList<>();
+
         int khaiValue;
         LocalDateTime dateTime = null;
+
         // 반복문을 통해 리스트에 저장
         for (int i = 0; i < items.length(); i++) {
             JSONObject item = items.getJSONObject(i);
+
             if (!item.optString("dataTime").isEmpty()) {
                 // StringToDateTime
                 dateTime = LocalDateTime.parse(item.getString("dataTime"), formatter);
             }
+
             // khaiVaule의 정렬을 위해 Int 타입으로 변환 중 숫자가 아닌 문자가 있으면 나올 수 없는 수로 처리
             try{
                 khaiValue = Integer.parseInt(item.optString("khaiValue"));

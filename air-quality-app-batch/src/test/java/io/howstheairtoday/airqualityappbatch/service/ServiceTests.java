@@ -133,13 +133,16 @@ public class ServiceTests {
         // StringToDateTime
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
         List<CurrentDustResponseDTO> currentDustResponseDTOList = new ArrayList<>();
+
         int khaiValue;
         LocalDateTime dateTime = null;
+
 
         // When
         // 반복문을 통해 리스트에 저장
         for (int i = 0; i < items.length(); i++) {
             JSONObject item = items.getJSONObject(i);
+
             if (!item.optString("dataTime").isEmpty()) {
                 dateTime = LocalDateTime.parse(item.getString("dataTime"), formatter);
             }
@@ -196,5 +199,4 @@ public class ServiceTests {
         assertEquals("1", currentDustResponseDTOList.get(0).getPm10Grade());
         assertEquals("2", currentDustResponseDTOList.get(0).getPm25Grade());
     }
-
 }
