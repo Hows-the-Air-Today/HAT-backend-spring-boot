@@ -81,7 +81,13 @@ public class ServiceTests {
         String no2Value = item.optString("no2Value");
         String pm10Value = item.optString("pm10Value");
         String pm25Value = item.optString("pm25Value");
-        String khaiValue = item.optString("khaiValue");
+        int khaiValue;
+        // Int 타입으로 변환 중 숫자가 아닌 문자가 있으면 나올 수 없는 수로 처리
+        try{
+            khaiValue = Integer.parseInt(item.optString("khaiValue"));
+        }catch (NumberFormatException e){
+            khaiValue = -1;
+        }
         String khaiGrade = item.optString("khaiGrade");
         String so2Grade = item.optString("so2Grade");
         String coGrade = item.optString("coGrade");
@@ -127,15 +133,23 @@ public class ServiceTests {
         // StringToDateTime
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
         List<CurrentDustResponseDTO> currentDustResponseDTOList = new ArrayList<>();
+        int khaiValue;
+        LocalDateTime dateTime = null;
 
         // When
         // 반복문을 통해 리스트에 저장
         for (int i = 0; i < items.length(); i++) {
             JSONObject item = items.getJSONObject(i);
-            LocalDateTime dateTime = null;
             if (!item.optString("dataTime").isEmpty()) {
                 dateTime = LocalDateTime.parse(item.getString("dataTime"), formatter);
             }
+            // khaiVaule의 정렬을 위해 Int 타입으로 변환 중 숫자가 아닌 문자가 있으면 나올 수 없는 수로 처리
+            try{
+                khaiValue = Integer.parseInt(item.optString("khaiValue"));
+            }catch (NumberFormatException e){
+                khaiValue = -1;
+            }
+
             CurrentDustResponseDTO currentDustResponseDTO = CurrentDustResponseDTO.builder()
                 .sidoName(item.getString("sidoName"))
                 .stationName(item.getString("stationName"))
@@ -145,7 +159,7 @@ public class ServiceTests {
                 .no2Value(item.optString("no2Value"))
                 .pm10Value(item.optString("pm10Value"))
                 .pm25Value(item.optString("pm25Value"))
-                .khaiValue(item.optString("khaiValue"))
+                .khaiValue(khaiValue)
                 .khaiGrade(item.optString("khaiGrade"))
                 .so2Grade(item.optString("so2Grade"))
                 .coGrade(item.optString("coGrade"))
@@ -173,7 +187,7 @@ public class ServiceTests {
         assertEquals("0.014", currentDustResponseDTOList.get(0).getNo2Value());
         assertEquals("37", currentDustResponseDTOList.get(0).getPm10Value());
         assertEquals("21", currentDustResponseDTOList.get(0).getPm25Value());
-        assertEquals("64", currentDustResponseDTOList.get(0).getKhaiValue());
+        assertEquals(64, currentDustResponseDTOList.get(0).getKhaiValue());
         assertEquals("2", currentDustResponseDTOList.get(0).getKhaiGrade());
         assertEquals("1", currentDustResponseDTOList.get(0).getSo2Grade());
         assertEquals("2", currentDustResponseDTOList.get(0).getCoGrade());
@@ -182,4 +196,5 @@ public class ServiceTests {
         assertEquals("1", currentDustResponseDTOList.get(0).getPm10Grade());
         assertEquals("2", currentDustResponseDTOList.get(0).getPm25Grade());
     }
+
 }
