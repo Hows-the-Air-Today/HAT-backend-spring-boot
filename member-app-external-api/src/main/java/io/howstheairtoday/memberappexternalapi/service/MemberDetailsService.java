@@ -1,4 +1,4 @@
-package io.howstheairtoday.appmemberexternalapi.service;
+package io.howstheairtoday.memberappexternalapi.service;
 
 import java.util.List;
 import java.util.Optional;
@@ -9,7 +9,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import io.howstheairtoday.appmemberexternalapi.service.dto.MemberLoginRequestDTO;
+import io.howstheairtoday.memberappexternalapi.service.dto.MemberLoginRequestDTO;
 import io.howstheairtoday.memberdomainrds.entity.Member;
 import io.howstheairtoday.memberdomainrds.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
