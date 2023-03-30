@@ -86,7 +86,7 @@ public class CommentTest {
         Comment savedComment = commentRepository.save(changecomment);
 
         //then
-        assertThat(savedComment).isEqualTo(changecomment);
+        assertThat(savedComment.getContent()).isEqualTo("댓글 수정");
     }
 
     @DisplayName("댓글 삭제")
