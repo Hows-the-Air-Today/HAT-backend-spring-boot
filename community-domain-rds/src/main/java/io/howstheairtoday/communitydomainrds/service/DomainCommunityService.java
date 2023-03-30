@@ -6,9 +6,7 @@ import java.util.UUID;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.stereotype.Service;
 
-import io.howstheairtoday.communitydomainrds.entity.Comment;
 import io.howstheairtoday.communitydomainrds.entity.Post;
-import io.howstheairtoday.communitydomainrds.repository.CommentRepository;
 import io.howstheairtoday.communitydomainrds.repository.PostRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -23,8 +21,6 @@ public class DomainCommunityService {
 
     private final PostRepository postRepository;
 
-    private final CommentRepository commentRepository;
-
     /**
      * 게시글 저장 메소드
      *
@@ -32,24 +28,11 @@ public class DomainCommunityService {
      */
     @Transactional
     public void savePost(final Post post) {
-
         postRepository.save(post);
     }
 
-    //게시글 댓글 저장 메소드
-    @Transactional
-    public void saveComment(Comment comment){
-
-        commentRepository.save(comment);
+    public Optional<Post> findById(final UUID uuid) {
+        return postRepository.findById(uuid);
     }
-
-    //게시물 ID 검색 메소드
-    @Transactional
-    public Optional<Comment> findCommentId(UUID commentID){
-
-        return commentRepository.findByCommentId(commentID);
-    }
-
-
 
 }
