@@ -25,6 +25,7 @@ public class CommentServiceTest {
     @DisplayName("댓글 작성")
     @Test
     public void createCommentTest(){
+
         //given
         UUID postId = UUID.randomUUID();
         CommentRequestDTO commentRequestDTO = CommentRequestDTO.builder()

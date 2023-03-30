@@ -31,6 +31,7 @@ public class CommentController {
     //게시물 댓글 작성
     @PostMapping("/{postId}/comments")
     public ApiResponse<Object> createComment(@PathVariable("postId") UUID postId, @RequestBody CommentRequestDTO commentRequestDTO) {
+
         commentService.createComment(postId, commentRequestDTO);
         return ApiResponse.<Object>builder()
             .statusCode(HttpStatus.CREATED.value())

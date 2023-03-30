@@ -19,11 +19,13 @@ public class CommentService {
 
     //게시물 댓글 작성 처리
     public void createComment(UUID postId, CommentRequestDTO commentRequestDTO){
+
         Comment comment = Comment.builder()
             .postId(postId)
             .content(commentRequestDTO.getContent())
             .memberId(commentRequestDTO.getMemberId())
             .build();
+
         commentRepository.save(comment);
     }
 

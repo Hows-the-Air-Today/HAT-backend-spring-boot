@@ -25,30 +25,37 @@ import lombok.ToString;
 @ToString
 public class Comment extends BaseTimeEntity {
 
+    //댓글 ID
     @Id
     @GeneratedValue(generator = "uuid2")
     @GenericGenerator(name = "uuid2", strategy = "org.hibernate.id.UUIDGenerator")
     @JdbcTypeCode(SqlTypes.VARCHAR)
     @Column(name = "comment_id")
-    private UUID commentId; //댓글 ID
+    private UUID commentId;
 
+    //댓글 내용
     @Column(name = "content")
-    private String content; //댓글 내용
+    private String content;
 
+    //게시물 ID
     @Column(name = "post_id")
-    private UUID postId; //게시물 ID
+    private UUID postId;
 
+    //댓글 작성자 ID
     @Column(name = "memeber_id")
-    private UUID memberId; //댓글 작성자 ID
+    private UUID memberId;
 
     @Builder
     public Comment(final String content, final UUID postId, final UUID memberId) {
+
         this.content = content;
         this.postId = postId;
         this.memberId = memberId;
     }
+
     //내용 수정 테스트 메소드
     public Comment changeContent(String content) {
+
         this.content = content;
         return this;
     }

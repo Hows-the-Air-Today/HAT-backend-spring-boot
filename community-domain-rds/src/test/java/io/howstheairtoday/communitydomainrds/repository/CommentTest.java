@@ -48,12 +48,12 @@ public class CommentTest {
 
         //then
         assertThat(savedComment).isEqualTo(comment);
-
     }
 
     @DisplayName("댓글 조회")
     @Test
     public void getComment() {
+
         //given
         Comment comment2 = Comment.builder()
             .memberId(UUID.randomUUID())
@@ -68,12 +68,12 @@ public class CommentTest {
 
         //then
         assertThat(getComment.get().getContent()).isEqualTo("댓글6");
-
     }
 
     @DisplayName("댓글 수정")
     @Test
     public void modifyComment() {
+
         //given
         Comment comment1 = Comment.builder()
             .memberId(UUID.randomUUID())
@@ -93,6 +93,7 @@ public class CommentTest {
     @DisplayName("댓글 삭제")
     @Test
     public void deleteComment() {
+
         //given
         Comment comment = Comment.builder()
             .memberId(UUID.randomUUID())

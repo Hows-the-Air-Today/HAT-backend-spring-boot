@@ -11,11 +11,11 @@ import lombok.Getter;
 @AllArgsConstructor
 @Getter
 @Builder
-
 public class CommentRequestDTO {
 
     //게시물 댓글 내용
     private String content;
+
     //댓글 작성자 아이디
     private UUID memberId;
 }
