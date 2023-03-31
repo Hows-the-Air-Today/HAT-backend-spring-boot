@@ -21,6 +21,8 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 
 import io.howstheairtoday.airqualitydomainrds.entity.AirQualityRealTime;
@@ -124,7 +126,7 @@ public class ServiceTests {
     @Test
     void testStringToDTOList() {
 
-        //Given
+        // Given
         // 예제 API JSON 데이터
         String response = "{ \"response\": { \"body\": { \"items\": [ { \"sidoName\": \"서울\", \"stationName\": \"종로구\", \"dataTime\": \"2022-03-24 14:00\", \"so2Value\": \"0.003\", \"coValue\": \"0.4\", \"o3Value\": \"0.027\", \"no2Value\": \"0.014\", \"pm10Value\": \"37\", \"pm25Value\": \"21\", \"khaiValue\": \"64\", \"khaiGrade\": \"2\", \"so2Grade\": \"1\", \"coGrade\": \"2\", \"o3Grade\": \"2\", \"no2Grade\": \"1\", \"pm10Grade\": \"1\", \"pm25Grade\": \"2\" },  { \"sidoName\": \"서울\", \"stationName\": \"서초구\", \"dataTime\": \"2022-03-24 14:00\", \"so2Value\": \"0.003\", \"coValue\": \"0.4\", \"o3Value\": \"0.027\", \"no2Value\": \"0.014\", \"pm10Value\": \"37\", \"pm25Value\": \"21\", \"khaiValue\": \"65\", \"khaiGrade\": \"2\", \"so2Grade\": \"1\", \"coGrade\": \"2\", \"o3Grade\": \"2\", \"no2Grade\": \"1\", \"pm10Grade\": \"1\", \"pm25Grade\": \"2\" } ] } } }";
 
@@ -212,6 +214,7 @@ public class ServiceTests {
 
     @DisplayName("대기오염 실시간 API 내역 저장")
     @Test
+    @Transactional(isolation = Isolation.SERIALIZABLE)
     public void saveTest() {
 
         // Given

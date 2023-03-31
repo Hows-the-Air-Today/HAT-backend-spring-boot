@@ -26,7 +26,7 @@ import io.howstheairtoday.airqualitydomainrds.repository.AirQualityRealTimeRepos
 @EnableJpaRepositories(basePackages = "io.howstheairtoday.airqualitydomainrds.repository")
 @EntityScan("io.howstheairtoday.airqualitydomainrds.entity")
 // 데이터베이스에 기록 남기기
-@Transactional(propagation = Propagation.NOT_SUPPORTED)
+// @Transactional(propagation = Propagation.NOT_SUPPORTED)
 public class RepositoryTests {
 
     @Autowired
