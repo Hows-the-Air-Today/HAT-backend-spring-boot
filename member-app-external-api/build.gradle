@@ -10,7 +10,7 @@ version = '0.0.1-SNAPSHOT'
 sourceCompatibility = '17'
 
 application {
-    mainClassName = 'io/howstheairtoday/AppMemberExternalApiApplication.java'
+    mainClassName = 'io/howstheairtoday/MemberAppExternalApiApplication.java'
 }
 
 configurations {
