@@ -21,7 +21,6 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 
@@ -214,7 +213,7 @@ public class ServiceTests {
 
     @DisplayName("대기오염 실시간 API 내역 저장")
     @Test
-    @Transactional(isolation = Isolation.SERIALIZABLE)
+    @Transactional
     public void saveTest() {
 
         // Given

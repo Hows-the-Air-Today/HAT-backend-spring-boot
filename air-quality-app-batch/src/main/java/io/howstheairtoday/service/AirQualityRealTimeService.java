@@ -15,8 +15,6 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Isolation;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 
 import io.howstheairtoday.airqualitydomainrds.entity.AirQualityRealTime;
@@ -129,9 +127,6 @@ public class AirQualityRealTimeService {
     private final AirQualityRealTimeRepository airQualityRealTimeRepository;
 
     // 배치에서 전국 대기 정보를 저장할 때 사용하는 메서드
-    // @Trancsactional 메서드 실행 시 메서드가 하나의 트랙잭션으로 묶이도록 설정
-    // isolation은 가장 높은 격리 수준을 설정. 일관성은 보장하지만 성능은 낮아질 수도 있습니다.
-    @Transactional(isolation = Isolation.SERIALIZABLE)
     public void Save() {
 
         // 시도별 데이터 List에 담기
