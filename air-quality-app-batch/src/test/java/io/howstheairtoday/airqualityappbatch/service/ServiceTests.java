@@ -221,11 +221,9 @@ public class ServiceTests {
         // 시도별 데이터 List에 담기
         List<CurrentDustResponseDTO> currentResponseDTOList = airQualityRealTimeService.getAirQualityData();
 
-        List<AirQualityRealTime> airQualityRealTimeList = new ArrayList<>();
-
         // 반복문을 통해 객체 초기화 후 데이터베이스 삽입
         for (int i = 0; i < currentResponseDTOList.size(); i++) {
-            airQualityRealTimeList.add(AirQualityRealTime.builder()
+            AirQualityRealTime airQualityRealTime = AirQualityRealTime.builder()
                 .airQualityRealTimeMeasurementId((long)i)
                 .sidoName(currentResponseDTOList.get(i).getSidoName())
                 .stationName(currentResponseDTOList.get(i).getStationName())
@@ -244,11 +242,12 @@ public class ServiceTests {
                 .pm10Grade(currentResponseDTOList.get(i).getPm10Grade())
                 .pm25Grade(currentResponseDTOList.get(i).getPm25Grade())
                 .dataTime(currentResponseDTOList.get(i).getDataTime())
-                .build());
+                .build();
+            airQualityRealTimeRepository.save(airQualityRealTime);
         }
 
         // When
-        airQualityRealTimeRepository.saveAll(airQualityRealTimeList);
+        // airQualityRealTimeRepository.saveAll(airQualityRealTimeList);
 
         // 데이터베이스에서 입력한 값이 입력되었는지 조회
         List<AirQualityRealTime> result = airQualityRealTimeRepository.findAll();
