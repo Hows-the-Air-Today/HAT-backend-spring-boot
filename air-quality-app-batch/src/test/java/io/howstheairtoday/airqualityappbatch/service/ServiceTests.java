@@ -218,41 +218,91 @@ public class ServiceTests {
     public void saveTest() {
 
         // Given
-        // 시도별 데이터 List에 담기
-        List<CurrentDustResponseDTO> currentResponseDTOList = airQualityRealTimeService.getAirQualityData();
+        // 예제 API JSON 데이터
+        String response = "{ \"response\": { \"body\": { \"items\": [ { \"sidoName\": \"서울\", \"stationName\": \"종로구\", \"dataTime\": \"2022-03-24 14:00\", \"so2Value\": \"0.003\", \"coValue\": \"0.4\", \"o3Value\": \"0.027\", \"no2Value\": \"0.014\", \"pm10Value\": \"37\", \"pm25Value\": \"21\", \"khaiValue\": \"64\", \"khaiGrade\": \"2\", \"so2Grade\": \"1\", \"coGrade\": \"2\", \"o3Grade\": \"2\", \"no2Grade\": \"1\", \"pm10Grade\": \"1\", \"pm25Grade\": \"2\" },  { \"sidoName\": \"서울\", \"stationName\": \"서초구\", \"dataTime\": \"2022-03-24 14:00\", \"so2Value\": \"0.003\", \"coValue\": \"0.4\", \"o3Value\": \"0.027\", \"no2Value\": \"0.014\", \"pm10Value\": \"37\", \"pm25Value\": \"21\", \"khaiValue\": \"65\", \"khaiGrade\": \"2\", \"so2Grade\": \"1\", \"coGrade\": \"2\", \"o3Grade\": \"2\", \"no2Grade\": \"1\", \"pm10Grade\": \"1\", \"pm25Grade\": \"2\" } ] } } }";
+
+        // JSON 데이터 파싱
+        JSONObject root = new JSONObject(response);
+        JSONObject res = root.getJSONObject("response");
+        JSONObject body = res.getJSONObject("body");
+        JSONArray items = body.getJSONArray("items");
+
+        // StringToDateTime
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+        List<CurrentDustResponseDTO> currentDustResponseDTOList = new ArrayList<>();
+
+        int khaiValue;
+        LocalDateTime dateTime = null;
+
+        // 반복문을 통해 리스트에 저장
+        for (int i = 0; i < items.length(); i++) {
+            JSONObject item = items.getJSONObject(i);
+
+            if (!item.optString("dataTime").isEmpty()) {
+                dateTime = LocalDateTime.parse(item.getString("dataTime"), formatter);
+            }
+            // khaiVaule의 정렬을 위해 Int 타입으로 변환 중 숫자가 아닌 문자가 있으면 나올 수 없는 수로 처리
+            try{
+                khaiValue = Integer.parseInt(item.optString("khaiValue"));
+            }catch (NumberFormatException e){
+                khaiValue = -1;
+            }
+
+            CurrentDustResponseDTO currentDustResponseDTO = CurrentDustResponseDTO.builder()
+                .sidoName(item.getString("sidoName"))
+                .stationName(item.getString("stationName"))
+                .so2Value(item.optString("so2Value"))
+                .coValue(item.optString("coValue"))
+                .o3Value(item.optString("o3Value"))
+                .no2Value(item.optString("no2Value"))
+                .pm10Value(item.optString("pm10Value"))
+                .pm25Value(item.optString("pm25Value"))
+                .khaiValue(khaiValue)
+                .khaiGrade(item.optString("khaiGrade"))
+                .so2Grade(item.optString("so2Grade"))
+                .coGrade(item.optString("coGrade"))
+                .o3Grade(item.optString("o3Grade"))
+                .no2Grade(item.optString("no2Grade"))
+                .pm10Grade(item.optString("pm10Grade"))
+                .pm25Grade(item.optString("pm25Grade"))
+                .dataTime(dateTime)
+                .build();
+            currentDustResponseDTOList.add(currentDustResponseDTO);
+        }
+
+        List<AirQualityRealTime> airQualityRealTimeList = new ArrayList<>();
 
         // 반복문을 통해 객체 초기화 후 데이터베이스 삽입
-        for (int i = 0; i < currentResponseDTOList.size(); i++) {
-            AirQualityRealTime airQualityRealTime = AirQualityRealTime.builder()
+        for (int i = 0; i < currentDustResponseDTOList.size(); i++) {
+            airQualityRealTimeList.add(AirQualityRealTime.builder()
                 .airQualityRealTimeMeasurementId((long)i)
-                .sidoName(currentResponseDTOList.get(i).getSidoName())
-                .stationName(currentResponseDTOList.get(i).getStationName())
-                .so2Value(currentResponseDTOList.get(i).getSo2Value())
-                .coValue(currentResponseDTOList.get(i).getCoValue())
-                .o3Value(currentResponseDTOList.get(i).getO3Value())
-                .no2Value(currentResponseDTOList.get(i).getNo2Value())
-                .pm10Value(currentResponseDTOList.get(i).getPm10Value())
-                .pm25Value(currentResponseDTOList.get(i).getPm25Value())
-                .khaiValue(currentResponseDTOList.get(i).getKhaiValue())
-                .khaiGrade(currentResponseDTOList.get(i).getKhaiGrade())
-                .so2Grade(currentResponseDTOList.get(i).getSo2Grade())
-                .coGrade(currentResponseDTOList.get(i).getCoGrade())
-                .o3Grade(currentResponseDTOList.get(i).getO3Grade())
-                .no2Grade(currentResponseDTOList.get(i).getNo2Grade())
-                .pm10Grade(currentResponseDTOList.get(i).getPm10Grade())
-                .pm25Grade(currentResponseDTOList.get(i).getPm25Grade())
-                .dataTime(currentResponseDTOList.get(i).getDataTime())
-                .build();
-            airQualityRealTimeRepository.save(airQualityRealTime);
+                .sidoName(currentDustResponseDTOList.get(i).getSidoName())
+                .stationName(currentDustResponseDTOList.get(i).getStationName())
+                .so2Value(currentDustResponseDTOList.get(i).getSo2Value())
+                .coValue(currentDustResponseDTOList.get(i).getCoValue())
+                .o3Value(currentDustResponseDTOList.get(i).getO3Value())
+                .no2Value(currentDustResponseDTOList.get(i).getNo2Value())
+                .pm10Value(currentDustResponseDTOList.get(i).getPm10Value())
+                .pm25Value(currentDustResponseDTOList.get(i).getPm25Value())
+                .khaiValue(currentDustResponseDTOList.get(i).getKhaiValue())
+                .khaiGrade(currentDustResponseDTOList.get(i).getKhaiGrade())
+                .so2Grade(currentDustResponseDTOList.get(i).getSo2Grade())
+                .coGrade(currentDustResponseDTOList.get(i).getCoGrade())
+                .o3Grade(currentDustResponseDTOList.get(i).getO3Grade())
+                .no2Grade(currentDustResponseDTOList.get(i).getNo2Grade())
+                .pm10Grade(currentDustResponseDTOList.get(i).getPm10Grade())
+                .pm25Grade(currentDustResponseDTOList.get(i).getPm25Grade())
+                .dataTime(currentDustResponseDTOList.get(i).getDataTime())
+                .build());
         }
 
         // When
-        // airQualityRealTimeRepository.saveAll(airQualityRealTimeList);
+        airQualityRealTimeRepository.saveAll(airQualityRealTimeList);
 
         // 데이터베이스에서 입력한 값이 입력되었는지 조회
         List<AirQualityRealTime> result = airQualityRealTimeRepository.findAll();
 
         // then
-        assertEquals(642, result.size());
+        assertEquals(2, result.size());
     }
 }
