@@ -1,4 +1,4 @@
-package io.howstheairtoday.memberappexternalapi.service.dto;
+package io.howstheairtoday.memberappexternalapi.service.dto.request;
 
 import java.util.Collection;
 
