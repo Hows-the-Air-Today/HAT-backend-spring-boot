@@ -12,10 +12,10 @@ import lombok.NoArgsConstructor;
 
 public class MemberRequestDTO {
 
-    @AllArgsConstructor
     @NoArgsConstructor
-    @Getter
+    @AllArgsConstructor
     @Builder
+    @Getter
     public static class SaveMemberRequestDto {
 
         /**
