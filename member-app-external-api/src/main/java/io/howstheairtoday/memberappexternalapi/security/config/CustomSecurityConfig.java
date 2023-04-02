@@ -1,4 +1,4 @@
-package io.howstheairtoday.memberappexternalapi.config;
+package io.howstheairtoday.memberappexternalapi.security.config;
 
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
@@ -15,9 +15,10 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import io.howstheairtoday.memberappexternalapi.service.MemberDetailsService;
-import io.howstheairtoday.memberappexternalapi.service.handler.MemberLoginSuccessHandler;
-import io.howstheairtoday.modulecore.security.filter.MemberLoginFilter;
+import io.howstheairtoday.memberappexternalapi.security.service.MemberDetailsService;
+import io.howstheairtoday.memberappexternalapi.security.service.handler.MemberLoginSuccessHandler;
+import io.howstheairtoday.memberappexternalapi.security.util.JWTUtil;
+import io.howstheairtoday.memberappexternalapi.security.filter.MemberLoginFilter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 
@@ -32,6 +33,7 @@ import lombok.extern.log4j.Log4j2;
 public class CustomSecurityConfig {
 
     private final MemberDetailsService memberDetailsService;
+    private final JWTUtil jwtUtil;
 
     @Bean
     PasswordEncoder passwordEncoder() {
@@ -60,8 +62,8 @@ public class CustomSecurityConfig {
         memberLoginFilter.setAuthenticationManager(authenticationManager);
 
         // MemberLoginSuccessHandler - 로그인 인증 성공 이후 작업 처리 설정
-        MemberLoginSuccessHandler successHandler = new MemberLoginSuccessHandler();
-        memberLoginFilter.setAuthenticationManager(authenticationManager);
+        MemberLoginSuccessHandler successHandler = new MemberLoginSuccessHandler(jwtUtil);
+        memberLoginFilter.setAuthenticationSuccessHandler(successHandler);
 
         // MemberLoginFilter 위치 조정
         httpSecurity.addFilterBefore(memberLoginFilter, UsernamePasswordAuthenticationFilter.class);
