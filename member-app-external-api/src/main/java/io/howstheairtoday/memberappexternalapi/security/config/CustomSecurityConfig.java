@@ -15,6 +15,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+import io.howstheairtoday.memberappexternalapi.security.filter.RefreshTokenFilter;
 import io.howstheairtoday.memberappexternalapi.security.filter.TokenCheckFilter;
 import io.howstheairtoday.memberappexternalapi.security.service.MemberDetailsService;
 import io.howstheairtoday.memberappexternalapi.security.service.handler.MemberLoginSuccessHandler;
@@ -79,6 +80,10 @@ public class CustomSecurityConfig {
          */
 
         httpSecurity.addFilterBefore(tokenCheckFilter(jwtUtil), UsernamePasswordAuthenticationFilter.class);
+        //RefreshToken 발급 요청 경로
+        httpSecurity.addFilterBefore(
+            new RefreshTokenFilter("/api/v1/auth/login/refreshtoken", jwtUtil),
+            TokenCheckFilter.class);
 
         httpSecurity.csrf().disable();
         httpSecurity.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
