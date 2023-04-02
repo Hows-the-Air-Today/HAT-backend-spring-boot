@@ -107,6 +107,7 @@ project('member-domain-service') {
 project('member-domain-rds') {
     dependencies {
         implementation project(':module-common')
+        implementation project(':module-core')
     }
 }
 

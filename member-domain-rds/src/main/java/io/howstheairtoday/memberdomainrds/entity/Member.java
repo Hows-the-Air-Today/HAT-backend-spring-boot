@@ -5,6 +5,7 @@ import java.util.UUID;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -55,6 +56,10 @@ public class Member extends BaseTimeEntity {
 
     @Column(length = 255)
     private String refreshToken;
+
+    public void encodePassword(PasswordEncoder passwordEncoder) {
+        this.loginPassword = passwordEncoder.encode(loginPassword);
+    }
 
     @Builder
     public Member(String loginId, String loginPassword, String email, String nickname, String memberProfileImage,

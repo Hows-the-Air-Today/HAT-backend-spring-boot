@@ -9,7 +9,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import io.howstheairtoday.memberappexternalapi.service.dto.MemberLoginRequestDTO;
+import io.howstheairtoday.memberappexternalapi.service.dto.request.MemberLoginRequestDTO;
 import io.howstheairtoday.memberdomainrds.entity.Member;
 import io.howstheairtoday.memberdomainrds.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
