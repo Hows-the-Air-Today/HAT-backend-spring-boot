@@ -15,6 +15,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+import io.howstheairtoday.memberappexternalapi.security.filter.TokenCheckFilter;
 import io.howstheairtoday.memberappexternalapi.security.service.MemberDetailsService;
 import io.howstheairtoday.memberappexternalapi.security.service.handler.MemberLoginSuccessHandler;
 import io.howstheairtoday.memberappexternalapi.security.util.JWTUtil;
@@ -34,6 +35,10 @@ public class CustomSecurityConfig {
 
     private final MemberDetailsService memberDetailsService;
     private final JWTUtil jwtUtil;
+
+    private TokenCheckFilter tokenCheckFilter(JWTUtil jwtUtil) {
+        return new TokenCheckFilter(jwtUtil);
+    }
 
     @Bean
     PasswordEncoder passwordEncoder() {
@@ -72,6 +77,8 @@ public class CustomSecurityConfig {
         // post 기능에 인증된 회원만 접속 가능토록 설정
         httpSecurity.authorizeRequests().requestMatchers("/api/v1/post/**").authenticated().anyRequest().permitAll();
          */
+
+        httpSecurity.addFilterBefore(tokenCheckFilter(jwtUtil), UsernamePasswordAuthenticationFilter.class);
 
         httpSecurity.csrf().disable();
         httpSecurity.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
