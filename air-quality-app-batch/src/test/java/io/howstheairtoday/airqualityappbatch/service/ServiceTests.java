@@ -57,7 +57,7 @@ public class ServiceTests {
         // url 뒤에 붙일 내용들을 String으로 정의
         String queryParams = "?serviceKey=" + airApiKey
             + "&returnType=json"
-            + "&numOfRows=642"
+            + "&numOfRows=2"
             + "&pageNo=1"
             + "&sidoName=전국"
             + "&ver=1.0";
