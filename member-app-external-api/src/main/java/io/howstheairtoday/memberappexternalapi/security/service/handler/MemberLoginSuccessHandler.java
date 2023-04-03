@@ -37,7 +37,7 @@ public class MemberLoginSuccessHandler implements AuthenticationSuccessHandler {
 
         Map<String, Object> claim = Map.of("loginId", authentication.getName());
         // AccessToken 유효기간 30분
-        String accessToken = jwtUtil.generateToken(claim, 30/60);
+        String accessToken = jwtUtil.generateToken(claim, 1/48);
         // RefreshToken 유효기간 7일
         String refreshToken = jwtUtil.generateToken(claim, 7);
 
