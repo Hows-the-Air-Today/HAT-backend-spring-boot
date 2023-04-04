@@ -121,7 +121,7 @@ public class ExternalApiService {
     // 실시간 대기정보 조회
     public CurrentDustResponseDTO selectAirQualityRealTime(String stationName) {
 
-        List<AirQualityRealTime> airQualityRealTimeList = airQualityRealTimeRepository.findByAiQuality(stationName);
+        List<AirQualityRealTime> airQualityRealTimeList = airQualityRealTimeRepository.findAirQualityRealTimeByStationName(stationName);
         System.out.println(airQualityRealTimeList);
         return CurrentDustResponseDTO.builder()
             .airQualityRealTimeMeasurementId(airQualityRealTimeList.get(0).getAirQualityRealTimeMeasurementId())
