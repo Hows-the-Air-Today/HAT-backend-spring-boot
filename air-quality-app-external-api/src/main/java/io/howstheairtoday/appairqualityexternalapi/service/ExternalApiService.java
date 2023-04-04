@@ -122,7 +122,7 @@ public class ExternalApiService {
     public CurrentDustResponseDTO selectAirQualityRealTime(String stationName) {
 
         List<AirQualityRealTime> airQualityRealTimeList = airQualityRealTimeRepository.findByAiQuality(stationName);
-
+        System.out.println(airQualityRealTimeList);
         return CurrentDustResponseDTO.builder()
             .airQualityRealTimeMeasurementId(airQualityRealTimeList.get(0).getAirQualityRealTimeMeasurementId())
             .sidoName(airQualityRealTimeList.get(0).getSidoName())

@@ -26,7 +26,6 @@ import org.springframework.web.client.RestTemplate;
 
 import io.howstheairtoday.airqualitydomainrds.entity.AirQualityRealTime;
 import io.howstheairtoday.airqualitydomainrds.repository.AirQualityRealTimeRepository;
-import io.howstheairtoday.service.AirQualityRealTimeService;
 import io.howstheairtoday.airqualitydomainrds.dto.response.CurrentDustResponseDTO;
 
 @ActiveProfiles("test")
@@ -300,6 +299,6 @@ public class ServiceTests {
         List<AirQualityRealTime> result = airQualityRealTimeRepository.findAll();
 
         // then
-        assertEquals(2, result.size());
+        assertEquals(642, result.size());
     }
 }
