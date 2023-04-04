@@ -1,4 +1,4 @@
-package io.howstheairtoday.service.dto.request;
+package io.howstheairtoday.airqualitydomainrds.dto.request;
 
 import lombok.Builder;
 import lombok.Data;

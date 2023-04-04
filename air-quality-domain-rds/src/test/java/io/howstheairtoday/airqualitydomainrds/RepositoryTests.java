@@ -13,17 +13,19 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
 
 import io.howstheairtoday.airqualitydomainrds.entity.AirQualityRealTime;
 import io.howstheairtoday.airqualitydomainrds.repository.AirQualityRealTimeRepository;
 
 @DataJpaTest
 @ActiveProfiles("test")
+// 테스트용 데이터베이스를 자동으로 구성해주는 애노테이션입니다.
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
+// 테스트 컨텍스트를 설정하는 애노테이션입니다.
 @ContextConfiguration(classes = {AirQualityRealTimeRepository.class})
+// Spring Data JPA에서 Repository 인터페이스를 스캔하고 구현체를 생성해주는 애노테이션입니다.
 @EnableJpaRepositories(basePackages = "io.howstheairtoday.airqualitydomainrds.repository")
+// JPA Entity 클래스를 스캔하고 컨텍스트에 등록하는 애노테이션입니다.
 @EntityScan("io.howstheairtoday.airqualitydomainrds.entity")
 // 데이터베이스에 기록 남기기
 // @Transactional(propagation = Propagation.NOT_SUPPORTED)
@@ -90,5 +92,4 @@ public class RepositoryTests {
         assertEquals(saved.getPm25Grade(), airQualityRealTime.getPm25Grade());
         assertEquals(saved.getDataTime(), airQualityRealTime.getDataTime());
     }
-
 }

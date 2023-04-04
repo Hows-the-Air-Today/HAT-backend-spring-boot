@@ -27,7 +27,7 @@ import org.springframework.web.client.RestTemplate;
 import io.howstheairtoday.airqualitydomainrds.entity.AirQualityRealTime;
 import io.howstheairtoday.airqualitydomainrds.repository.AirQualityRealTimeRepository;
 import io.howstheairtoday.service.AirQualityRealTimeService;
-import io.howstheairtoday.service.dto.response.CurrentDustResponseDTO;
+import io.howstheairtoday.airqualitydomainrds.dto.response.CurrentDustResponseDTO;
 
 @ActiveProfiles("test")
 @SpringBootTest

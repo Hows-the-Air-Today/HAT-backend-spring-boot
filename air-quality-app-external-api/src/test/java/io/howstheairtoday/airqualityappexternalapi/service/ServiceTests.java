@@ -2,10 +2,14 @@ package io.howstheairtoday.airqualityappexternalapi.service;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.util.List;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpEntity;
@@ -15,6 +19,9 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.web.client.RestTemplate;
+
+import io.howstheairtoday.airqualitydomainrds.entity.AirQualityRealTime;
+import io.howstheairtoday.airqualitydomainrds.repository.AirQualityRealTimeRepository;
 
 @ActiveProfiles("test")
 @SpringBootTest
@@ -118,5 +125,22 @@ public class ServiceTests {
         String stationName = item.getString("stationName");
 
         assertEquals(expectedStationName, stationName);
+    }
+
+    @Autowired
+    private AirQualityRealTimeRepository airQualityRealTimeRepository;
+
+    @DisplayName("사용자 요청 데이터 조회")
+    @Test
+    public void selectTest() {
+
+        // Given
+        String stationName = "종로구";
+
+        // When
+        List<AirQualityRealTime> currentDustResponseDTO = airQualityRealTimeRepository.findByAiQuality(stationName);
+
+        // Then
+        Assertions.assertEquals(currentDustResponseDTO.get(0).getStationName(), stationName);
     }
 }
