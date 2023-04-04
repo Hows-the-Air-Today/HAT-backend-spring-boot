@@ -9,6 +9,7 @@ import io.howstheairtoday.airqualitydomainrds.dto.response.CurrentDustResponseDT
 import io.howstheairtoday.airqualitydomainrds.entity.AirQualityRealTime;
 
 public interface AirQualityRealTimeRepository extends JpaRepository<AirQualityRealTime, Long> {
-    @Query("select a from AirQualityRealTime a where a.stationName = :stationName")
-    List<AirQualityRealTime> findByAiQuality(String stationName);
+
+    // @Query("select a from AirQualityRealTime a where a.stationName = :stationName")
+    List<AirQualityRealTime> findAirQualityRealTimeByStationName(String stationName);
 }

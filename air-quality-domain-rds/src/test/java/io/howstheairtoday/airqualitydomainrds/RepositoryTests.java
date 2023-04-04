@@ -104,7 +104,7 @@ public class RepositoryTests {
         String stationName = "종로구";
 
         // When
-        List<AirQualityRealTime> currentDustResponseDTO = airQualityRealTimeRepository.findByAiQuality(stationName);
+        List<AirQualityRealTime> currentDustResponseDTO = airQualityRealTimeRepository.findAirQualityRealTimeByStationName(stationName);
 
         // Then
         Assertions.assertNotNull(currentDustResponseDTO);
