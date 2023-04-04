@@ -1,5 +1,7 @@
 package io.howstheairtoday.memberappexternalapi.security.config;
 
+import java.util.Arrays;
+
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -14,6 +16,9 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import io.howstheairtoday.memberappexternalapi.security.filter.RefreshTokenFilter;
 import io.howstheairtoday.memberappexternalapi.security.filter.TokenCheckFilter;
@@ -33,6 +38,26 @@ import lombok.extern.log4j.Log4j2;
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 @EnableWebSecurity
 public class CustomSecurityConfig {
+
+    //CORS 설정을 위한 Bean을 생성
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource(){
+
+        CorsConfiguration configuration = new CorsConfiguration();
+        //모든 요청에 설정
+        configuration.setAllowedOriginPatterns(Arrays.asList("*"));
+        //메서드 설정
+        configuration.setAllowedMethods(Arrays.asList(
+            "HEAD", "GET", "POST", "PUT", "DELETE"));
+        //헤더 설정
+        configuration.setAllowedHeaders(Arrays.asList(
+            "Authorization", "Cache-Control", "Content-Type"));
+        //인증 설정
+        configuration.setAllowCredentials(true);
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+        return source;
+    }
 
     private final MemberDetailsService memberDetailsService;
     private final JWTUtil jwtUtil;
@@ -87,6 +112,9 @@ public class CustomSecurityConfig {
 
         httpSecurity.csrf().disable();
         httpSecurity.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+        httpSecurity.cors(httpSecurityCorsConfigurer -> {
+            httpSecurityCorsConfigurer.configurationSource(corsConfigurationSource());
+        });
         return httpSecurity.build();
     }
 
