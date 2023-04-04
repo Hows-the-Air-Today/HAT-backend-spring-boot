@@ -39,17 +39,17 @@ import lombok.extern.log4j.Log4j2;
 @EnableWebSecurity
 public class CustomSecurityConfig {
 
-    //CORS 설정을 위한 Bean을 생성
+    // CORS 설정을 위한 Bean을 생성
     @Bean
     public CorsConfigurationSource corsConfigurationSource(){
 
         CorsConfiguration configuration = new CorsConfiguration();
-        //모든 요청에 설정
+        // 모든 요청에 설정
         configuration.setAllowedOriginPatterns(Arrays.asList("*"));
-        //메서드 설정
+        // 메서드 설정
         configuration.setAllowedMethods(Arrays.asList(
             "HEAD", "GET", "POST", "PUT", "DELETE"));
-        //헤더 설정
+        // 헤더 설정
         configuration.setAllowedHeaders(Arrays.asList(
             "Authorization", "Cache-Control", "Content-Type"));
         //인증 설정
