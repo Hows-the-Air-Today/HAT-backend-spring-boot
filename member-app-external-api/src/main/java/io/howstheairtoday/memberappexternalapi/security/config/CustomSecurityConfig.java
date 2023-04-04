@@ -1,4 +1,4 @@
-package io.howstheairtoday.memberappexternalapi.config;
+package io.howstheairtoday.memberappexternalapi.security.config;
 
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
@@ -15,9 +15,12 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import io.howstheairtoday.memberappexternalapi.service.MemberDetailsService;
-import io.howstheairtoday.memberappexternalapi.service.handler.MemberLoginSuccessHandler;
-import io.howstheairtoday.modulecore.security.filter.MemberLoginFilter;
+import io.howstheairtoday.memberappexternalapi.security.filter.RefreshTokenFilter;
+import io.howstheairtoday.memberappexternalapi.security.filter.TokenCheckFilter;
+import io.howstheairtoday.memberappexternalapi.security.service.MemberDetailsService;
+import io.howstheairtoday.memberappexternalapi.security.service.handler.MemberLoginSuccessHandler;
+import io.howstheairtoday.memberappexternalapi.security.util.JWTUtil;
+import io.howstheairtoday.memberappexternalapi.security.filter.MemberLoginFilter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 
@@ -32,6 +35,11 @@ import lombok.extern.log4j.Log4j2;
 public class CustomSecurityConfig {
 
     private final MemberDetailsService memberDetailsService;
+    private final JWTUtil jwtUtil;
+
+    private TokenCheckFilter tokenCheckFilter(JWTUtil jwtUtil) {
+        return new TokenCheckFilter(jwtUtil);
+    }
 
     @Bean
     PasswordEncoder passwordEncoder() {
@@ -60,8 +68,8 @@ public class CustomSecurityConfig {
         memberLoginFilter.setAuthenticationManager(authenticationManager);
 
         // MemberLoginSuccessHandler - 로그인 인증 성공 이후 작업 처리 설정
-        MemberLoginSuccessHandler successHandler = new MemberLoginSuccessHandler();
-        memberLoginFilter.setAuthenticationManager(authenticationManager);
+        MemberLoginSuccessHandler successHandler = new MemberLoginSuccessHandler(jwtUtil);
+        memberLoginFilter.setAuthenticationSuccessHandler(successHandler);
 
         // MemberLoginFilter 위치 조정
         httpSecurity.addFilterBefore(memberLoginFilter, UsernamePasswordAuthenticationFilter.class);
@@ -70,6 +78,12 @@ public class CustomSecurityConfig {
         // post 기능에 인증된 회원만 접속 가능토록 설정
         httpSecurity.authorizeRequests().requestMatchers("/api/v1/post/**").authenticated().anyRequest().permitAll();
          */
+
+        httpSecurity.addFilterBefore(tokenCheckFilter(jwtUtil), UsernamePasswordAuthenticationFilter.class);
+        //RefreshToken 발급 요청 경로
+        httpSecurity.addFilterBefore(
+            new RefreshTokenFilter("/api/v1/auth/login/refreshtoken", jwtUtil),
+            TokenCheckFilter.class);
 
         httpSecurity.csrf().disable();
         httpSecurity.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);

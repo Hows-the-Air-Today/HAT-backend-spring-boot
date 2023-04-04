@@ -1,4 +1,4 @@
-package io.howstheairtoday.memberappexternalapi.util;
+package io.howstheairtoday.memberappexternalapi.security.util;
 
 import java.sql.Date;
 import java.time.ZonedDateTime;
