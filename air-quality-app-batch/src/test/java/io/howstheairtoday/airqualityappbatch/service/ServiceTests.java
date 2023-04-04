@@ -208,9 +208,6 @@ public class ServiceTests {
     @Autowired
     private AirQualityRealTimeRepository airQualityRealTimeRepository;
 
-    @Autowired
-    private AirQualityRealTimeService airQualityRealTimeService;
-
     @DisplayName("대기오염 실시간 API 내역 저장")
     @Test
     // 트랜잭션을 사용하여 데이터베이스에 대한 모든 변경사항이 롤백

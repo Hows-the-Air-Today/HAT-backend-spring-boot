@@ -14,6 +14,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import io.howstheairtoday.airqualitydomainrds.dto.response.CurrentDustResponseDTO;
+import io.howstheairtoday.airqualitydomainrds.entity.AirQualityRealTime;
+import io.howstheairtoday.airqualitydomainrds.repository.AirQualityRealTimeRepository;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -111,5 +114,34 @@ public class ExternalApiService {
         JSONObject body = res.getJSONObject("body");
         JSONArray items = body.getJSONArray("items");
         return items;
+    }
+
+    private final AirQualityRealTimeRepository airQualityRealTimeRepository;
+
+    // 실시간 대기정보 조회
+    public CurrentDustResponseDTO selectAirQualityRealTime(String stationName) {
+
+        List<AirQualityRealTime> airQualityRealTimeList = airQualityRealTimeRepository.findByAiQuality(stationName);
+
+        return CurrentDustResponseDTO.builder()
+            .airQualityRealTimeMeasurementId(airQualityRealTimeList.get(0).getAirQualityRealTimeMeasurementId())
+            .sidoName(airQualityRealTimeList.get(0).getSidoName())
+            .stationName(airQualityRealTimeList.get(0).getStationName())
+            .so2Value(airQualityRealTimeList.get(0).getSo2Value())
+            .coValue(airQualityRealTimeList.get(0).getCoValue())
+            .o3Value(airQualityRealTimeList.get(0).getO3Value())
+            .no2Value(airQualityRealTimeList.get(0).getNo2Value())
+            .pm10Value(airQualityRealTimeList.get(0).getPm10Value())
+            .pm25Value(airQualityRealTimeList.get(0).getPm25Value())
+            .khaiValue(airQualityRealTimeList.get(0).getKhaiValue())
+            .khaiGrade(airQualityRealTimeList.get(0).getKhaiGrade())
+            .so2Grade(airQualityRealTimeList.get(0).getSo2Grade())
+            .coGrade(airQualityRealTimeList.get(0).getCoGrade())
+            .o3Grade(airQualityRealTimeList.get(0).getO3Grade())
+            .no2Grade(airQualityRealTimeList.get(0).getNo2Grade())
+            .pm10Grade(airQualityRealTimeList.get(0).getPm10Grade())
+            .pm25Grade(airQualityRealTimeList.get(0).getPm25Grade())
+            .dataTime(airQualityRealTimeList.get(0).getDataTime())
+            .build();
     }
 }

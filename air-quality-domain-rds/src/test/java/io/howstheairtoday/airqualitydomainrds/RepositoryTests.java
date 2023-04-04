@@ -4,7 +4,10 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
@@ -91,5 +94,19 @@ public class RepositoryTests {
         assertEquals(saved.getPm10Grade(), airQualityRealTime.getPm10Grade());
         assertEquals(saved.getPm25Grade(), airQualityRealTime.getPm25Grade());
         assertEquals(saved.getDataTime(), airQualityRealTime.getDataTime());
+    }
+
+    @DisplayName("데이터 조회 테스트")
+    @Test
+    public void selectTest() {
+
+        // Given
+        String stationName = "종로구";
+
+        // When
+        List<AirQualityRealTime> currentDustResponseDTO = airQualityRealTimeRepository.findByAiQuality(stationName);
+
+        // Then
+        Assertions.assertNotNull(currentDustResponseDTO);
     }
 }
