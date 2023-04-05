@@ -1,10 +1,11 @@
-package io.howstheairtoday.modulecore.security.filter;
+package io.howstheairtoday.memberappexternalapi.security.filter;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.Map;
 
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter;
@@ -54,12 +55,9 @@ public class MemberLoginFilter extends AbstractAuthenticationProcessingFilter {
         Map<String, String> jsonData = parseRequestJSON(request);
         log.info("💡 jsonData =====> " + jsonData);
         // 회원 가입 Service 로직 단계에서 확인 예정
-        /*
         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
             jsonData.get("loginId"), jsonData.get("loginPassword"));
 
         return getAuthenticationManager().authenticate(authenticationToken);
-         */
-        return null;
     }
 }

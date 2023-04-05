@@ -1,4 +1,4 @@
-package io.howstheairtoday.memberappexternalapi.service;
+package io.howstheairtoday.memberappexternalapi.security.service;
 
 import java.util.List;
 import java.util.Optional;
