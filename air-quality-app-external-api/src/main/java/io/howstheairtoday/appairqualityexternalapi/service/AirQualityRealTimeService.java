@@ -21,7 +21,7 @@ import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
-public class ExternalApiService {
+public class AirQualityRealTimeService {
 
     // TM 좌표 및 근처 측정소 정보를 찾기 위한 API 키
     @Value("${air.informationkey}")
@@ -98,13 +98,22 @@ public class ExternalApiService {
         ResponseEntity<String> response = restTemplate.exchange(nearUrl + queryParams, HttpMethod.GET, entity,
             String.class);
 
-        //JSON 파싱
+        // JSON 파싱
         JSONArray items = JsonToString(response.getBody());
-        JSONObject item = items.getJSONObject(0);
+
+        JSONObject item = null;
+
+        // 측정소명에 umdName이 포함된 item을 찾아서 stationName에 저장
+        for (int i = 0; i < items.length(); i++) {
+            item = items.getJSONObject(i);
+            String addr = item.getString("addr");
+            if (addr.contains(umdName)) {
+                break;
+            }
+        }
 
         //측정소명
-        String stationName = item.getString("stationName");
-        return stationName;
+        return item.getString("stationName");
     }
 
     // JSON 파싱을 위한 메서드 선언
@@ -121,27 +130,33 @@ public class ExternalApiService {
     // 실시간 대기정보 조회
     public CurrentDustResponseDTO selectAirQualityRealTime(String stationName) {
 
-        List<AirQualityRealTime> airQualityRealTimeList = airQualityRealTimeRepository.findAirQualityRealTimeByStationName(stationName);
-        System.out.println(airQualityRealTimeList);
+        AirQualityRealTime airQualityRealTime = airQualityRealTimeRepository.findAirQualityRealTimeByStationName(stationName);
+
+        return entityToDTO(airQualityRealTime);
+    }
+
+    // Entity를 DTO로 변환해주는 메서드
+    public CurrentDustResponseDTO entityToDTO(AirQualityRealTime airQualityRealTime){
+
         return CurrentDustResponseDTO.builder()
-            .airQualityRealTimeMeasurementId(airQualityRealTimeList.get(0).getAirQualityRealTimeMeasurementId())
-            .sidoName(airQualityRealTimeList.get(0).getSidoName())
-            .stationName(airQualityRealTimeList.get(0).getStationName())
-            .so2Value(airQualityRealTimeList.get(0).getSo2Value())
-            .coValue(airQualityRealTimeList.get(0).getCoValue())
-            .o3Value(airQualityRealTimeList.get(0).getO3Value())
-            .no2Value(airQualityRealTimeList.get(0).getNo2Value())
-            .pm10Value(airQualityRealTimeList.get(0).getPm10Value())
-            .pm25Value(airQualityRealTimeList.get(0).getPm25Value())
-            .khaiValue(airQualityRealTimeList.get(0).getKhaiValue())
-            .khaiGrade(airQualityRealTimeList.get(0).getKhaiGrade())
-            .so2Grade(airQualityRealTimeList.get(0).getSo2Grade())
-            .coGrade(airQualityRealTimeList.get(0).getCoGrade())
-            .o3Grade(airQualityRealTimeList.get(0).getO3Grade())
-            .no2Grade(airQualityRealTimeList.get(0).getNo2Grade())
-            .pm10Grade(airQualityRealTimeList.get(0).getPm10Grade())
-            .pm25Grade(airQualityRealTimeList.get(0).getPm25Grade())
-            .dataTime(airQualityRealTimeList.get(0).getDataTime())
+            .airQualityRealTimeMeasurementId(airQualityRealTime.getAirQualityRealTimeMeasurementId())
+            .sidoName(airQualityRealTime.getSidoName())
+            .stationName(airQualityRealTime.getStationName())
+            .so2Value(airQualityRealTime.getSo2Value())
+            .coValue(airQualityRealTime.getCoValue())
+            .o3Value(airQualityRealTime.getO3Value())
+            .no2Value(airQualityRealTime.getNo2Value())
+            .pm10Value(airQualityRealTime.getPm10Value())
+            .pm25Value(airQualityRealTime.getPm25Value())
+            .khaiValue(airQualityRealTime.getKhaiValue())
+            .khaiGrade(airQualityRealTime.getKhaiGrade())
+            .so2Grade(airQualityRealTime.getSo2Grade())
+            .coGrade(airQualityRealTime.getCoGrade())
+            .o3Grade(airQualityRealTime.getO3Grade())
+            .no2Grade(airQualityRealTime.getNo2Grade())
+            .pm10Grade(airQualityRealTime.getPm10Grade())
+            .pm25Grade(airQualityRealTime.getPm25Grade())
+            .dataTime(airQualityRealTime.getDataTime())
             .build();
     }
 }

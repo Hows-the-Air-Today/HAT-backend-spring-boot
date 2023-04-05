@@ -2,8 +2,6 @@ package io.howstheairtoday.airqualityappexternalapi.service;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import java.util.List;
-
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.junit.jupiter.api.Assertions;
@@ -20,12 +18,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.web.client.RestTemplate;
 
+import io.howstheairtoday.airqualitydomainrds.dto.response.CurrentDustResponseDTO;
 import io.howstheairtoday.airqualitydomainrds.entity.AirQualityRealTime;
 import io.howstheairtoday.airqualitydomainrds.repository.AirQualityRealTimeRepository;
 
 @ActiveProfiles("test")
 @SpringBootTest
-public class ServiceTests {
+public class AirQualityRealTimeServiceTest {
 
     // TM 좌표 및 근처 측정소 정보를 찾기 위한 API 키
     @Value("${air.informationkey}")
@@ -138,9 +137,60 @@ public class ServiceTests {
         String stationName = "종로구";
 
         // When
-        List<AirQualityRealTime> currentDustResponseDTO = airQualityRealTimeRepository.findAirQualityRealTimeByStationName(stationName);
+        AirQualityRealTime airQualityRealTime = airQualityRealTimeRepository.findAirQualityRealTimeByStationName(stationName);
 
         // Then
-        Assertions.assertEquals(currentDustResponseDTO.get(0).getStationName(), stationName);
+        Assertions.assertEquals(airQualityRealTime.getStationName(), stationName);
+    }
+
+    @DisplayName("Entity를 DTO로 변경")
+    @Test
+    public void entityToDTOTest(){
+
+        // Given
+        AirQualityRealTime airQualityRealTime = airQualityRealTimeRepository.findAirQualityRealTimeByStationName("종로구");
+
+        // When
+        CurrentDustResponseDTO currentDustResponseDTO = CurrentDustResponseDTO.builder()
+            .airQualityRealTimeMeasurementId(airQualityRealTime.getAirQualityRealTimeMeasurementId())
+            .sidoName(airQualityRealTime.getSidoName())
+            .stationName(airQualityRealTime.getStationName())
+            .so2Value(airQualityRealTime.getSo2Value())
+            .coValue(airQualityRealTime.getCoValue())
+            .o3Value(airQualityRealTime.getO3Value())
+            .no2Value(airQualityRealTime.getNo2Value())
+            .pm10Value(airQualityRealTime.getPm10Value())
+            .pm25Value(airQualityRealTime.getPm25Value())
+            .khaiValue(airQualityRealTime.getKhaiValue())
+            .khaiGrade(airQualityRealTime.getKhaiGrade())
+            .so2Grade(airQualityRealTime.getSo2Grade())
+            .coGrade(airQualityRealTime.getCoGrade())
+            .o3Grade(airQualityRealTime.getO3Grade())
+            .no2Grade(airQualityRealTime.getNo2Grade())
+            .pm10Grade(airQualityRealTime.getPm10Grade())
+            .pm25Grade(airQualityRealTime.getPm25Grade())
+            .dataTime(airQualityRealTime.getDataTime())
+            .build();
+
+        // Then
+
+        Assertions.assertEquals(airQualityRealTime.getAirQualityRealTimeMeasurementId(), currentDustResponseDTO.getAirQualityRealTimeMeasurementId());
+        Assertions.assertEquals(airQualityRealTime.getDataTime(), currentDustResponseDTO.getDataTime());
+        Assertions.assertEquals(airQualityRealTime.getCoGrade(), currentDustResponseDTO.getCoGrade());
+        Assertions.assertEquals(airQualityRealTime.getCoValue(), currentDustResponseDTO.getCoValue());
+        Assertions.assertEquals(airQualityRealTime.getKhaiGrade(), currentDustResponseDTO.getKhaiGrade());
+        Assertions.assertEquals(airQualityRealTime.getKhaiValue(), currentDustResponseDTO.getKhaiValue());
+        Assertions.assertEquals(airQualityRealTime.getNo2Grade(), currentDustResponseDTO.getNo2Grade());
+        Assertions.assertEquals(airQualityRealTime.getNo2Value(), currentDustResponseDTO.getNo2Value());
+        Assertions.assertEquals(airQualityRealTime.getO3Grade(), currentDustResponseDTO.getO3Grade());
+        Assertions.assertEquals(airQualityRealTime.getO3Value(), currentDustResponseDTO.getO3Value());
+        Assertions.assertEquals(airQualityRealTime.getPm10Grade(), currentDustResponseDTO.getPm10Grade());
+        Assertions.assertEquals(airQualityRealTime.getPm10Value(), currentDustResponseDTO.getPm10Value());
+        Assertions.assertEquals(airQualityRealTime.getPm25Grade(), currentDustResponseDTO.getPm25Grade());
+        Assertions.assertEquals(airQualityRealTime.getPm25Value(), currentDustResponseDTO.getPm25Value());
+        Assertions.assertEquals(airQualityRealTime.getStationName(), currentDustResponseDTO.getStationName());
+        Assertions.assertEquals(airQualityRealTime.getSidoName(), currentDustResponseDTO.getSidoName());
+        Assertions.assertEquals(airQualityRealTime.getSo2Grade(), currentDustResponseDTO.getSo2Grade());
+        Assertions.assertEquals(airQualityRealTime.getSo2Value(), currentDustResponseDTO.getSo2Value());
     }
 }

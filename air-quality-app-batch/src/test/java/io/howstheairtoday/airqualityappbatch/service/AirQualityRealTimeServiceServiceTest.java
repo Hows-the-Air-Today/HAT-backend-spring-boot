@@ -30,7 +30,7 @@ import io.howstheairtoday.airqualitydomainrds.dto.response.CurrentDustResponseDT
 
 @ActiveProfiles("test")
 @SpringBootTest
-public class ServiceTests {
+public class AirQualityRealTimeServiceServiceTest {
 
     // 시도별 측정 정보 호출 시에 사용될 API Key
     @Value("${air.apikey}")

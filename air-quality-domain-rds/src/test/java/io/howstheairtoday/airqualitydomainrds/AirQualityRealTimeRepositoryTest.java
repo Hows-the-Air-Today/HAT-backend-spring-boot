@@ -4,7 +4,6 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.List;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -32,7 +31,7 @@ import io.howstheairtoday.airqualitydomainrds.repository.AirQualityRealTimeRepos
 @EntityScan("io.howstheairtoday.airqualitydomainrds.entity")
 // 데이터베이스에 기록 남기기
 // @Transactional(propagation = Propagation.NOT_SUPPORTED)
-public class RepositoryTests {
+public class AirQualityRealTimeRepositoryTest {
 
     @Autowired
     private AirQualityRealTimeRepository airQualityRealTimeRepository;
@@ -104,9 +103,9 @@ public class RepositoryTests {
         String stationName = "종로구";
 
         // When
-        List<AirQualityRealTime> currentDustResponseDTO = airQualityRealTimeRepository.findAirQualityRealTimeByStationName(stationName);
+        AirQualityRealTime airQualityRealTime = airQualityRealTimeRepository.findAirQualityRealTimeByStationName(stationName);
 
         // Then
-        Assertions.assertNotNull(currentDustResponseDTO);
+        Assertions.assertNotNull(airQualityRealTime);
     }
 }
