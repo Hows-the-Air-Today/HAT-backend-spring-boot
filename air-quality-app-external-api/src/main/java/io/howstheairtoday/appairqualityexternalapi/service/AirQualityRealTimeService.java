@@ -14,11 +14,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import io.howstheairtoday.airqualitydomainrds.dto.response.CurrentDustResponseDTO;
+import io.howstheairtoday.airqualitydomainrds.entity.AirQualityRealTime;
+import io.howstheairtoday.airqualitydomainrds.repository.AirQualityRealTimeRepository;
 import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
-public class ExternalApiService {
+public class AirQualityRealTimeService {
 
     // TM 좌표 및 근처 측정소 정보를 찾기 위한 API 키
     @Value("${air.informationkey}")
@@ -95,13 +98,22 @@ public class ExternalApiService {
         ResponseEntity<String> response = restTemplate.exchange(nearUrl + queryParams, HttpMethod.GET, entity,
             String.class);
 
-        //JSON 파싱
+        // JSON 파싱
         JSONArray items = JsonToString(response.getBody());
-        JSONObject item = items.getJSONObject(0);
+
+        JSONObject item = null;
+
+        // 측정소명에 umdName이 포함된 item을 찾아서 stationName에 저장
+        for (int i = 0; i < items.length(); i++) {
+            item = items.getJSONObject(i);
+            String addr = item.getString("addr");
+            if (addr.contains(umdName)) {
+                break;
+            }
+        }
 
         //측정소명
-        String stationName = item.getString("stationName");
-        return stationName;
+        return item.getString("stationName");
     }
 
     // JSON 파싱을 위한 메서드 선언
@@ -111,5 +123,40 @@ public class ExternalApiService {
         JSONObject body = res.getJSONObject("body");
         JSONArray items = body.getJSONArray("items");
         return items;
+    }
+
+    private final AirQualityRealTimeRepository airQualityRealTimeRepository;
+
+    // 실시간 대기정보 조회
+    public CurrentDustResponseDTO selectAirQualityRealTime(String stationName) {
+
+        AirQualityRealTime airQualityRealTime = airQualityRealTimeRepository.findAirQualityRealTimeByStationName(stationName);
+
+        return entityToDTO(airQualityRealTime);
+    }
+
+    // Entity를 DTO로 변환해주는 메서드
+    public CurrentDustResponseDTO entityToDTO(AirQualityRealTime airQualityRealTime){
+
+        return CurrentDustResponseDTO.builder()
+            .airQualityRealTimeMeasurementId(airQualityRealTime.getAirQualityRealTimeMeasurementId())
+            .sidoName(airQualityRealTime.getSidoName())
+            .stationName(airQualityRealTime.getStationName())
+            .so2Value(airQualityRealTime.getSo2Value())
+            .coValue(airQualityRealTime.getCoValue())
+            .o3Value(airQualityRealTime.getO3Value())
+            .no2Value(airQualityRealTime.getNo2Value())
+            .pm10Value(airQualityRealTime.getPm10Value())
+            .pm25Value(airQualityRealTime.getPm25Value())
+            .khaiValue(airQualityRealTime.getKhaiValue())
+            .khaiGrade(airQualityRealTime.getKhaiGrade())
+            .so2Grade(airQualityRealTime.getSo2Grade())
+            .coGrade(airQualityRealTime.getCoGrade())
+            .o3Grade(airQualityRealTime.getO3Grade())
+            .no2Grade(airQualityRealTime.getNo2Grade())
+            .pm10Grade(airQualityRealTime.getPm10Grade())
+            .pm25Grade(airQualityRealTime.getPm25Grade())
+            .dataTime(airQualityRealTime.getDataTime())
+            .build();
     }
 }

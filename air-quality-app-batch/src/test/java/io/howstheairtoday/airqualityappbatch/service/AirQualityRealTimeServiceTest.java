@@ -31,12 +31,11 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import io.howstheairtoday.airqualitydomainrds.entity.AirQualityRealTime;
 import io.howstheairtoday.airqualitydomainrds.repository.AirQualityRealTimeRepository;
-import io.howstheairtoday.service.AirQualityRealTimeService;
-import io.howstheairtoday.service.dto.response.CurrentDustResponseDTO;
+import io.howstheairtoday.airqualitydomainrds.dto.response.CurrentDustResponseDTO;
 
 @ActiveProfiles("test")
 @SpringBootTest
-public class ServiceTests {
+public class AirQualityRealTimeServiceTest {
 
     @DisplayName("시도별 대기 정보를 찾는 API 호출")
     @Test
@@ -205,9 +204,6 @@ public class ServiceTests {
     @Autowired
     private AirQualityRealTimeRepository airQualityRealTimeRepository;
 
-    @Autowired
-    private AirQualityRealTimeService airQualityRealTimeService;
-
     @DisplayName("대기오염 실시간 API 내역 저장")
     @Test
     // 트랜잭션을 사용하여 데이터베이스에 대한 모든 변경사항이 롤백
@@ -300,6 +296,6 @@ public class ServiceTests {
         List<AirQualityRealTime> result = airQualityRealTimeRepository.findAll();
 
         // then
-        assertEquals(2, result.size());
+        assertEquals(642, result.size());
     }
 }
