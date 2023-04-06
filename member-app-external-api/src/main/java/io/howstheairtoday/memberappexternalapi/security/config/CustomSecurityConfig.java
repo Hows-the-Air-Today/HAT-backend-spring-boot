@@ -48,7 +48,7 @@ public class CustomSecurityConfig {
         configuration.setAllowedOriginPatterns(Arrays.asList("*"));
         // 메서드 설정
         configuration.setAllowedMethods(Arrays.asList(
-            "HEAD", "GET", "POST", "PUT", "DELETE"));
+            "HEAD", "GET", "POST", "PUT", "DELETE", "PATCH"));
         // 헤더 설정
         configuration.setAllowedHeaders(Arrays.asList(
             "Authorization", "Cache-Control", "Content-Type"));
