@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.UUID;
 
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,15 +31,20 @@ public class ExternalMemberServiceTest {
     @Autowired
     private ExternalMemberService externalMemberService;
 
+    // @AfterEach
+    // public void clean() {
+    //     memberRepository.deleteAll();
+    // }
+
     @DisplayName("회원 생성 기능 - 기본")
     @Test
     void createMemberTest() throws Exception {
         // given
         MemberRequestDTO.SaveMemberRequestDto requestDTO = MemberRequestDTO.SaveMemberRequestDto.builder()
-            .loginId("testId")
+            .loginId("hat")
             .loginPassword("test123")
-            .email("test@test.com")
-            .nickname("testNick")
+            .email("hat@test.com")
+            .nickname("hat")
             .build();
 
         // when

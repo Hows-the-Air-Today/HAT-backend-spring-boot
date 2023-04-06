@@ -1,4 +1,4 @@
-package io.howstheairtoday.memberappexternalapi.exception;
+package io.howstheairtoday.exception;
 
 import java.io.IOException;
 import java.util.Date;

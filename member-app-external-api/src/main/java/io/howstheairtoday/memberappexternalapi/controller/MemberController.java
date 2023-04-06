@@ -17,12 +17,12 @@ import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1")
+@RequestMapping("/api/v1/auth")
 public class MemberController {
 
     private final ExternalMemberService externalMemberService;
 
-    @PostMapping("/account/signup")
+    @PostMapping("/signup")
     public ResponseEntity<ApiResponse<UUID>> createMember(@Valid @RequestBody final MemberRequestDTO.SaveMemberRequestDto requestDTO) {
 
         try {

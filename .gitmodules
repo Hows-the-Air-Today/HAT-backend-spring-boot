@@ -37,3 +37,6 @@
 [submodule "member-domain-service/src/main/resources/security"]
 	path = member-domain-service/src/main/resources/security
 	url = https://github.com/Hows-the-Air-Today/security.git
+[submodule "module-security/src/main/resources/security"]
+	path = module-security/src/main/resources/security
+	url = https://github.com/Hows-the-Air-Today/security.git

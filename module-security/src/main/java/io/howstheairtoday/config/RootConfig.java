@@ -1,4 +1,4 @@
-package io.howstheairtoday.memberappexternalapi.security.config;
+package io.howstheairtoday.config;
 
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;

@@ -1,4 +1,4 @@
-package io.howstheairtoday.memberappexternalapi.security.service.handler;
+package io.howstheairtoday.service.handler;
 
 import java.io.IOException;
 import java.util.Map;
@@ -9,27 +9,38 @@ import org.springframework.security.web.authentication.AuthenticationSuccessHand
 
 import com.google.gson.Gson;
 
-import io.howstheairtoday.memberappexternalapi.security.util.JWTUtil;
+import io.howstheairtoday.util.JwtUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 
 /**
- * Spring Security - 로그인 인증 성공 작업 후처리
+ * Spring Security에서 로그인이 성공했을 때 처리할 핸들러 클래스
  */
 @Log4j2
 @RequiredArgsConstructor
-public class MemberLoginSuccessHandler implements AuthenticationSuccessHandler {
+public class LoginSuccessHandler implements AuthenticationSuccessHandler {
 
-    private final JWTUtil jwtUtil;
+    private final JwtUtil jwtUtil;
 
+    /**
+     * HttpServletRequest 객체 - 로그인 요청 정보를 담고 있음
+     * HttpServletResponse 객체 - 로그인 응답 정보를 담고 있음
+     * Authentication 객체 - 인증에 성공한 사용자 정보를 담고 있음.
+     */
     @Override
-    public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
+    public void onAuthenticationSuccess(
+        HttpServletRequest request,
+        HttpServletResponse response,
         Authentication authentication) throws IOException {
 
         log.info("🛠️ Login Success Handler -------------------- 🛠️");
 
+        /**
+         * onAuthenticationSuccess() 메소드에서 response.setContentType()을 통해
+         * 로그인 성공 시 전송되는 응답 정보의 ContentType을 JSON으로 설정
+         */
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
 
         log.info("💡 authentication =====> " + authentication);
@@ -37,9 +48,9 @@ public class MemberLoginSuccessHandler implements AuthenticationSuccessHandler {
 
         Map<String, Object> claim = Map.of("loginId", authentication.getName());
         // AccessToken 유효기간 30분
-        String accessToken = jwtUtil.generateToken(claim, 1/48);
+        String accessToken = jwtUtil.generateToken(claim, 30);
         // RefreshToken 유효기간 7일
-        String refreshToken = jwtUtil.generateToken(claim, 7);
+        String refreshToken = jwtUtil.generateToken(claim, 7 * 24 * 60);
 
         Gson gson = new Gson();
 
