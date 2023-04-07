@@ -7,6 +7,7 @@ import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -33,9 +34,22 @@ public class CommentController {
     public ApiResponse<Object> createComment(@PathVariable("postId") UUID postId, @RequestBody CommentRequestDTO commentRequestDTO) {
 
         commentService.createComment(postId, commentRequestDTO);
+
         return ApiResponse.<Object>builder()
             .statusCode(HttpStatus.CREATED.value())
-            .msg("성공했습니다.")
+            .msg("작성 성공했습니다.")
+            .build();
+    }
+
+    //게시물 댓글 수정
+    @PatchMapping("/{postId}/comments/{commentId}")
+    public ApiResponse<Object> updateComment(@PathVariable("commentId") UUID commentId, @RequestBody CommentRequestDTO commentRequestDTO) {
+
+        commentService.updateComment(commentId, commentRequestDTO);
+
+        return ApiResponse.<Object>builder()
+            .statusCode(HttpStatus.CREATED.value())
+            .msg("수정 성공했습니다.")
             .build();
     }
 }
