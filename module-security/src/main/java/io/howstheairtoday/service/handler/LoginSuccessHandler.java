@@ -9,6 +9,8 @@ import org.springframework.security.web.authentication.AuthenticationSuccessHand
 
 import com.google.gson.Gson;
 
+import io.howstheairtoday.memberdomainrds.entity.Member;
+import io.howstheairtoday.memberdomainrds.repository.MemberRepository;
 import io.howstheairtoday.util.JwtUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -23,6 +25,7 @@ import lombok.extern.log4j.Log4j2;
 public class LoginSuccessHandler implements AuthenticationSuccessHandler {
 
     private final JwtUtil jwtUtil;
+    private final MemberRepository memberRepository;
 
     /**
      * HttpServletRequest 객체 - 로그인 요청 정보를 담고 있음
@@ -51,6 +54,15 @@ public class LoginSuccessHandler implements AuthenticationSuccessHandler {
         String accessToken = jwtUtil.generateToken(claim, 30);
         // RefreshToken 유효기간 7일
         String refreshToken = jwtUtil.generateToken(claim, 7 * 24 * 60);
+
+        // Member 엔티티를 조회합니다. 로그인한 사용자의 ID를 기준으로 조회합니다.
+        String loginId = authentication.getName();
+        Member member = memberRepository.findByLoginId(loginId)
+            .orElseThrow(() -> new RuntimeException("등록된 아이디가 없습니다."));
+
+        // Member 엔티티에 RefreshToken 값을 저장합니다.
+        member.setRefreshToken(refreshToken);
+        memberRepository.save(member);
 
         Gson gson = new Gson();
 

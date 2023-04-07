@@ -23,6 +23,7 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import io.howstheairtoday.filter.MemberLoginFilter;
 import io.howstheairtoday.filter.RefreshTokenFilter;
 import io.howstheairtoday.filter.TokenCheckFilter;
+import io.howstheairtoday.memberdomainrds.repository.MemberRepository;
 import io.howstheairtoday.service.MemberDetailsService;
 import io.howstheairtoday.service.handler.LoginSuccessHandler;
 import io.howstheairtoday.util.JwtUtil;
@@ -35,6 +36,9 @@ import lombok.extern.log4j.Log4j2;
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 @EnableWebSecurity
 public class CustomSecurityConfig {
+    private final MemberRepository memberRepository;
+    private final MemberDetailsService memberDetailsService;
+    private final JwtUtil jwtUtil;
 
     // CORS 설정을 위한 Bean을 생성
     @Bean
@@ -56,8 +60,6 @@ public class CustomSecurityConfig {
         return source;
     }
 
-    private final MemberDetailsService memberDetailsService;
-    private final JwtUtil jwtUtil;
 
     private TokenCheckFilter tokenCheckFilter(JwtUtil jwtUtil) {
         return new TokenCheckFilter(jwtUtil);
@@ -96,7 +98,7 @@ public class CustomSecurityConfig {
          * MemberLoginFilter의 setAuthenticationSuccessHandler() 메서드를 호출
          * LoginSuccessHandler 객체를 등록함으로써 로그인 성공 시 LoginSuccessHandler 클래스의 onAuthenticationSuccess() 메서드가 호출되도록 설정
          */
-        LoginSuccessHandler loginSuccessHandler = new LoginSuccessHandler(jwtUtil);
+        LoginSuccessHandler loginSuccessHandler = new LoginSuccessHandler(jwtUtil, memberRepository);
         memberLoginFilter.setAuthenticationSuccessHandler(loginSuccessHandler);
 
         http.addFilterBefore(memberLoginFilter, UsernamePasswordAuthenticationFilter.class);

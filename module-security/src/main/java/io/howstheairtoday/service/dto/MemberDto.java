@@ -22,13 +22,4 @@ public class MemberDto extends User {
         this.loginId = username;
         this.loginPassword = password;
     }
-
-    // public MemberDto(String username, String password, boolean enabled, boolean accountNonExpired,
-    //     boolean credentialsNonExpired, boolean accountNonLocked,
-    //     Collection<? extends GrantedAuthority> authorities, String loginId,
-    //     String loginPassword) {
-    //     super(username, password, enabled, accountNonExpired, credentialsNonExpired, accountNonLocked, authorities);
-    //     this.loginId = loginId;
-    //     this.loginPassword = loginPassword;
-    // }
 }
