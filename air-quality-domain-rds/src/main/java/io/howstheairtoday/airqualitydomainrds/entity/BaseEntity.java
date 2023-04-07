@@ -18,7 +18,7 @@ import lombok.Getter;
 public class BaseEntity {
     
     @CreatedDate
-    @Column(name = "createdAt", updatable = false)
+    @Column(name = "createdAt")
     private LocalDateTime createdAt;
 
     @LastModifiedDate

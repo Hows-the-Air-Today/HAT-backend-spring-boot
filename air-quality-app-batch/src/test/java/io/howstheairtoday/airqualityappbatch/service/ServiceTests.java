@@ -26,7 +26,6 @@ import org.springframework.web.client.RestTemplate;
 
 import io.howstheairtoday.airqualitydomainrds.entity.AirQualityRealTime;
 import io.howstheairtoday.airqualitydomainrds.repository.AirQualityRealTimeRepository;
-import io.howstheairtoday.service.AirQualityRealTimeService;
 import io.howstheairtoday.service.dto.response.CurrentDustResponseDTO;
 
 @ActiveProfiles("test")
@@ -207,9 +206,6 @@ public class ServiceTests {
 
     @Autowired
     private AirQualityRealTimeRepository airQualityRealTimeRepository;
-
-    @Autowired
-    private AirQualityRealTimeService airQualityRealTimeService;
 
     @DisplayName("대기오염 실시간 API 내역 저장")
     @Test

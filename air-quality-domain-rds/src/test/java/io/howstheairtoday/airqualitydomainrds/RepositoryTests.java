@@ -13,8 +13,6 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
 
 import io.howstheairtoday.airqualitydomainrds.entity.AirQualityRealTime;
 import io.howstheairtoday.airqualitydomainrds.repository.AirQualityRealTimeRepository;

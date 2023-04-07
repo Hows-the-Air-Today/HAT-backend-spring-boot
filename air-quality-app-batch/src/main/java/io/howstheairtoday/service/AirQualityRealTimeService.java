@@ -15,15 +15,16 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
-import io.howstheairtoday.airqualitydomainrds.entity.AirQualityRealTime;
-import io.howstheairtoday.airqualitydomainrds.repository.AirQualityRealTimeRepository;
 import io.howstheairtoday.service.dto.response.CurrentDustResponseDTO;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 
 @Service
 @RequiredArgsConstructor
+@Log4j2
 public class AirQualityRealTimeService {
 
     // 이후에 데이터 저장때 사용될 Repository
@@ -55,9 +56,21 @@ public class AirQualityRealTimeService {
             + "&sidoName=전국"
             + "&ver=1.0";
 
-        // restTemplate를 통한 API 호출
-        ResponseEntity<String> response = restTemplate.exchange(url + queryParams, HttpMethod.GET, entity,
-            String.class);
+        ResponseEntity<String> response = null;
+
+        try{
+            // restTemplate를 통한 API 호출
+            response = restTemplate.exchange(url + queryParams, HttpMethod.GET, entity, String.class);
+        }catch (RestClientException re){
+            log.info("Api 호출 오류 및 재시도 실행" + re);
+            try {
+                // 5초 대기 후 재시도
+                Thread.sleep(5000);
+                response = restTemplate.exchange(url + queryParams, HttpMethod.GET, entity, String.class);
+            } catch (Exception e) {
+                log.info("재시도 중 Exception 발생" + e);
+            }
+        }
 
         return StringToDTOList(response.getBody());
 
@@ -121,42 +134,5 @@ public class AirQualityRealTimeService {
         // KhaiValue를 기준으로 정렬
         currentDustResponseDTOList.sort(Comparator.comparing(CurrentDustResponseDTO::getKhaiValue));
         return currentDustResponseDTOList;
-    }
-
-    // 레포지토리 사용을 위한 선언
-    private final AirQualityRealTimeRepository airQualityRealTimeRepository;
-
-    // 배치에서 전국 대기 정보를 저장할 때 사용하는 메서드
-    public void Save() {
-
-        // 시도별 데이터 List에 담기
-        List<CurrentDustResponseDTO> currentResponseDTOList = getAirQualityData();
-
-        List<AirQualityRealTime> airQualityRealTimeList = new ArrayList<>();
-
-        // 반복문을 통해 객체 초기화 후 데이터베이스 삽입
-        for (int i = 0; i < currentResponseDTOList.size(); i++) {
-            airQualityRealTimeList.add(AirQualityRealTime.builder()
-                .airQualityRealTimeMeasurementId((long)i)
-                .sidoName(currentResponseDTOList.get(i).getSidoName())
-                .stationName(currentResponseDTOList.get(i).getStationName())
-                .so2Value(currentResponseDTOList.get(i).getSo2Value())
-                .coValue(currentResponseDTOList.get(i).getCoValue())
-                .o3Value(currentResponseDTOList.get(i).getO3Value())
-                .no2Value(currentResponseDTOList.get(i).getNo2Value())
-                .pm10Value(currentResponseDTOList.get(i).getPm10Value())
-                .pm25Value(currentResponseDTOList.get(i).getPm25Value())
-                .khaiValue(currentResponseDTOList.get(i).getKhaiValue())
-                .khaiGrade(currentResponseDTOList.get(i).getKhaiGrade())
-                .so2Grade(currentResponseDTOList.get(i).getSo2Grade())
-                .coGrade(currentResponseDTOList.get(i).getCoGrade())
-                .o3Grade(currentResponseDTOList.get(i).getO3Grade())
-                .no2Grade(currentResponseDTOList.get(i).getNo2Grade())
-                .pm10Grade(currentResponseDTOList.get(i).getPm10Grade())
-                .pm25Grade(currentResponseDTOList.get(i).getPm25Grade())
-                .dataTime(currentResponseDTOList.get(i).getDataTime())
-                .build());
-        }
-        airQualityRealTimeRepository.saveAll(airQualityRealTimeList);
     }
 }
