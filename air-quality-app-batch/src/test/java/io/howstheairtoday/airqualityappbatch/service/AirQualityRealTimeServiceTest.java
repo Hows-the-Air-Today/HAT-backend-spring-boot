@@ -1,6 +1,8 @@
 package io.howstheairtoday.airqualityappbatch.service;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.springframework.test.web.client.match.MockRestRequestMatchers.*;
+import static org.springframework.test.web.client.response.MockRestResponseCreators.*;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -13,63 +15,53 @@ import org.json.JSONObject;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.web.client.MockRestServiceServer;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 
 import io.howstheairtoday.airqualitydomainrds.entity.AirQualityRealTime;
 import io.howstheairtoday.airqualitydomainrds.repository.AirQualityRealTimeRepository;
-import io.howstheairtoday.service.dto.response.CurrentDustResponseDTO;
+import io.howstheairtoday.airqualitydomainrds.dto.response.CurrentDustResponseDTO;
 
 @ActiveProfiles("test")
 @SpringBootTest
-public class ServiceTests {
-
-    // 시도별 측정 정보 호출 시에 사용될 API Key
-    @Value("${air.apikey}")
-    private String airApiKey;
-
-    // 공공데이터 포털에서 시도별 대기 정보를 받아오기 위한 url
-    @Value("${air.sidoUrl}")
-    private String url;
+public class AirQualityRealTimeServiceTest {
 
     @DisplayName("시도별 대기 정보를 찾는 API 호출")
     @Test
     public void apiTest() {
 
         // Given
-
         // RestTemplate를 통한 API 호출
         RestTemplate restTemplate = new RestTemplate();
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        HttpEntity<String> entity = new HttpEntity<>(headers);
+
+        // url을 String으로 정의
+        String queryParams = "/test/api";
+
+        MockRestServiceServer mockServer = MockRestServiceServer.createServer(restTemplate);
+
+        // 예상되는 요청과 응답 설정
+        String expectedResponse = "{\"response\":{\"body\":{\"totalCount\":642,\"items\":[{\"so2Grade\":\"1\",\"coFlag\":null,\"khaiValue\":\"99\",\"so2Value\":\"0.001\",\"coValue\":\"0.3\",\"pm25Flag\":\"통신장애\",\"pm10Flag\":null,\"o3Grade\":\"2\",\"pm10Value\":\"78\",\"khaiGrade\":\"2\",\"pm25Value\":\"-\",\"sidoName\":\"충남\",\"no2Flag\":null,\"no2Grade\":\"1\",\"o3Flag\":null,\"pm25Grade\":\"2\",\"so2Flag\":null,\"dataTime\":\"2023-04-03 17:00\",\"coGrade\":\"1\",\"no2Value\":\"0.020\",\"stationName\":\"평택당진항(당진항)\",\"pm10Grade\":\"2\",\"o3Value\":\"0.071\"},{\"so2Grade\":\"1\",\"coFlag\":null,\"khaiValue\":\"82\",\"so2Value\":\"0.003\",\"coValue\":\"0.3\",\"pm25Flag\":null,\"pm10Flag\":null,\"o3Grade\":\"2\",\"pm10Value\":\"42\",\"khaiGrade\":\"2\",\"pm25Value\":\"19\",\"sidoName\":\"세종\",\"no2Flag\":null,\"no2Grade\":\"1\",\"o3Flag\":null,\"pm25Grade\":\"2\",\"so2Flag\":null,\"dataTime\":\"2023-04-03 17:00\",\"coGrade\":\"1\",\"no2Value\":\"0.010\",\"stationName\":\"신흥동\",\"pm10Grade\":\"2\",\"o3Value\":\"0.063\"}],\"pageNo\":1,\"numOfRows\":2},\"header\":{\"resultMsg\":\"NORMAL_CODE\",\"resultCode\":\"00\"}}}";
+        mockServer.expect(requestTo(queryParams))
+            .andExpect(method(HttpMethod.GET))
+            .andRespond(withSuccess(expectedResponse, MediaType.APPLICATION_JSON));
 
         // When
-        // url 뒤에 붙일 내용들을 String으로 정의
-        String queryParams = "?serviceKey=" + airApiKey
-            + "&returnType=json"
-            + "&numOfRows=2"
-            + "&pageNo=1"
-            + "&sidoName=전국"
-            + "&ver=1.0";
-
-        // restTemplate를 통한 API 호출
-        ResponseEntity<String> response = restTemplate.exchange(url + queryParams, HttpMethod.GET, entity,
-            String.class);
+        // restTemplate 대신에 mockServer를 사용하여 API 호출
+        ResponseEntity<String> response = restTemplate.getForEntity(queryParams, String.class);
 
         // Then
 
+        // 목 서버 검증
+        mockServer.verify();
         // JSON 객체에 있는 값을 사용하기 위한 작업
         assertNotNull(response.getBody());
-        System.out.println(response.getBody());
+
         JSONObject root = new JSONObject(response.getBody());
         JSONObject res = root.getJSONObject("response");
         JSONObject body = res.getJSONObject("body");
@@ -299,6 +291,6 @@ public class ServiceTests {
         List<AirQualityRealTime> result = airQualityRealTimeRepository.findAll();
 
         // then
-        assertEquals(2, result.size());
+        assertEquals(642, result.size());
     }
 }

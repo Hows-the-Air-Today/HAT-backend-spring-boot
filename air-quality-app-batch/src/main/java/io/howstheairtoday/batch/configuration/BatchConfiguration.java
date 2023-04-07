@@ -17,10 +17,10 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.transaction.PlatformTransactionManager;
 
+import io.howstheairtoday.airqualitydomainrds.dto.response.CurrentDustResponseDTO;
 import io.howstheairtoday.airqualitydomainrds.entity.AirQualityRealTime;
 import io.howstheairtoday.batch.listener.JobCompletionNotificationListener;
 import io.howstheairtoday.service.AirQualityRealTimeService;
-import io.howstheairtoday.service.dto.response.CurrentDustResponseDTO;
 import jakarta.persistence.EntityManagerFactory;
 
 // 배치 Job 생성을 위한 Configuration

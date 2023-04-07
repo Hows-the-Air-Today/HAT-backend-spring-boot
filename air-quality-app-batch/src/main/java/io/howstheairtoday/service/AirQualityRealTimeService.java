@@ -18,7 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
-import io.howstheairtoday.service.dto.response.CurrentDustResponseDTO;
+import io.howstheairtoday.airqualitydomainrds.dto.response.CurrentDustResponseDTO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 
@@ -27,8 +27,6 @@ import lombok.extern.log4j.Log4j2;
 @Log4j2
 public class AirQualityRealTimeService {
 
-    // 이후에 데이터 저장때 사용될 Repository
-    // private final AirQualityRealTimeRepository airQualityRealTimeRepository;
     // 시도별 측정 정보 호출 시에 사용될 API Key
     @Value("${air.apikey}")
     private String airApiKey;

@@ -1,4 +1,4 @@
-package io.howstheairtoday.service.dto.response;
+package io.howstheairtoday.airqualitydomainrds.dto.response;
 
 import java.time.LocalDateTime;
 

@@ -1,4 +1,6 @@
-package io.howstheairtoday.memberappexternalapi.config;
+package io.howstheairtoday.memberappexternalapi.security.config;
+
+import java.util.Arrays;
 
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
@@ -14,10 +16,16 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
-import io.howstheairtoday.memberappexternalapi.service.MemberDetailsService;
-import io.howstheairtoday.memberappexternalapi.service.handler.MemberLoginSuccessHandler;
-import io.howstheairtoday.modulecore.security.filter.MemberLoginFilter;
+import io.howstheairtoday.memberappexternalapi.security.filter.RefreshTokenFilter;
+import io.howstheairtoday.memberappexternalapi.security.filter.TokenCheckFilter;
+import io.howstheairtoday.memberappexternalapi.security.service.MemberDetailsService;
+import io.howstheairtoday.memberappexternalapi.security.service.handler.MemberLoginSuccessHandler;
+import io.howstheairtoday.memberappexternalapi.security.util.JWTUtil;
+import io.howstheairtoday.memberappexternalapi.security.filter.MemberLoginFilter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 
@@ -31,7 +39,32 @@ import lombok.extern.log4j.Log4j2;
 @EnableWebSecurity
 public class CustomSecurityConfig {
 
+    // CORS 설정을 위한 Bean을 생성
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource(){
+
+        CorsConfiguration configuration = new CorsConfiguration();
+        // 모든 요청에 설정
+        configuration.setAllowedOriginPatterns(Arrays.asList("*"));
+        // 메서드 설정
+        configuration.setAllowedMethods(Arrays.asList(
+            "HEAD", "GET", "POST", "PUT", "DELETE", "PATCH"));
+        // 헤더 설정
+        configuration.setAllowedHeaders(Arrays.asList(
+            "Authorization", "Cache-Control", "Content-Type"));
+        //인증 설정
+        configuration.setAllowCredentials(true);
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+        return source;
+    }
+
     private final MemberDetailsService memberDetailsService;
+    private final JWTUtil jwtUtil;
+
+    private TokenCheckFilter tokenCheckFilter(JWTUtil jwtUtil) {
+        return new TokenCheckFilter(jwtUtil);
+    }
 
     @Bean
     PasswordEncoder passwordEncoder() {
@@ -60,8 +93,8 @@ public class CustomSecurityConfig {
         memberLoginFilter.setAuthenticationManager(authenticationManager);
 
         // MemberLoginSuccessHandler - 로그인 인증 성공 이후 작업 처리 설정
-        MemberLoginSuccessHandler successHandler = new MemberLoginSuccessHandler();
-        memberLoginFilter.setAuthenticationManager(authenticationManager);
+        MemberLoginSuccessHandler successHandler = new MemberLoginSuccessHandler(jwtUtil);
+        memberLoginFilter.setAuthenticationSuccessHandler(successHandler);
 
         // MemberLoginFilter 위치 조정
         httpSecurity.addFilterBefore(memberLoginFilter, UsernamePasswordAuthenticationFilter.class);
@@ -71,8 +104,17 @@ public class CustomSecurityConfig {
         httpSecurity.authorizeRequests().requestMatchers("/api/v1/post/**").authenticated().anyRequest().permitAll();
          */
 
+        httpSecurity.addFilterBefore(tokenCheckFilter(jwtUtil), UsernamePasswordAuthenticationFilter.class);
+        //RefreshToken 발급 요청 경로
+        httpSecurity.addFilterBefore(
+            new RefreshTokenFilter("/api/v1/auth/login/refreshtoken", jwtUtil),
+            TokenCheckFilter.class);
+
         httpSecurity.csrf().disable();
         httpSecurity.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+        httpSecurity.cors(httpSecurityCorsConfigurer -> {
+            httpSecurityCorsConfigurer.configurationSource(corsConfigurationSource());
+        });
         return httpSecurity.build();
     }
 

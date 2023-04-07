@@ -5,6 +5,8 @@ import static org.junit.jupiter.api.Assertions.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
@@ -19,13 +21,17 @@ import io.howstheairtoday.airqualitydomainrds.repository.AirQualityRealTimeRepos
 
 @DataJpaTest
 @ActiveProfiles("test")
+// 테스트용 데이터베이스를 자동으로 구성해주는 애노테이션입니다.
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
+// 테스트 컨텍스트를 설정하는 애노테이션입니다.
 @ContextConfiguration(classes = {AirQualityRealTimeRepository.class})
+// Spring Data JPA에서 Repository 인터페이스를 스캔하고 구현체를 생성해주는 애노테이션입니다.
 @EnableJpaRepositories(basePackages = "io.howstheairtoday.airqualitydomainrds.repository")
+// JPA Entity 클래스를 스캔하고 컨텍스트에 등록하는 애노테이션입니다.
 @EntityScan("io.howstheairtoday.airqualitydomainrds.entity")
 // 데이터베이스에 기록 남기기
 // @Transactional(propagation = Propagation.NOT_SUPPORTED)
-public class RepositoryTests {
+public class AirQualityRealTimeRepositoryTest {
 
     @Autowired
     private AirQualityRealTimeRepository airQualityRealTimeRepository;
@@ -89,4 +95,17 @@ public class RepositoryTests {
         assertEquals(saved.getDataTime(), airQualityRealTime.getDataTime());
     }
 
+    @DisplayName("데이터 조회 테스트")
+    @Test
+    public void selectTest() {
+
+        // Given
+        String stationName = "종로구";
+
+        // When
+        AirQualityRealTime airQualityRealTime = airQualityRealTimeRepository.findAirQualityRealTimeByStationName(stationName);
+
+        // Then
+        Assertions.assertNotNull(airQualityRealTime);
+    }
 }
