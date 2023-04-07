@@ -9,7 +9,6 @@ import lombok.Getter;
 
 @Data
 @AllArgsConstructor
-@Getter
 @Builder
 public class CommentRequestDTO {
 

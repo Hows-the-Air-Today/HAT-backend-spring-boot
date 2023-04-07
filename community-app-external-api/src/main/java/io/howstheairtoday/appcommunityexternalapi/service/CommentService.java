@@ -8,14 +8,15 @@ import org.springframework.stereotype.Service;
 import io.howstheairtoday.appcommunityexternalapi.service.dto.request.CommentRequestDTO;
 import io.howstheairtoday.communitydomainrds.entity.Comment;
 import io.howstheairtoday.communitydomainrds.repository.CommentRepository;
+import io.howstheairtoday.communitydomainrds.service.DomainCommunityService;
 import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
 public class CommentService {
 
-    @Autowired
-    private final CommentRepository commentRepository;
+    //private final CommentRepository commentRepository;
+    private final DomainCommunityService domainCommunityService;
 
     //게시물 댓글 작성 처리
     public void createComment(UUID postId, CommentRequestDTO commentRequestDTO){
@@ -26,7 +27,7 @@ public class CommentService {
             .memberId(commentRequestDTO.getMemberId())
             .build();
 
-        commentRepository.save(comment);
+        domainCommunityService.saveComment(comment);
     }
 
 }

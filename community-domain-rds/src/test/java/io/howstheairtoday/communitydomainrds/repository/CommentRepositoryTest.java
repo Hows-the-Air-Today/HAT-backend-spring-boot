@@ -27,7 +27,7 @@ import io.howstheairtoday.communitydomainrds.entity.Comment;
 @EnableJpaRepositories(basePackages = "io.howstheairtoday.communitydomainrds.repository")
 @EntityScan("io.howstheairtoday.communitydomainrds.entity")
 @Transactional(propagation = Propagation.NOT_SUPPORTED)
-public class CommentTest {
+public class CommentRepositoryTest {
 
     @Autowired
     private CommentRepository commentRepository;
@@ -83,7 +83,7 @@ public class CommentTest {
         commentRepository.save(comment1);
 
         //when
-        Comment changecomment = comment1.changeContent("댓글 수정");
+        Comment changecomment = comment1.updateContent("댓글 수정");
         Comment savedComment = commentRepository.save(changecomment);
 
         //then
