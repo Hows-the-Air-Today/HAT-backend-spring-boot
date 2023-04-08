@@ -1,12 +1,12 @@
-package io.howstheairtoday.memberappexternalapi.security.filter;
+package io.howstheairtoday.filter;
 
 import java.io.IOException;
 import java.util.Map;
 
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import io.howstheairtoday.memberappexternalapi.exception.AccessTokenException;
-import io.howstheairtoday.memberappexternalapi.security.util.JWTUtil;
+import io.howstheairtoday.exception.AccessTokenException;
+import io.howstheairtoday.util.JwtUtil;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.SignatureException;
@@ -17,14 +17,11 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 
-/**
- * JWT 인증 필터
- */
 @Log4j2
 @RequiredArgsConstructor
 public class TokenCheckFilter extends OncePerRequestFilter {
 
-    private final JWTUtil jwtUtil;
+    private final JwtUtil jwtUtil;
 
     // Access Token을 검증하는 메서드
     private Map<String, Object> validateAccessToken(HttpServletRequest request) throws AccessTokenException {
@@ -69,15 +66,18 @@ public class TokenCheckFilter extends OncePerRequestFilter {
         FilterChain filterChain) throws IOException, ServletException {
         String path = request.getRequestURI();
         /**
-         * /api/로 시작하는 모든 경로의 호출에 사용되고 사용자는 해당 경로에 다음과 같은 상황으로 접근
-         * [1] Access Token이 없는 경우 - 토큰이 없다는 메시지 전달
-         * [2] Access Token이 잘못된 경우(서명 혹은 구성, 기타 에러) - 잘못된 토큰이라는 메시지 전달
-         * [3] Access Token이 존재하지만 오래된(expired) 값인 경우 - 토큰을 갱신하라는 메시지 전달
+         * [1] 요청 경로가 "/api/"로 시작하는 경우에만 필터링을 수행
+         * 참고: path.startsWith("/api/v1/post/") = /api/v1/post/로 시작하는 URL 경로 접근 모두 허용
+         * [2] Request Header에서 "Authorization" 헤더를 찾아 JWT 토큰을 추출
+         * [3] 추출한 JWT 토큰의 유효성을 검사
+         * [4] 토큰이 유효한 경우, 추출한 토큰에서 사용자 정보를 추출하여 SecurityContext에 저장
+         * [5] 유효한 토큰이 아닌 경우, 401 Unauthorized 응답을 보냅니다.
          */
-        if (!path.startsWith("/api/")) {
+        if (!path.startsWith("/api/")|| path.startsWith("/api/v1/post/")) { // TODO: MEMBER & POST 완료 후 삭제
             filterChain.doFilter(request, response);
             return;
         }
+
         log.info("🛠️ Token Check Filter -------------------- 🛠️");
         log.info("💡 JWTUtil =====> " + jwtUtil);
 

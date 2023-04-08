@@ -5,6 +5,7 @@ include 'modules'
 
 // 공통 모듈 계층
 include 'module-common'
+include 'module-security'
 
 // 내부 모듈 계층
 include 'module-core'

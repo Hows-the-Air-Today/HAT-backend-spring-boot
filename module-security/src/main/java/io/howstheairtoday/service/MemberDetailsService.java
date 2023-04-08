@@ -1,4 +1,4 @@
-package io.howstheairtoday.memberappexternalapi.security.service;
+package io.howstheairtoday.service;
 
 import java.util.List;
 import java.util.Optional;
@@ -9,9 +9,9 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import io.howstheairtoday.memberappexternalapi.service.dto.request.MemberLoginRequestDTO;
 import io.howstheairtoday.memberdomainrds.entity.Member;
 import io.howstheairtoday.memberdomainrds.repository.MemberRepository;
+import io.howstheairtoday.service.dto.MemberDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 
@@ -33,7 +33,7 @@ public class MemberDetailsService implements UserDetailsService {
 
         log.info("🛠️ MemberDetailsService member -------------------- 🛠️");
 
-        MemberLoginRequestDTO dto = new MemberLoginRequestDTO(
+        MemberDto dto = new MemberDto(
             member.getLoginId(),
             member.getLoginPassword(),
             List.of(new SimpleGrantedAuthority("ROLE_USER")));

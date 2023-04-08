@@ -1,4 +1,4 @@
-package io.howstheairtoday.memberappexternalapi.service.dto.request;
+package io.howstheairtoday.service.dto;
 
 import java.util.Collection;
 
@@ -9,18 +9,15 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
-/**
- * Spring Security을 위한 DTO 생성 - 사용자 로그인
- */
 @Getter
 @Setter
 @ToString
-public class MemberLoginRequestDTO extends User {
+public class MemberDto extends User {
 
     private String loginId;
     private String loginPassword;
 
-    public MemberLoginRequestDTO(String username, String password, Collection<GrantedAuthority> authorities) {
+    public MemberDto(String username, String password, Collection<GrantedAuthority> authorities) {
         super(username, password, authorities);
         this.loginId = username;
         this.loginPassword = password;
