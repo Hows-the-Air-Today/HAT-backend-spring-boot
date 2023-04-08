@@ -22,7 +22,6 @@ import lombok.ToString;
 @Entity
 @Table(name = "post_comment")
 @Getter
-@Setter
 @ToString
 @NoArgsConstructor
 public class Comment extends BaseTimeEntity {

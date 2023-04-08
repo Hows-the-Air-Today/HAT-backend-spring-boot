@@ -41,7 +41,7 @@ public class CommentService {
 
         if (comment.isPresent()) {
 
-            updatedComment.setContent(commentRequestDTO.getContent());
+            updatedComment.updateContent(commentRequestDTO.getContent());
             domainCommunityService.saveComment(updatedComment);
         }
 
