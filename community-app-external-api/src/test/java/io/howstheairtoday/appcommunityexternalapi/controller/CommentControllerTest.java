@@ -3,7 +3,6 @@ package io.howstheairtoday.appcommunityexternalapi.controller;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import java.util.UUID;
 
@@ -39,20 +38,23 @@ class CommentControllerTest {
 
     private UUID memberId;
 
+    private CommentRequestDTO requestDTO;
+
     @BeforeEach
     void setUp() {
+
         postId = UUID.randomUUID();
         memberId = UUID.randomUUID();
-        commentId = UUID.fromString("f8c169df-17f9-4994-b587-9c113cec384f");
+        commentId = UUID.fromString("54f1186f-1f26-4105-9adf-db8170b725c5");
+        requestDTO = new CommentRequestDTO();
+        requestDTO.setContent("작성 컨트롤 테스트 댓글");
+        requestDTO.setMemberId(memberId);
     }
 
 
     @DisplayName("댓글 작성 컨트롤러 테스트")
     @Test
     void createComment() throws Exception {
-
-        //given
-        CommentRequestDTO requestDTO = new CommentRequestDTO("test comment", memberId);
 
         //when
         ResultActions resultActions = mockMvc.perform(post("/api/v1/post/{postId}/comments", postId)
@@ -65,13 +67,13 @@ class CommentControllerTest {
 
     @DisplayName("댓글 수정 컨트롤러 테스트")
     @Test
-    void modifyComment() throws Exception{
+    void updateComment() throws Exception{
 
         //given
-        CommentRequestDTO requestDTO = new CommentRequestDTO("test comment update", memberId);
+        requestDTO.setContent("수정");
 
         //when
-        ResultActions resultActions = mockMvc.perform(patch("/api/v1/post/12348e8-87b9-4f57-a651-4462412344bf/comments/{commentId}", commentId)
+        ResultActions resultActions = mockMvc.perform(patch("/api/v1/post/"+ postId +"/comments/{commentId}", commentId)
             .contentType(MediaType.APPLICATION_JSON)
             .content(objectMapper.writeValueAsString(requestDTO)));
 
