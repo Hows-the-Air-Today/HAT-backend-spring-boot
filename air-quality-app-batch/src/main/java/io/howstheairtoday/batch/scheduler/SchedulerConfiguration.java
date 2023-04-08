@@ -45,7 +45,7 @@ public class SchedulerConfiguration {
 
             log.info("JobExecution: " + jobExecution.getStatus());
         }catch (Exception e){
-            log.info(e.getMessage());
+            log.error(e.getMessage());
         }
 
     }

@@ -60,13 +60,13 @@ public class AirQualityRealTimeService {
             // restTemplate를 통한 API 호출
             response = restTemplate.exchange(url + queryParams, HttpMethod.GET, entity, String.class);
         }catch (RestClientException re){
-            log.info("Api 호출 오류 및 재시도 실행" + re);
+            log.error("Api 호출 오류 및 재시도 실행" + re);
             try {
                 // 5초 대기 후 재시도
                 Thread.sleep(5000);
                 response = restTemplate.exchange(url + queryParams, HttpMethod.GET, entity, String.class);
             } catch (Exception e) {
-                log.info("재시도 중 Exception 발생" + e);
+                log.error("재시도 중 Exception 발생" + e);
             }
         }
 
