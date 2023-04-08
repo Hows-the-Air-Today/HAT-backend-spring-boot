@@ -73,7 +73,9 @@ public class TokenCheckFilter extends OncePerRequestFilter {
          * [4] 토큰이 유효한 경우, 추출한 토큰에서 사용자 정보를 추출하여 SecurityContext에 저장
          * [5] 유효한 토큰이 아닌 경우, 401 Unauthorized 응답을 보냅니다.
          */
-        if (!path.startsWith("/api/")|| path.startsWith("/api/v1/post/")) { // TODO: MEMBER & POST 완료 후 삭제
+        if (!path.startsWith("/api/")||
+            path.startsWith("/api/v1/post/")|| // TODO: MEMBER & POST 완료 후 삭제
+            path.startsWith("/api/v1/auth/register")) {
             filterChain.doFilter(request, response);
             return;
         }

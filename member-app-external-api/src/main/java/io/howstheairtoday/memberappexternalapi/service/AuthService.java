@@ -5,6 +5,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import io.howstheairtoday.memberappexternalapi.common.ApiResponse;
+import io.howstheairtoday.memberappexternalapi.common.MemberExceptionHandler;
 import io.howstheairtoday.memberappexternalapi.exception.DuplicationIdException;
 import io.howstheairtoday.memberappexternalapi.exception.DuplicationNicknameException;
 import io.howstheairtoday.memberappexternalapi.exception.PasswordNotMatchedException;
@@ -22,7 +23,7 @@ public class AuthService {
 
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
-    // private final MemberExceptionHandler memberExceptionHandler;
+    private final MemberExceptionHandler memberExceptionHandler;
 
     /**
      * 회원가입

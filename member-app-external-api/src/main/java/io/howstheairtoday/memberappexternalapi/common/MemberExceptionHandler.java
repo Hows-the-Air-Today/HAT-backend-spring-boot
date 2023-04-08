@@ -2,12 +2,14 @@ package io.howstheairtoday.memberappexternalapi.common;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import io.howstheairtoday.memberappexternalapi.exception.DuplicationIdException;
 import io.howstheairtoday.memberappexternalapi.exception.DuplicationNicknameException;
 import io.howstheairtoday.memberappexternalapi.exception.PasswordNotMatchedException;
 
+@ControllerAdvice
 public class MemberExceptionHandler {
 
     @ExceptionHandler(DuplicationIdException.class)
