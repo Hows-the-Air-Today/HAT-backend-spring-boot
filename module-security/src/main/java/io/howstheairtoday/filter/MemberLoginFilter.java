@@ -1,4 +1,4 @@
-package io.howstheairtoday.memberappexternalapi.security.filter;
+package io.howstheairtoday.filter;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -16,19 +16,14 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.log4j.Log4j2;
 
-/**
- * 토큰 인증을 위한 Security 필터 설정
- * JWT의 Access Token과 Refresh Token을 얻으려는 단계를 구현하기 위한 설정
- */
 @Log4j2
 public class MemberLoginFilter extends AbstractAuthenticationProcessingFilter {
 
-    public MemberLoginFilter(final String defaultFilterProcessesUrl) {
+    public MemberLoginFilter(String defaultFilterProcessesUrl) {
         super(defaultFilterProcessesUrl);
     }
 
-    // 파라미터를 읽어서 Map으로 만들어주는 메서드
-    private Map<String, String> parseRequestJSON(final HttpServletRequest request) {
+    private Map<String,String> parseRequestJSON(HttpServletRequest request) {
 
         // JSON 데이터를 분석해 loginId, loginPassword 전달 값을 Map으로 처리
         try (Reader reader = new InputStreamReader(request.getInputStream())) {
@@ -41,9 +36,8 @@ public class MemberLoginFilter extends AbstractAuthenticationProcessingFilter {
     }
 
     @Override
-    public Authentication attemptAuthentication(
-        final HttpServletRequest request, final HttpServletResponse response)
-        throws AuthenticationException, IOException {
+    public Authentication attemptAuthentication (HttpServletRequest request,
+        HttpServletResponse response) throws AuthenticationException, IOException {
 
         log.info("🛠️ MemberLoginFilter -------------------- 🛠️");
 
@@ -53,8 +47,9 @@ public class MemberLoginFilter extends AbstractAuthenticationProcessingFilter {
         }
 
         Map<String, String> jsonData = parseRequestJSON(request);
+
         log.info("💡 jsonData =====> " + jsonData);
-        // 회원 가입 Service 로직 단계에서 확인 예정
+
         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
             jsonData.get("loginId"), jsonData.get("loginPassword"));
 

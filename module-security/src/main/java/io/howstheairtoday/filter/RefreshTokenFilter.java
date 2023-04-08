@@ -1,4 +1,4 @@
-package io.howstheairtoday.memberappexternalapi.security.filter;
+package io.howstheairtoday.filter;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -12,8 +12,8 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import com.google.gson.Gson;
 
-import io.howstheairtoday.memberappexternalapi.exception.RefreshTokenException;
-import io.howstheairtoday.memberappexternalapi.security.util.JWTUtil;
+import io.howstheairtoday.exception.RefreshTokenException;
+import io.howstheairtoday.util.JwtUtil;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.MalformedJwtException;
 import jakarta.servlet.FilterChain;
@@ -23,17 +23,12 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 
-/**
- * RefreshToken 검증 필터
- * refreshToken 경로와 JWTUtil 인스턴스를 주입
- * - 해당 경로가 아닌 경우에는 다음 순서의 필터가 실행
- */
 @Log4j2
 @RequiredArgsConstructor
 public class RefreshTokenFilter extends OncePerRequestFilter {
 
     private final String refreshPath;
-    private final JWTUtil jwtUtil;
+    private final JwtUtil jwtUtil;
 
     private Map<String, String> parseRequestJSON(HttpServletRequest request) {
 
@@ -91,22 +86,29 @@ public class RefreshTokenFilter extends OncePerRequestFilter {
         HttpServletRequest request,
         HttpServletResponse response,
         FilterChain filterChain) throws ServletException, IOException {
-        String path = request.getRequestURI();
 
+        /**
+         * [1] 필터는 요청이 특정 경로(refreshPath)와 일치하는지 확인
+         * [2] 일치하는 경우 JwtUtil을 사용하여 토큰을 재발급
+         * [3] 그렇지 않은 경우, "SKIP: Refresh Token Filter" 로그 메시지를 출력하고,
+         * [4] 다음 필터 체인으로 요청을 전달합니다.
+         */
+        String path = request.getRequestURI();
         if (!path.equals(refreshPath)) {
             log.info("🛠️ SKIP: Refresh Token Filter -------------------- 🛠️");
             filterChain.doFilter(request, response);
             return;
         }
+
         log.info("🛠️ RUN: Refresh Token Filter -------------------- 🛠️");
 
         // 전송된 JSON에서 AccessToken과 RefreshToken을 받아옴
         Map<String, String> tokens = parseRequestJSON(request);
 
         String accessToken = tokens.get("accessToken");
-        log.info("💡 AccessToken =====> " + accessToken);
-
         String refreshToken = tokens.get("refreshToken");
+
+        log.info("💡 AccessToken =====> " + accessToken);
         log.info("💡 RefreshToken =====> " + refreshToken);
 
         try {
@@ -126,16 +128,15 @@ public class RefreshTokenFilter extends OncePerRequestFilter {
             return;
         }
 
-        // Refresh Token의 유효기간이 얼마 남지 않을 경우
+        /**
+         * 만료 시간과 현재 시간의 간격 계산
+         * 만일 3일 미만인 경우, Refresh Token 재발급
+         */
         Integer exp = (Integer)refreshClaims.get("exp");
 
         Date expTime = new Date(Instant.ofEpochMilli(exp).toEpochMilli() * 1000);
         Date current = new Date(System.currentTimeMillis());
 
-        /**
-         * 만료 시간과 현재 시간의 간격 계산
-         * 만일 3일 미만인 경우, Refresh Token 재발급
-         */
         long gapTime = (expTime.getTime() - current.getTime());
 
         log.info("🕑 Current Time =====> " + current);
@@ -143,12 +144,11 @@ public class RefreshTokenFilter extends OncePerRequestFilter {
         log.info("💡 GAP Time =====> " + gapTime);
 
         String loginId = (String)refreshClaims.get("loginId");
-        String accessTokenValue = jwtUtil.generateToken(Map.of("loginId", loginId), 30 * 60);
+        String accessTokenValue = jwtUtil.generateToken(Map.of("loginId", loginId), 30);
         String refreshTokenValue = tokens.get("refreshToken");
-
         if (gapTime < (1000 * 60 * 60 * 24 * 3)) {
             log.info("🛠️ Refresh Token Required -------------------- 🛠️");
-            refreshTokenValue = jwtUtil.generateToken(Map.of("loginId", loginId), 60 * 24 * 7);
+            refreshTokenValue = jwtUtil.generateToken(Map.of("loginId", loginId), 60 * 24 * 3);
         }
 
         log.info("🛠️ Refresh Token Result -------------------- 🛠️");

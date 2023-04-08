@@ -1,5 +1,6 @@
 package io.howstheairtoday.memberdomainrds.entity;
 
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 import org.hibernate.annotations.GenericGenerator;
@@ -54,12 +55,17 @@ public class Member extends BaseTimeEntity {
     @Column(nullable = false)
     private LoginRole loginRole;
 
-    @Column(length = 255)
+    @Column(length = 255, nullable = true)
     private String refreshToken;
 
     public void encodePassword(PasswordEncoder passwordEncoder) {
         this.loginPassword = passwordEncoder.encode(loginPassword);
     }
+
+    public void setRefreshToken(String refreshToken) {
+        this.refreshToken = refreshToken;
+    }
+
 
     @Builder
     public Member(String loginId, String loginPassword, String email, String nickname, String memberProfileImage,

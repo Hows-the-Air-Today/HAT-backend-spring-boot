@@ -1,4 +1,4 @@
-package io.howstheairtoday.memberappexternalapi.exception;
+package io.howstheairtoday.exception;
 
 import java.util.Date;
 import java.util.Map;
@@ -20,7 +20,7 @@ public class AccessTokenException extends RuntimeException {
     public enum TOKEN_ERROR {
 
         UNACCEPT(401, "Token is null or too short"),
-        BADTYPE(401, "TOken type Bearer"),
+        BADTYPE(401, "Token type Bearer"),
         MALFORM(403, "Malformed Token"),
         BADSIGN(403, "BadSignatured Token"),
         EXPIRED(403, "Expired Token");

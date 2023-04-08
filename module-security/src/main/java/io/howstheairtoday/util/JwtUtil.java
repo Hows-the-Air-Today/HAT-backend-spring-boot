@@ -1,4 +1,4 @@
-package io.howstheairtoday.memberappexternalapi.security.util;
+package io.howstheairtoday.util;
 
 import java.sql.Date;
 import java.time.ZonedDateTime;
@@ -15,12 +15,13 @@ import lombok.extern.log4j.Log4j2;
 
 @Component
 @Log4j2
-public class JWTUtil {
+public class JwtUtil {
 
     @Value("${io.hat.memberjwt.secret}")
     private String key;
 
-    public String generateToken(Map<String, Object> valueMap, int days) {
+
+    public String generateToken(Map<String, Object> valueMap, int minutes) {
 
         // Header Part
         Map<String, Object> headers = new HashMap<>();
@@ -31,8 +32,7 @@ public class JWTUtil {
         Map<String, Object> payloads = new HashMap<>();
         payloads.putAll(valueMap);
 
-        // 1일 = 60 * 24
-        int time = (60 * 24) * days;
+        int time = 1 * minutes; // 1분
 
         String jwtStr = Jwts.builder()
             .setHeader(headers)

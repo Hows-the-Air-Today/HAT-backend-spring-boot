@@ -11,16 +11,16 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import io.howstheairtoday.memberappexternalapi.security.util.JWTUtil;
+import io.howstheairtoday.util.JwtUtil;
 import io.jsonwebtoken.MalformedJwtException;
 import lombok.extern.log4j.Log4j2;
 
 @SpringBootTest
 @Log4j2
-class JWTUtilTest {
+class JwTUtilTest {
 
     @Autowired
-    private JWTUtil jwtUtil;
+    private JwtUtil jwtUtil;
 
     private String jwtToken;
 

@@ -1,4 +1,4 @@
-package io.howstheairtoday.memberappexternalapi.security.config;
+package io.howstheairtoday.config;
 
 import java.util.Arrays;
 
@@ -20,24 +20,25 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
-import io.howstheairtoday.memberappexternalapi.security.filter.RefreshTokenFilter;
-import io.howstheairtoday.memberappexternalapi.security.filter.TokenCheckFilter;
-import io.howstheairtoday.memberappexternalapi.security.service.MemberDetailsService;
-import io.howstheairtoday.memberappexternalapi.security.service.handler.MemberLoginSuccessHandler;
-import io.howstheairtoday.memberappexternalapi.security.util.JWTUtil;
-import io.howstheairtoday.memberappexternalapi.security.filter.MemberLoginFilter;
+import io.howstheairtoday.filter.MemberLoginFilter;
+import io.howstheairtoday.filter.RefreshTokenFilter;
+import io.howstheairtoday.filter.TokenCheckFilter;
+import io.howstheairtoday.memberdomainrds.repository.MemberRepository;
+import io.howstheairtoday.service.MemberDetailsService;
+import io.howstheairtoday.service.handler.LoginSuccessHandler;
+import io.howstheairtoday.util.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 
-/**
- * Security 설정 클래스
- */
 @Configuration
 @Log4j2
 @RequiredArgsConstructor
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 @EnableWebSecurity
 public class CustomSecurityConfig {
+    private final MemberRepository memberRepository;
+    private final MemberDetailsService memberDetailsService;
+    private final JwtUtil jwtUtil;
 
     // CORS 설정을 위한 Bean을 생성
     @Bean
@@ -59,10 +60,8 @@ public class CustomSecurityConfig {
         return source;
     }
 
-    private final MemberDetailsService memberDetailsService;
-    private final JWTUtil jwtUtil;
 
-    private TokenCheckFilter tokenCheckFilter(JWTUtil jwtUtil) {
+    private TokenCheckFilter tokenCheckFilter(JwtUtil jwtUtil) {
         return new TokenCheckFilter(jwtUtil);
     }
 
@@ -72,52 +71,55 @@ public class CustomSecurityConfig {
     }
 
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
         log.info("🛠️ configure -------------------- 🛠️");
 
-        // filter.MemberLoginFilter - AuthenticationManager 설정
+        /**
+         * AuthenticationManagerBuilder
+         * 인증 정보를 제공하는 userDetailsService와 비밀번호 인코딩을 위한 passwordEncoder를 설정하는 빌더 클래스
+         */
         AuthenticationManagerBuilder authenticationManagerBuilder =
-            httpSecurity.getSharedObject(AuthenticationManagerBuilder.class);
-        authenticationManagerBuilder
-            .userDetailsService(memberDetailsService)
-            .passwordEncoder(passwordEncoder());
-
-        // Get AuthenticationManager
+            http.getSharedObject(AuthenticationManagerBuilder.class);
+        authenticationManagerBuilder.userDetailsService(memberDetailsService).passwordEncoder(passwordEncoder());
         AuthenticationManager authenticationManager = authenticationManagerBuilder.build();
-        httpSecurity.authenticationManager(authenticationManager);
+        http.authenticationManager(authenticationManager);
 
-        // MemberLoginFilter
-        // Spring Security에서 username과 password를 처리하는 UsernamePasswordAuthenticationFilter의 앞쪽에서 동작하도록 설정
+        /**
+         * authenticationManager는 인증 처리를 위한 AuthenticationManager 객체를 의미
+         * MemberDetailsService 클래스를 통해 유저 정보를 조회하고, 인증 처리를 수행
+         * Spring Security를 사용할 경우 로그인 처리 로직을 직접 작성하지 않고,
+         * Spring Security가 제공하는 로그인 기능을 사용
+         */
         MemberLoginFilter memberLoginFilter = new MemberLoginFilter("/api/**/auth/login");
         memberLoginFilter.setAuthenticationManager(authenticationManager);
 
-        // MemberLoginSuccessHandler - 로그인 인증 성공 이후 작업 처리 설정
-        MemberLoginSuccessHandler successHandler = new MemberLoginSuccessHandler(jwtUtil);
-        memberLoginFilter.setAuthenticationSuccessHandler(successHandler);
-
-        // MemberLoginFilter 위치 조정
-        httpSecurity.addFilterBefore(memberLoginFilter, UsernamePasswordAuthenticationFilter.class);
-
-        /*
-        // post 기능에 인증된 회원만 접속 가능토록 설정
-        httpSecurity.authorizeRequests().requestMatchers("/api/v1/post/**").authenticated().anyRequest().permitAll();
+        /**
+         * MemberLoginFilter의 setAuthenticationSuccessHandler() 메서드를 호출
+         * LoginSuccessHandler 객체를 등록함으로써 로그인 성공 시 LoginSuccessHandler 클래스의 onAuthenticationSuccess() 메서드가 호출되도록 설정
          */
+        LoginSuccessHandler loginSuccessHandler = new LoginSuccessHandler(jwtUtil, memberRepository);
+        memberLoginFilter.setAuthenticationSuccessHandler(loginSuccessHandler);
 
-        httpSecurity.addFilterBefore(tokenCheckFilter(jwtUtil), UsernamePasswordAuthenticationFilter.class);
-        //RefreshToken 발급 요청 경로
-        httpSecurity.addFilterBefore(
-            new RefreshTokenFilter("/api/v1/auth/login/refreshtoken", jwtUtil),
-            TokenCheckFilter.class);
+        http.addFilterBefore(memberLoginFilter, UsernamePasswordAuthenticationFilter.class);
+        http.addFilterBefore(tokenCheckFilter(jwtUtil), UsernamePasswordAuthenticationFilter.class);
 
-        httpSecurity.csrf().disable();
-        httpSecurity.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-        httpSecurity.cors(httpSecurityCorsConfigurer -> {
+        http.addFilterBefore(new RefreshTokenFilter("/api/**/auth/login", jwtUtil), TokenCheckFilter.class);
+
+        http.csrf().disable();
+        // Spring Security에서 세션을 사용하지 않도록 설정
+        http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+        http.cors(httpSecurityCorsConfigurer -> {
             httpSecurityCorsConfigurer.configurationSource(corsConfigurationSource());
         });
-        return httpSecurity.build();
+        return http.build();
     }
 
+    /**
+     * Spring Security에서 정적 자원(static resources)에 대한 요청을 무시하도록 설정
+     * [1] 모든 요청에 대해 인가를 수행하면 애플리케이션의 성능에 영향을 줄 수 있다.
+     * [2] 정적 자원에 대한 요청은 일반적으로 보안상의 이슈가 없기 때문에 애플리케이션의 성능을 향상 시키기 위해서 설정
+     */
     @Bean
     public WebSecurityCustomizer webSecurityCustomizer() {
 
