@@ -22,6 +22,10 @@ dependencies {
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
 
+    // 스프링 배치를 사용하기 위한 의존성 주입
+    implementation 'org.springframework.boot:spring-boot-starter-batch'
+    testImplementation 'org.springframework.batch:spring-batch-test'
+
     // https://mvnrepository.com/artifact/org.json/json
     implementation 'org.json:json:20230227'
     implementation 'com.googlecode.json-simple:json-simple:1.1.1'
