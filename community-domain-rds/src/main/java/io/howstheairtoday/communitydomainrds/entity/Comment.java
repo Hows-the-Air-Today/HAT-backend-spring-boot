@@ -16,13 +16,14 @@ import jakarta.persistence.Table;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.ToString;
 
 @Entity
 @Table(name = "post_comment")
 @Getter
-@NoArgsConstructor
 @ToString
+@NoArgsConstructor
 public class Comment extends BaseTimeEntity {
 
     //댓글 ID
@@ -54,7 +55,7 @@ public class Comment extends BaseTimeEntity {
     }
 
     //내용 수정 테스트 메소드
-    public Comment changeContent(String content) {
+    public Comment updateContent(String content) {
 
         this.content = content;
         return this;

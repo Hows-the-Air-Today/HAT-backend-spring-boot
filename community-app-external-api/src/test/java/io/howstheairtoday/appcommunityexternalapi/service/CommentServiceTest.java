@@ -1,8 +1,8 @@
 package io.howstheairtoday.appcommunityexternalapi.service;
 
+import static org.assertj.core.api.AssertionsForClassTypes.*;
 import static org.junit.jupiter.api.Assertions.*;
 
-import java.util.List;
 import java.util.UUID;
 
 import org.junit.jupiter.api.DisplayName;
@@ -13,7 +13,6 @@ import org.springframework.test.context.ActiveProfiles;
 
 import io.howstheairtoday.appcommunityexternalapi.service.dto.request.CommentRequestDTO;
 import io.howstheairtoday.communitydomainrds.entity.Comment;
-import io.howstheairtoday.communitydomainrds.repository.CommentRepository;
 
 @ActiveProfiles("test")
 @SpringBootTest
@@ -40,5 +39,30 @@ public class CommentServiceTest {
         assertNotNull(postId);
         assertNotNull(commentRequestDTO.getContent());
         assertNotNull(commentRequestDTO.getMemberId());
+    }
+
+    @DisplayName("댓글 수정")
+    @Test
+    void updateComment() {
+
+        // given
+        UUID postId = UUID.randomUUID();
+
+        CommentRequestDTO commentRequestDTO = CommentRequestDTO.builder()
+            .content("테스트 댓글2")
+            .memberId(UUID.randomUUID())
+            .build();
+
+        Comment savedComment = commentService.createComment(postId, commentRequestDTO);
+
+        CommentRequestDTO requestDTO = CommentRequestDTO.builder()
+            .content("수정된 댓글")
+            .build();
+
+        // when
+        Comment updatedComment = commentService.updateComment(savedComment.getCommentId(), requestDTO);
+
+        // then
+        assertThat(updatedComment.getContent()).isEqualTo("수정된 댓글");
     }
 }
