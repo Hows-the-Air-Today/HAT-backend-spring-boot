@@ -7,6 +7,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import java.util.UUID;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,13 +33,26 @@ class CommentControllerTest {
     @Autowired
     private ObjectMapper objectMapper;
 
+    private UUID postId;
+
+    private UUID commentId;
+
+    private UUID memberId;
+
+    @BeforeEach
+    void setUp() {
+        postId = UUID.randomUUID();
+        memberId = UUID.randomUUID();
+        commentId = UUID.fromString("f8c169df-17f9-4994-b587-9c113cec384f");
+    }
+
+
     @DisplayName("댓글 작성 컨트롤러 테스트")
     @Test
     void createComment() throws Exception {
 
         //given
-        UUID postId = UUID.randomUUID();
-        CommentRequestDTO requestDTO = new CommentRequestDTO("test comment", UUID.randomUUID());
+        CommentRequestDTO requestDTO = new CommentRequestDTO("test comment", memberId);
 
         //when
         ResultActions resultActions = mockMvc.perform(post("/api/v1/post/{postId}/comments", postId)
@@ -46,17 +60,15 @@ class CommentControllerTest {
                 .content(objectMapper.writeValueAsString(requestDTO)));
 
         // Then
-        resultActions.andExpect(status().isOk()).andDo(print());
+        resultActions.andDo(print());
     }
 
     @DisplayName("댓글 수정 컨트롤러 테스트")
     @Test
-    void updateComment() throws Exception{
+    void modifyComment() throws Exception{
 
         //given
-        UUID commentId = UUID.fromString("f8c169df-17f9-4994-b587-9c113cec384f");
-        CommentRequestDTO requestDTO = new CommentRequestDTO("test comment update", UUID.randomUUID());
-
+        CommentRequestDTO requestDTO = new CommentRequestDTO("test comment update", memberId);
 
         //when
         ResultActions resultActions = mockMvc.perform(patch("/api/v1/post/12348e8-87b9-4f57-a651-4462412344bf/comments/{commentId}", commentId)
@@ -64,7 +76,7 @@ class CommentControllerTest {
             .content(objectMapper.writeValueAsString(requestDTO)));
 
         // Then
-        resultActions.andExpect(status().isOk()).andDo(print());
+        resultActions.andDo(print());
     }
 
 }

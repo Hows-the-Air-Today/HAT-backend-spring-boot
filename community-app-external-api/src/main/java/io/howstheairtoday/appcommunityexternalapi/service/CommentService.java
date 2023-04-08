@@ -8,7 +8,6 @@ import org.springframework.stereotype.Service;
 
 import io.howstheairtoday.appcommunityexternalapi.service.dto.request.CommentRequestDTO;
 import io.howstheairtoday.communitydomainrds.entity.Comment;
-import io.howstheairtoday.communitydomainrds.repository.CommentRepository;
 import io.howstheairtoday.communitydomainrds.service.DomainCommunityService;
 import lombok.RequiredArgsConstructor;
 
@@ -16,7 +15,6 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class CommentService {
 
-    private final CommentRepository commentRepository;
     private final DomainCommunityService domainCommunityService;
 
     //게시물 댓글 작성 처리
