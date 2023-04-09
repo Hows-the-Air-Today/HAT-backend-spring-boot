@@ -81,4 +81,17 @@ class CommentControllerTest {
         resultActions.andDo(print());
     }
 
+    @DisplayName("댓글 삭제 컨트롤러 테스트")
+    @Test
+    void deletedComment() throws Exception{
+
+        //when
+        ResultActions resultActions = mockMvc.perform(delete("/api/v1/post/"+ postId +"/comments/{commentId}", commentId)
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(objectMapper.writeValueAsString(requestDTO)));
+
+        // Then
+        resultActions.andDo(print());
+    }
+
 }
