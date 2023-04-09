@@ -15,11 +15,11 @@ import lombok.Data;
 @Builder
 public class ApiResponse<T> {
 
-    /** 응답 메시지. */
-    private String msg;
-
     /** 응답 코드. */
     private Integer statusCode;
+
+    /** 응답 메시지. */
+    private String msg;
 
     /** 데이터. */
     private T data;
