@@ -28,4 +28,9 @@ public class BaseTimeEntity {
     @Column(name = "deleted_at")
     @Setter
     private LocalDateTime deletedAt;
+
+    // soft delete 메소드
+    public void deletedAt(LocalDateTime deletedAt){
+        this.deletedAt = deletedAt;
+    }
 }
