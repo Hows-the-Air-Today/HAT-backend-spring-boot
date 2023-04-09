@@ -7,6 +7,7 @@ import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -50,6 +51,18 @@ public class CommentController {
         return ApiResponse.<Object>builder()
             .statusCode(HttpStatus.CREATED.value())
             .msg("수정 성공했습니다.")
+            .build();
+    }
+
+    //게시물 댓글 삭제
+    @DeleteMapping("/{postId}/comments/{commentId}")
+    public ApiResponse<Object> deleteComment(@PathVariable("commentId") UUID commentId) {
+
+        commentService.deleteComment(commentId);
+
+        return ApiResponse.<Object>builder()
+            .statusCode(HttpStatus.CREATED.value())
+            .msg("삭제 성공했습니다.")
             .build();
     }
 }
