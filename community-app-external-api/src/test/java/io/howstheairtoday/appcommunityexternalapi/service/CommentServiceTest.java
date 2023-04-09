@@ -65,4 +65,25 @@ public class CommentServiceTest {
         // then
         assertThat(updatedComment.getContent()).isEqualTo("수정된 댓글");
     }
+
+    @DisplayName("댓글 삭제")
+    @Test
+    void deletedComment() {
+
+        // given
+        UUID postId = UUID.randomUUID();
+
+        CommentRequestDTO commentRequestDTO = CommentRequestDTO.builder()
+            .content("테스트 댓글중")
+            .memberId(UUID.randomUUID())
+            .build();
+
+        Comment savedComment = commentService.createComment(postId, commentRequestDTO);
+
+        // when
+        Comment updatedComment = commentService.deleteComment(savedComment.getCommentId());
+
+        // then
+        assertNotNull(updatedComment.getDeletedAt());
+    }
 }

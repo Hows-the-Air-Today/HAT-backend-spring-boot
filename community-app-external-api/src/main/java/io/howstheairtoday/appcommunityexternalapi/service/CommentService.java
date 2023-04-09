@@ -1,5 +1,6 @@
 package io.howstheairtoday.appcommunityexternalapi.service;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -8,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import io.howstheairtoday.appcommunityexternalapi.service.dto.request.CommentRequestDTO;
 import io.howstheairtoday.communitydomainrds.entity.Comment;
+import io.howstheairtoday.communitydomainrds.repository.CommentRepository;
 import io.howstheairtoday.communitydomainrds.service.DomainCommunityService;
 import lombok.RequiredArgsConstructor;
 
@@ -44,6 +46,19 @@ public class CommentService {
         }
 
         return updatedComment;
+    }
+
+    //게시물 댓글 삭제 처리 (softDelete)
+    public Comment deleteComment(UUID commentId) {
+
+        Optional<Comment> comment = domainCommunityService.findCommentId(commentId);
+
+        Comment deletedComment = comment.get();
+        deletedComment.deletedAt(LocalDateTime.now());
+
+        domainCommunityService.saveComment(deletedComment);
+
+        return deletedComment;
     }
 
 }
