@@ -103,8 +103,6 @@ public class AirQualityRealTimeServiceTest {
         // 목 서버 검증
         mockServer.verify();
 
-        // Then
-
         // JSON 객체에 있는 값을 사용하기 위한 작업
         assertNotNull(response.getBody());
         JSONObject root = new JSONObject(response.getBody());
