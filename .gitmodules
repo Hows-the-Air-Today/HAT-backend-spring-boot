@@ -40,3 +40,6 @@
 [submodule "module-security/src/main/resources/security"]
 	path = module-security/src/main/resources/security
 	url = https://github.com/Hows-the-Air-Today/security.git
+[submodule "air-quality-client/src/main/resources/security"]
+	path = air-quality-client/src/main/resources/security
+	url = https://github.com/Hows-the-Air-Today/security.git

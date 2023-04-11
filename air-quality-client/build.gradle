@@ -1,0 +1,52 @@
+plugins {
+    id 'java'
+    id 'org.springframework.boot' version '3.0.4'
+    id 'io.spring.dependency-management' version '1.1.0'
+}
+
+group = 'io.howstheairtoday'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = '17'
+
+bootJar {
+    enabled = false
+}
+
+jar {
+    enabled = true
+}
+
+configurations {
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
+
+    all {
+        // Logback과의 충돌 방지
+        exclude group: 'org.springframework.boot', module: 'spring-boot-starter-logging'
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    // lombok
+    compileOnly 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
+
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.retry:spring-retry'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+
+    // LOGGING
+    implementation 'org.springframework.boot:spring-boot-starter-log4j2'
+
+    // https://mvnrepository.com/artifact/org.json/json
+    implementation 'org.json:json:20230227'
+}
+
+tasks.named('test') {
+    useJUnitPlatform()
+}
