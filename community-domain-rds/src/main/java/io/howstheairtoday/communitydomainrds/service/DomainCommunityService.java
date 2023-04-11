@@ -3,6 +3,8 @@ package io.howstheairtoday.communitydomainrds.service;
 import java.util.Optional;
 import java.util.UUID;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.stereotype.Service;
 
@@ -38,9 +40,11 @@ public class DomainCommunityService {
 
     //게시글 댓글 저장 메소드
     @Transactional
-    public void saveComment(Comment comment){
+    public Comment saveComment(Comment comment){
 
         commentRepository.save(comment);
+
+        return comment;
     }
 
     //게시물 ID 검색 메소드
@@ -50,6 +54,10 @@ public class DomainCommunityService {
         return commentRepository.findByCommentId(commentID);
     }
 
+    //게시물의 댓글 조회 메소드
+    @Transactional
+    public Page<Comment> findbyComments(UUID postId, Pageable pageable){
 
-
+        return commentRepository.findByPostIdAndDeletedAtIsNull(postId, pageable);
+    }
 }
