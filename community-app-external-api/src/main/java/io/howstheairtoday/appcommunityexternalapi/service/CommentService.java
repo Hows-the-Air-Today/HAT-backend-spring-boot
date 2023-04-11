@@ -44,6 +44,7 @@ public class CommentService {
             .commentId(comment.getCommentId())
             .content(comment.getContent())
             .memberId(comment.getMemberId())
+            .postId(comment.getPostId())
             .createdAt(comment.getCreatedAt())
             .updatedAt(comment.getUpdatedAt())
             .build());
