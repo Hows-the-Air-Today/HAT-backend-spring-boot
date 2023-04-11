@@ -19,7 +19,8 @@ import org.springframework.test.web.servlet.ResultActions;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import io.howstheairtoday.appcommunityexternalapi.service.dto.request.CommentRequestDTO;
+import io.howstheairtoday.communitydomainrds.entity.Comment;
+import io.howstheairtoday.communitydomainrds.service.DomainCommunityService;
 
 @ActiveProfiles("test")
 @SpringBootTest
@@ -38,17 +39,28 @@ class CommentControllerTest {
 
     private UUID memberId;
 
-    private CommentRequestDTO requestDTO;
+    private Comment comment;
+
+    private Comment savedComment;
+
+    @Autowired
+    private DomainCommunityService domainCommunityService;
 
     @BeforeEach
     void setUp() {
 
         postId = UUID.randomUUID();
         memberId = UUID.randomUUID();
-        commentId = UUID.fromString("54f1186f-1f26-4105-9adf-db8170b725c5");
-        requestDTO = new CommentRequestDTO();
-        requestDTO.setContent("작성 컨트롤 테스트 댓글");
-        requestDTO.setMemberId(memberId);
+
+        comment = Comment.builder()
+            .content("작성 댓글")
+            .memberId(memberId)
+            .build();
+
+        savedComment = domainCommunityService.saveComment(comment);
+
+        commentId = savedComment.getCommentId();
+
     }
 
 
@@ -56,12 +68,30 @@ class CommentControllerTest {
     @Test
     void createComment() throws Exception {
 
+        //given
+        Comment comment2 = Comment.builder()
+            .content("작성 댓글")
+            .memberId(memberId)
+            .build();
+
         //when
         ResultActions resultActions = mockMvc.perform(post("/api/v1/post/{postId}/comments", postId)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(requestDTO)));
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(objectMapper.writeValueAsString(comment2)));
 
         // Then
+        resultActions.andDo(print());
+    }
+
+    @DisplayName("댓글 조회 컨트롤러 테스트")
+    @Test
+    void getComment() throws Exception{
+
+        //when
+        ResultActions resultActions = mockMvc.perform(get("/api/v1/post/{postId}/comments", postId)
+            .contentType(MediaType.APPLICATION_JSON));
+
+        //then
         resultActions.andDo(print());
     }
 
@@ -70,12 +100,12 @@ class CommentControllerTest {
     void updateComment() throws Exception{
 
         //given
-        requestDTO.setContent("수정");
+        comment.updateContent("수정");
 
         //when
         ResultActions resultActions = mockMvc.perform(patch("/api/v1/post/"+ postId +"/comments/{commentId}", commentId)
             .contentType(MediaType.APPLICATION_JSON)
-            .content(objectMapper.writeValueAsString(requestDTO)));
+            .content(objectMapper.writeValueAsString(comment)));
 
         // Then
         resultActions.andDo(print());
@@ -88,7 +118,7 @@ class CommentControllerTest {
         //when
         ResultActions resultActions = mockMvc.perform(delete("/api/v1/post/"+ postId +"/comments/{commentId}", commentId)
             .contentType(MediaType.APPLICATION_JSON)
-            .content(objectMapper.writeValueAsString(requestDTO)));
+            .content(objectMapper.writeValueAsString(comment)));
 
         // Then
         resultActions.andDo(print());
