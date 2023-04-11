@@ -1,5 +1,9 @@
 package io.howstheairtoday.memberappexternalapi.service;
 
+import java.util.Optional;
+import java.util.UUID;
+
+import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -10,20 +14,24 @@ import io.howstheairtoday.memberappexternalapi.exception.DuplicationIdException;
 import io.howstheairtoday.memberappexternalapi.exception.DuplicationNicknameException;
 import io.howstheairtoday.memberappexternalapi.exception.PasswordNotMatchedException;
 import io.howstheairtoday.memberappexternalapi.service.dto.request.SignUpRequestDTO;
+import io.howstheairtoday.memberappexternalapi.service.dto.response.ProfileResponseDto;
 import io.howstheairtoday.memberdomainrds.entity.LoginRole;
 import io.howstheairtoday.memberdomainrds.entity.LoginType;
 import io.howstheairtoday.memberdomainrds.entity.Member;
 import io.howstheairtoday.memberdomainrds.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
-
+import lombok.extern.log4j.Log4j2;
 
 @Service
 @RequiredArgsConstructor
+@Log4j2
 public class AuthService {
 
+    private final ModelMapper modelMapper;
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
     private final MemberExceptionHandler memberExceptionHandler;
+
 
     /**
      * 회원가입
@@ -64,5 +72,14 @@ public class AuthService {
         memberRepository.save(registerMember);
 
         return ApiResponse.res(HttpStatus.OK.value(), "회원 가입이 완료되었습니다.");
+    }
+
+    /**
+     * 회원 정보 조회 - 마이페이지
+     */
+    public ProfileResponseDto read(UUID memberId) {
+        Optional<Member> result = memberRepository.findByMemberId(memberId);
+        Member member = result.orElseThrow(() -> new IllegalArgumentException("해당하는 회원이 존재하지 않습니다."));
+        return modelMapper.map(member, ProfileResponseDto.class);
     }
 }
