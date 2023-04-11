@@ -1,4 +1,5 @@
-package io.howstheairtoday.airqualityappbatch.service.dto.request;
+package io.howstheairtoday.airqualityclient.dto.request;
+
 
 import lombok.*;
 

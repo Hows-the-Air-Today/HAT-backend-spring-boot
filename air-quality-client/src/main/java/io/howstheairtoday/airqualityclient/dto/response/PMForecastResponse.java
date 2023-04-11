@@ -1,4 +1,4 @@
-package io.howstheairtoday.airqualityappbatch.service.dto.response;
+package io.howstheairtoday.airqualityclient.dto.response;
 
 import lombok.*;
 
@@ -6,6 +6,7 @@ import lombok.*;
 @AllArgsConstructor
 @Builder
 @Getter
+@ToString
 public class PMForecastResponse {
 
     // 통보 코드
@@ -27,5 +28,5 @@ public class PMForecastResponse {
     private String informData;
 
     // 통보 시간
-    private String dateTime;
+    private String dataTime;
 }

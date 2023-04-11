@@ -1,4 +1,4 @@
-package io.howstheairtoday.airqualityappbatch.config;
+package io.howstheairtoday.airqualityclient.config;
 
 import lombok.Getter;
 import org.springframework.beans.factory.annotation.Value;
