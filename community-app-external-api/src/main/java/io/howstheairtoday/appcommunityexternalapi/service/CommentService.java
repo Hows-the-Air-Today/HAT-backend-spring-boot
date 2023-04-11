@@ -35,7 +35,7 @@ public class CommentService {
         return comment;
     }
 
-    //게시물 조회 처리
+    //게시물 댓글 조회 처리
     public Slice<CommentResponseDTO> getComment(UUID postId, Pageable pageable) {
 
         Slice<Comment> comments = domainCommunityService.findbyComments(postId, pageable);
