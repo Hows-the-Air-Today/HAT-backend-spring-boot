@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import io.howstheairtoday.memberappexternalapi.common.ApiResponse;
 import io.howstheairtoday.memberappexternalapi.service.AuthService;
+import io.howstheairtoday.memberappexternalapi.service.dto.request.ChangePasswordRequestDto;
 import io.howstheairtoday.memberappexternalapi.service.dto.request.ModifyNicknameRequestDto;
 import io.howstheairtoday.memberappexternalapi.service.dto.request.SignUpRequestDTO;
 import io.howstheairtoday.memberappexternalapi.service.dto.response.ProfileResponseDto;
@@ -52,15 +53,26 @@ public class AuthController {
     }
 
     /**
-     * 회원 정보 수정 - 마이페이지
+     * 회원 닉네임 수정
      */
-    // 닉네임 수정
     @PatchMapping("/nickname")
     public ApiResponse<Object> modifyNickname(@Valid @RequestBody final ModifyNicknameRequestDto request) {
         authService.modifyNickname(request);
         return ApiResponse.<Object>builder()
             .statusCode(HttpStatus.OK.value())
             .msg("닉네임 수정이 완료 되었습니다.")
+            .build();
+    }
+
+    /**
+     * 회원 비밀번호 변경
+     */
+    @PatchMapping("/password")
+    public ApiResponse<Object> changePassword(@Valid @RequestBody final ChangePasswordRequestDto request) {
+        authService.changePassword(request);
+        return ApiResponse.<Object>builder()
+            .statusCode(HttpStatus.OK.value())
+            .msg("비밀번호 변경이 완료 되었습니다.")
             .build();
     }
 }

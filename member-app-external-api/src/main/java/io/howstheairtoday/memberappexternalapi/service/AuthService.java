@@ -18,11 +18,9 @@ import io.howstheairtoday.memberappexternalapi.exception.NotFoundException;
 import io.howstheairtoday.memberappexternalapi.exception.PasswordNotMatchedException;
 import io.howstheairtoday.memberappexternalapi.service.dto.request.ChangePasswordRequestDto;
 import io.howstheairtoday.memberappexternalapi.service.dto.request.ModifyNicknameRequestDto;
-import io.howstheairtoday.memberappexternalapi.service.dto.request.ModifyProfileImageRequestDto;
 import io.howstheairtoday.memberappexternalapi.service.dto.request.SignUpRequestDTO;
-import io.howstheairtoday.memberappexternalapi.service.dto.response.MemberIdResponseDto;
+import io.howstheairtoday.memberappexternalapi.service.dto.response.ChangePasswordResponseDto;
 import io.howstheairtoday.memberappexternalapi.service.dto.response.ModifyNicknameResponseDto;
-import io.howstheairtoday.memberappexternalapi.service.dto.response.ProfileImageResponseDto;
 import io.howstheairtoday.memberappexternalapi.service.dto.response.ProfileResponseDto;
 import io.howstheairtoday.memberdomainrds.entity.LoginRole;
 import io.howstheairtoday.memberdomainrds.entity.LoginType;
@@ -92,7 +90,7 @@ public class AuthService {
     }
 
     /**
-     * 회원 정보 수정 - 마이페이지
+     * 회원 닉네임 수정
      */
     @Transactional
     public ApiResponse<?> modifyNickname(ModifyNicknameRequestDto request) {
@@ -110,5 +108,31 @@ public class AuthService {
             .nickname(member.getNickname())
             .build();
         return ApiResponse.res(HttpStatus.OK.value(), "닉네임 변경이 완료 되었습니다.", response);
+    }
+
+    /**
+     * 회원 패스워드 변경
+     */
+    @Transactional
+    public ApiResponse<?> changePassword(ChangePasswordRequestDto request) {
+
+        String loginPassword = request.getLoginPassword();
+        String loginPasswordCheck = request.getLoginPasswordCheck();
+
+        Member member = memberRepository.findByMemberId(request.getMemberId())
+            .orElseThrow(() -> new NotFoundException("존재하지 않는 사용자입니다."));
+
+        if (!loginPassword.equals(loginPasswordCheck)) {
+            throw new PasswordNotMatchedException("비밀번호가 서로 일치하지 않습니다.");
+        }
+
+        // 새로운 비밀번호 설정
+        String encodedPassword = passwordEncoder.encode(request.getLoginPassword());
+        member.changePassword(encodedPassword);
+        ChangePasswordResponseDto result = ChangePasswordResponseDto.builder()
+            .memberId(member.getMemberId())
+            .loginPassword(member.getLoginPassword())
+            .build();
+        return ApiResponse.res(HttpStatus.OK.value(), "비밀번호 변경이 완료되었습니다.", result);
     }
 }
