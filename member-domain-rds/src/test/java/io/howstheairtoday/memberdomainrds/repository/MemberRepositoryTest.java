@@ -124,7 +124,7 @@ class MemberRepositoryTest {
             .refreshToken("TEST.REFRESH.TOKEN")
             .build();
         Member savedMember = memberRepository.save(member);
-        savedMember.modifiyProfileImage("modify.jpg");
+        savedMember.modifyProfileImage("modify.jpg");
 
         // when
         Optional<Member> foundMember = memberRepository.findByMemberId(savedMember.getMemberId());

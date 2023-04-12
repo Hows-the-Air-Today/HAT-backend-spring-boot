@@ -5,6 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
+import io.howstheairtoday.memberappexternalapi.exception.ConflictException;
 import io.howstheairtoday.memberappexternalapi.exception.DuplicationIdException;
 import io.howstheairtoday.memberappexternalapi.exception.DuplicationNicknameException;
 import io.howstheairtoday.memberappexternalapi.exception.PasswordNotMatchedException;
@@ -26,6 +27,12 @@ public class MemberExceptionHandler {
 
     @ExceptionHandler(PasswordNotMatchedException.class)
     public ResponseEntity<ApiResponse<?>> handlePasswordNotMatchedException(PasswordNotMatchedException e) {
+        ApiResponse<?> apiResponse = ApiResponse.res(HttpStatus.BAD_REQUEST.value(), e.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(apiResponse);
+    }
+
+    @ExceptionHandler(ConflictException.class)
+    public ResponseEntity<ApiResponse<?>> ConflictException(ConflictException e) {
         ApiResponse<?> apiResponse = ApiResponse.res(HttpStatus.BAD_REQUEST.value(), e.getMessage());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(apiResponse);
     }

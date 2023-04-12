@@ -81,16 +81,6 @@ public class Member extends BaseTimeEntity {
         this.refreshToken = refreshToken;
     }
 
-    // public Member modifiedMember(
-    //     final String modifiedPassword,
-    //     final String modifiedNickname,
-    //     final String modifiedProfileImage) {
-    //     this.loginPassword = modifiedPassword;
-    //     this.nickname = modifiedNickname;
-    //     this.memberProfileImage = modifiedProfileImage;
-    //     return this;
-    // }
-
     public void modifiyNickname(String nickname) {
         if (nickname != null) {
             this.nickname = nickname;
@@ -103,7 +93,7 @@ public class Member extends BaseTimeEntity {
         }
     }
 
-    public void modifiyProfileImage(String memberProfileImage) {
+    public void modifyProfileImage(String memberProfileImage) {
         if (memberProfileImage != null) {
             this.memberProfileImage = memberProfileImage;
         }
