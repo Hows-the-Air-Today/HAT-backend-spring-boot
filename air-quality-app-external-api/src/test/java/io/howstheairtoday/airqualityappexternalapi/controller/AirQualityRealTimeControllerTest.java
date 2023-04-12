@@ -26,11 +26,12 @@ public class AirQualityRealTimeControllerTest {
     public void selectAirQualityRealTimeTest() throws Exception{
 
         // Given
-        String umdName = "서초동";
+        double tmX = 200817.7459347529;
+        double tmY = 443071.11499739345;
 
         // When
         // MockMvc 요청과 응답 설정
-        ResultActions resultActions = mockMvc.perform(get("/api/v1/airquality/stationName/{umdName}", umdName));
+        ResultActions resultActions = mockMvc.perform(get("/api/v1/airquality/tm?tmX=" +  tmX + "&tmY=" + tmY));
 
         // Then
         resultActions.andExpect(status().isOk()).andDo(print());

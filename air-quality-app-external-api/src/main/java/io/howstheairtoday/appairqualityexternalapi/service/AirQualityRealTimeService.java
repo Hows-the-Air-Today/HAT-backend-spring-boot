@@ -27,58 +27,11 @@ public class AirQualityRealTimeService {
     @Value("${air.informationkey}")
     private String informationKey;
 
-    // 공공데이터 포털에서 TM좌표를 받아오기 위한 url
-    @Value("${air.tmUrl}")
-    private String tmUrl;
-
     // 공공데이터 포털에서 근처 측정소 위치를 받아오기 위한 url
     @Value("${air.nearUrl}")
     private String nearUrl;
 
-    // TM 좌표 찾아오기
-    public List<String> getTM(final String umdName) {
-
-        // RestTemplate를 통한 API 호출
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-
-        HttpEntity<String> entity = new HttpEntity<>(headers);
-
-        RestTemplate restTemplate = new RestTemplate();
-
-        // url 뒤에 붙일 내용들을 String으로 정의
-        String queryParams = "?serviceKey=" + informationKey
-            + "&returnType=json"
-            + "&numOfRows=100"
-            + "&pageNo=1"
-            + "&umdName=" + umdName;
-
-        ResponseEntity<String> response = restTemplate.exchange(tmUrl + queryParams, HttpMethod.GET, entity,
-            String.class);
-
-        // JSON 객체에 있는 값을 사용하기 위한 작업
-        JSONArray items = JsonToString(response.getBody());
-        JSONObject item = items.getJSONObject(0);
-
-        // tmX, tmY 좌표
-        String tmX = item.getString("tmX");
-        String tmY = item.getString("tmY");
-
-        List<String> tm = new ArrayList<>();
-        tm.add(tmX);
-        tm.add(tmY);
-
-        return tm;
-    }
-
-    // TM 좌표를 통해 근접 측정소 찾기
-    public String getNear(final String umdName) {
-
-        // 위치 배열을 문자열 변수로 변경
-        List<String> tm;
-        tm = getTM(umdName);
-        String tmX = tm.get(0);
-        String tmY = tm.get(1);
+    public String getNear(final String tmX, final String tmY) {
 
         // RestTemplate를 통한 API 호출
         HttpHeaders headers = new HttpHeaders();
@@ -100,17 +53,8 @@ public class AirQualityRealTimeService {
 
         // JSON 파싱
         JSONArray items = JsonToString(response.getBody());
-
-        JSONObject item = null;
-
-        // 측정소명에 umdName이 포함된 item을 찾아서 stationName에 저장
-        for (int i = 0; i < items.length(); i++) {
-            item = items.getJSONObject(i);
-            String addr = item.getString("addr");
-            if (addr.contains(umdName)) {
-                break;
-            }
-        }
+        JSONObject item = items.getJSONObject(0);
+        System.out.println(items);
 
         //측정소명
         return item.getString("stationName");
