@@ -15,6 +15,7 @@ import io.howstheairtoday.memberappexternalapi.common.ApiResponse;
 import io.howstheairtoday.memberappexternalapi.service.AuthService;
 import io.howstheairtoday.memberappexternalapi.service.dto.request.ChangePasswordRequestDto;
 import io.howstheairtoday.memberappexternalapi.service.dto.request.ModifyNicknameRequestDto;
+import io.howstheairtoday.memberappexternalapi.service.dto.request.ModifyProfileImageRequestDto;
 import io.howstheairtoday.memberappexternalapi.service.dto.request.SignUpRequestDTO;
 import io.howstheairtoday.memberappexternalapi.service.dto.response.ProfileResponseDto;
 import jakarta.validation.Valid;
@@ -73,6 +74,18 @@ public class AuthController {
         return ApiResponse.<Object>builder()
             .statusCode(HttpStatus.OK.value())
             .msg("비밀번호 변경이 완료 되었습니다.")
+            .build();
+    }
+
+    /**
+     * 프로필 이미지 변경
+     */
+    @PatchMapping("/profileimg")
+    public ApiResponse<Object> modifyProfileImg(@Valid @RequestBody final ModifyProfileImageRequestDto request) {
+        authService.modifyProfileImg(request);
+        return ApiResponse.<Object>builder()
+            .statusCode(HttpStatus.OK.value())
+            .msg("이미지 변경이 완료 되었습니다.")
             .build();
     }
 }
