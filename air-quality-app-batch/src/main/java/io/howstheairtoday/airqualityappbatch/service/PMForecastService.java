@@ -18,10 +18,11 @@ public class PMForecastService {
      * 대기질 예보통보 조회
      *
      * @param searchDate 조회 날짜
+     * @param informCode 통보 코드
      * @return 대기질 예보통보 조회 결과
      */
-    public List<PMForecastResponse> getPMForecastData(LocalDate searchDate) {
+    public List<PMForecastResponse> getPMForecastData(LocalDate searchDate, String informCode) {
 
-        return pmForecastApiClient.fetchPMForecastData(searchDate);
+        return pmForecastApiClient.fetchPMForecastData(searchDate, informCode);
     }
 }

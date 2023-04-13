@@ -16,6 +16,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URI;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -28,17 +29,18 @@ import static org.springframework.test.web.client.response.MockRestResponseCreat
 @ExtendWith(MockitoExtension.class)
 class PMForecastServiceTest {
 
-    @Autowired
-    private PMForecastService pmForecastService;
+    private final String informCode = "PM10";
+    private LocalDate searchDate;
+    private MockRestServiceServer mockServer;
 
+    @Autowired
+    private OpenApiConfig openApiConfig;
+    
     @Autowired
     private RestTemplate restTemplate;
 
     @Autowired
-    private OpenApiConfig openApiConfig;
-
-    private MockRestServiceServer mockServer;
-    private LocalDate searchDate;
+    private PMForecastService pmForecastService;
 
     @BeforeEach
     void setUp() throws IOException {
@@ -51,14 +53,15 @@ class PMForecastServiceTest {
         // Mocking(실제 API 호출 없이 테스트)
         mockServer = MockRestServiceServer.createServer(restTemplate);
 
-        String requestUrl = UriComponentsBuilder.fromHttpUrl(openApiConfig.getAirPollutionUrl())
+        URI requestUrl = UriComponentsBuilder.fromHttpUrl(openApiConfig.getAirPollutionUrl())
                 .queryParam("serviceKey", openApiConfig.getAirServiceKey())
                 .queryParam("returnType", "json")
                 .queryParam("numOfRows", 100)
                 .queryParam("pageNo", 1)
                 .queryParam("searchDate", searchDate)
-                .queryParam("informCode", "PM10")
-                .toUriString();
+                .queryParam("informCode", informCode)
+                .build(true)
+                .toUri();
 
         // 가상의 요청, 응답 정의
         mockServer.expect(requestTo(requestUrl))
@@ -81,13 +84,13 @@ class PMForecastServiceTest {
                 .build();
 
         // when
-        List<PMForecastResponse> actualJsonResponse = pmForecastService.getPMForecastData(searchDate);
+        List<PMForecastResponse> actualJsonResponse = pmForecastService.getPMForecastData(searchDate, informCode);
 
         // then
         mockServer.verify();
         assertThat(actualJsonResponse)
                 .isNotNull()
-                .hasSize(20)
+                .hasSize(10)
                 .usingRecursiveFieldByFieldElementComparator().contains(expectedResponse);
     }
 

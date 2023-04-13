@@ -12,11 +12,13 @@ import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriComponents;
+import org.springframework.web.util.UriComponentsBuilder;
 
+import java.net.URI;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -26,9 +28,11 @@ import java.util.List;
 @RequiredArgsConstructor
 public class PMForecastApiClient {
 
-    public static final Logger LOGGER = LoggerFactory.getLogger(PMForecastApiClient.class);
+    public static final Logger logger = LoggerFactory.getLogger(PMForecastApiClient.class);
 
     public static final String DATE_FORMAT_PATTERN = "yyyy-MM-dd";
+    public static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern(DATE_FORMAT_PATTERN);
+
     private final RestTemplate restTemplate;
     private final OpenApiConfig openApiConfig;
 
@@ -36,46 +40,39 @@ public class PMForecastApiClient {
      * 대기질 예보통보 조회
      *
      * @param searchDate 조회 날짜
+     * @param informCode 통보 코드
      * @return 대기질 예보통보 조회 결과
      */
-    public List<PMForecastResponse> fetchPMForecastData(LocalDate searchDate) {
+    public List<PMForecastResponse> fetchPMForecastData(LocalDate searchDate, String informCode) {
 
-        try {
-            LOGGER.info("<대기질 예보통보 조회 시작> 조회 날짜: {}", searchDate);
+        logger.info("<대기질 예보통보 조회 시작> 조회 날짜: {}, 통보 코드: {}", searchDate, informCode);
 
-            PMForecastRequest request = createPMForecastRequest(searchDate);
-            String requestUrl = buildRequestUrl(request);
+        PMForecastRequest request = createPMForecastRequest(searchDate, informCode);
+        URI requestUrl = buildRequestUrl(request);
+        HttpEntity<String> httpEntity = createHttpEntity();
 
-            ResponseEntity<String> responseEntity = restTemplate.exchange(
-                    requestUrl,
-                    HttpMethod.GET,
-                    null,
-                    new ParameterizedTypeReference<String>() {
-                    });
+        ResponseEntity<String> responseEntity = executeApiRequest(requestUrl, httpEntity);
 
-            String response = responseEntity.getBody();
+        String response = responseEntity.getBody();
 
-            LOGGER.info("<대기질 예보통보 조회 완료> 조회 날짜: {}", searchDate);
+        logger.info("<대기질 예보통보 조회 완료> 조회 날짜: {}, 통보 코드: {}", searchDate, informCode);
 
-            return parsePMForecastJson(response);
-        } catch (Exception exception) {
-            throw new ApiRequestException("대기질 예보통보 조회 실패", exception);
-        }
+        return parsePMForecastJson(response);
     }
 
     /**
      * 대기질 예보통보 조회 요청 DTO 생성
      *
      * @param searchDate 조회 날짜
+     * @param informCode 통보 코드
      * @return 대기질 예보통보 조회 요청 DTO
      */
-    protected PMForecastRequest createPMForecastRequest(LocalDate searchDate) {
+    protected PMForecastRequest createPMForecastRequest(LocalDate searchDate, String informCode) {
 
         String serviceKey = openApiConfig.getAirServiceKey();
         String returnType = "json";
         int numOfRows = 100;
         int pageNo = 1;
-        String informCode = "PM10";
 
         return PMForecastRequest.builder()
                 .serviceKey(serviceKey)
@@ -93,31 +90,66 @@ public class PMForecastApiClient {
      * @param request 대기질 예보통보 조회 요청 DTO
      * @return 대기질 예보통보 조회 요청 URL
      */
-    protected String buildRequestUrl(PMForecastRequest request) {
+    protected URI buildRequestUrl(PMForecastRequest request) {
 
         String callbackUrl = openApiConfig.getAirPollutionUrl();
 
-        return callbackUrl + buildQueryString(request);
+        return buildUriComponents(request, callbackUrl).toUri();
     }
 
     /**
-     * 대기질 예보통보 조회 요청 쿼리 스트링 생성
+     * 대기질 예보통보 조회 요청 URL 파라미터 생성
      *
-     * @param request 대기질 예보통보 조회 요청 DTO
-     * @return 대기질 예보통보 조회 요청 쿼리 스트링
+     * @param request     대기질 예보통보 조회 요청 DTO
+     * @param callbackUrl 대기질 예보통보 조회 요청 URL
+     * @return 대기질 예보통보 조회 요청 URL
      */
-    private String buildQueryString(PMForecastRequest request) {
+    private UriComponents buildUriComponents(PMForecastRequest request, String callbackUrl) {
 
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(DATE_FORMAT_PATTERN);
-        String searchDate = request.getSearchDate().format(formatter);
+        String searchDate = request.getSearchDate().format(DATE_FORMATTER);
 
-        return String.format("?serviceKey=%s&returnType=%s&numOfRows=%d&pageNo=%d&searchDate=%s&informCode=%s",
-                request.getServiceKey(),
-                request.getReturnType(),
-                request.getNumOfRows(),
-                request.getPageNo(),
-                searchDate,
-                request.getInformCode());
+        return UriComponentsBuilder.fromHttpUrl(callbackUrl)
+                .queryParam("serviceKey", request.getServiceKey())
+                .queryParam("returnType", request.getReturnType())
+                .queryParam("numOfRows", request.getNumOfRows())
+                .queryParam("pageNo", request.getPageNo())
+                .queryParam("searchDate", searchDate)
+                .queryParam("informCode", request.getInformCode())
+                .build(true);
+    }
+
+    /**
+     * 대기질 예보통보 조회 요청 헤더 생성
+     *
+     * @return 대기질 예보통보 조회 요청 헤더
+     */
+    private HttpEntity<String> createHttpEntity() {
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        return new HttpEntity<>(headers);
+    }
+
+    /**
+     * 대기질 예보통보 조회 요청 실행
+     *
+     * @param requestUrl 대기질 예보통보 조회 요청 URL
+     * @param entity     대기질 예보통보 조회 요청 헤더
+     * @return 대기질 예보통보 조회 응답
+     */
+    private ResponseEntity<String> executeApiRequest(URI requestUrl, HttpEntity<String> entity) {
+
+        try {
+            return restTemplate.exchange(
+                    requestUrl,
+                    HttpMethod.GET,
+                    entity,
+                    new ParameterizedTypeReference<>() {
+                    });
+        } catch (Exception exception) {
+            throw new ApiRequestException("대기질 예보통보 조회 실패", exception);
+        }
     }
 
     /**
@@ -133,7 +165,7 @@ public class PMForecastApiClient {
 
             return parseItemsToPMForecastResponse(items);
         } catch (JSONException exception) {
-            LOGGER.error("대기질 예보통보 조회 결과 파싱 실패", exception);
+            logger.error("대기질 예보통보 조회 결과 파싱 실패", exception);
             throw new ApiDataParsingException("대기질 예보통보 조회 결과 파싱 실패", exception);
         }
     }
