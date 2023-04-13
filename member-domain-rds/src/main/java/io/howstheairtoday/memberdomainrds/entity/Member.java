@@ -33,7 +33,7 @@ public class Member extends BaseTimeEntity {
     @JdbcTypeCode(SqlTypes.VARCHAR)
     private UUID memberId;
 
-    @Column(nullable = false, length = 40)
+    @Column(nullable = false, length = 40, unique = true)
     private String loginId; // 아이디
 
     @Column(nullable = false, length = 128)
@@ -42,7 +42,7 @@ public class Member extends BaseTimeEntity {
     @Column(nullable = false, length = 50)
     private String email;
 
-    @Column(nullable = false, length = 40)
+    @Column(nullable = false, length = 40, unique = true)
     private String nickname;
 
     @Column(length = 128)
@@ -81,13 +81,21 @@ public class Member extends BaseTimeEntity {
         this.refreshToken = refreshToken;
     }
 
-    public Member modifiedMember(
-        final String modifiedPassword,
-        final String modifiedNickname,
-        final String modifiedProfileImage) {
-        this.loginPassword = modifiedPassword;
-        this.nickname = modifiedNickname;
-        this.memberProfileImage = modifiedProfileImage;
-        return this;
+    public void modifiyNickname(String nickname) {
+        if (nickname != null) {
+            this.nickname = nickname;
+        }
+    }
+
+    public void changePassword(String loginPassword) {
+        if (loginPassword != null) {
+            this.loginPassword = loginPassword;
+        }
+    }
+
+    public void modifyProfileImage(String memberProfileImage) {
+        if (memberProfileImage != null) {
+            this.memberProfileImage = memberProfileImage;
+        }
     }
 }
