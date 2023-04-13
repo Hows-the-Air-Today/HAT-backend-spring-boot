@@ -1,45 +1,60 @@
 [submodule "air-quality-app-batch/src/main/resources/security"]
 	path = air-quality-app-batch/src/main/resources/security
 	url = https://github.com/Hows-the-Air-Today/security.git
+	branch = main
 [submodule "air-quality-app-external-api/src/main/resources/security"]
 	path = air-quality-app-external-api/src/main/resources/security
 	url = https://github.com/Hows-the-Air-Today/security.git
+	branch = main
 [submodule "air-quality-domain-rds/src/main/resources/security"]
 	path = air-quality-domain-rds/src/main/resources/security
 	url = https://github.com/Hows-the-Air-Today/security.git
+	branch = main
 [submodule "air-quality-domain-redis/src/main/resources/security"]
 	path = air-quality-domain-redis/src/main/resources/security
 	url = https://github.com/Hows-the-Air-Today/security.git
+	branch = main
 [submodule "air-quality-domain-service/src/main/resources/security"]
 	path = air-quality-domain-service/src/main/resources/security
 	url = https://github.com/Hows-the-Air-Today/security.git
+	branch = main
 [submodule "community-app-external-api/src/main/resources/security"]
 	path = community-app-external-api/src/main/resources/security
 	url = https://github.com/Hows-the-Air-Today/security.git
+	branch = main
 [submodule "community-domain-rds/src/main/resources/security"]
 	path = community-domain-rds/src/main/resources/security
 	url = https://github.com/Hows-the-Air-Today/security.git
+	branch = main
 [submodule "community-domain-redis/src/main/resources/security"]
 	path = community-domain-redis/src/main/resources/security
 	url = https://github.com/Hows-the-Air-Today/security.git
+	branch = main
 [submodule "community-domain-service/src/main/resources/security"]
 	path = community-domain-service/src/main/resources/security
 	url = https://github.com/Hows-the-Air-Today/security.git
+	branch = main
 [submodule "member-app-external-api/src/main/resources/security"]
 	path = member-app-external-api/src/main/resources/security
 	url = https://github.com/Hows-the-Air-Today/security.git
+	branch = main
 [submodule "member-domain-rds/src/main/resources/security"]
 	path = member-domain-rds/src/main/resources/security
 	url = https://github.com/Hows-the-Air-Today/security.git
+	branch = main
 [submodule "member-domain-redis/src/main/resources/security"]
 	path = member-domain-redis/src/main/resources/security
 	url = https://github.com/Hows-the-Air-Today/security.git
+	branch = main
 [submodule "member-domain-service/src/main/resources/security"]
 	path = member-domain-service/src/main/resources/security
 	url = https://github.com/Hows-the-Air-Today/security.git
+	branch = main
 [submodule "module-security/src/main/resources/security"]
 	path = module-security/src/main/resources/security
 	url = https://github.com/Hows-the-Air-Today/security.git
+	branch = main
 [submodule "air-quality-client/src/main/resources/security"]
 	path = air-quality-client/src/main/resources/security
+	branch = main
 	url = https://github.com/Hows-the-Air-Today/security.git
