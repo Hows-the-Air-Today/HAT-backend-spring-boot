@@ -23,16 +23,14 @@ public class AirQualityRealTimeController {
     // 대기질 측정정보 조회
     @GetMapping("/tm")
     @ResponseBody
-    public Map<String, CurrentDustResponseDTO> selectAirQualityRealTime(@RequestParam("tmX") String tmX, @RequestParam("tmY") String tmY) {
+    public Map<String, CurrentDustResponseDTO> selectAirQualityRealTime(@RequestParam("tmx") String tmX, @RequestParam("tmy") String tmY) {
 
-        System.out.println(tmX + " + " + tmY);
         // TM 좌표를 이용하여 근처 측정소 찾기
         String stationName = airQualityRealTimeService.getNear(tmX, tmY);
 
         // 데이터 값을 Map 으로 변환
         Map<String, CurrentDustResponseDTO> data = new HashMap<>();
         data.put("airQuality", airQualityRealTimeService.selectAirQualityRealTime(stationName));
-        System.out.println(data);
         return data;
     }
 }

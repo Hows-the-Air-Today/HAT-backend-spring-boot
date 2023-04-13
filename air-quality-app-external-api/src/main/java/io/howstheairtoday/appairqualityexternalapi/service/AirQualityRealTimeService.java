@@ -52,7 +52,6 @@ public class AirQualityRealTimeService {
         // JSON 파싱
         JSONArray items = JsonToString(response.getBody());
         JSONObject item = items.getJSONObject(0);
-        System.out.println(items);
 
         //측정소명
         return item.getString("stationName");
