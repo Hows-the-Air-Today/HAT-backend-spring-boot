@@ -31,7 +31,7 @@ public class AirQualityRealTimeControllerTest {
 
         // When
         // MockMvc 요청과 응답 설정
-        ResultActions resultActions = mockMvc.perform(get("/api/v1/airquality/tm?tmX=" +  tmX + "&tmY=" + tmY));
+        ResultActions resultActions = mockMvc.perform(get("/api/v1/airquality/tm?tmx=" +  tmX + "&tmy=" + tmY));
 
         // Then
         resultActions.andExpect(status().isOk()).andDo(print());
