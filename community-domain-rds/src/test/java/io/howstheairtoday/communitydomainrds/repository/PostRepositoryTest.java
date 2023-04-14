@@ -2,7 +2,8 @@ package io.howstheairtoday.communitydomainrds.repository;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 import org.assertj.core.api.Assertions;
@@ -61,4 +62,45 @@ public class PostRepositoryTest {
 
     }
 
+    @DisplayName("게시물 업데이트")
+    @Test
+    public void updatePost() {
+
+        Post post = Post.builder().region("게시글 업데이트 하기 전 지역").content("게시글 업데이트 하기 전 내용").build();
+
+        for (int i = 0; i < 3; i++) {
+            PostImage postImage = PostImage.builder()
+                .postImageNumber(i)
+                .post(post)
+                .postImageUrl("https://amazo3.com/kjh" + i)
+                .build();
+
+            post.insertImages(postImage);
+        }
+        //given
+        Post savePost = postRepository.save(post);
+
+        List<PostImage> postImages = new ArrayList<>();
+
+        for (int i = 0; i < 2; i++) {
+
+            PostImage postImage = PostImage.builder()
+                .postImageNumber(i + 1)
+                .post(post)
+                .postImageUrl("https://업데이트.com/kjh" + i)
+                .build();
+            postImages.add(postImage);
+        }
+
+        //when
+        savePost.updatePost("게시글 내용이 업데이트", "게시글 지역이 업데이트", postImages);
+
+        postRepository.save(savePost);
+
+        //then
+        Assertions.assertThat("게시글 업데이트 하기 전 내용").isNotEqualTo(savePost.getContent());
+        Assertions.assertThat("게시글 업데이트 하기 전 지역").isNotEqualTo(savePost.getRegion());
+        Assertions.assertThat(savePost.getImageArray().size()).isEqualTo(2);
+
+    }
 }
