@@ -10,13 +10,10 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Slice;
-import org.springframework.data.domain.Sort;
 import org.springframework.test.context.ActiveProfiles;
 
 import io.howstheairtoday.appcommunityexternalapi.service.dto.request.CommentRequestDTO;
-import io.howstheairtoday.appcommunityexternalapi.service.dto.response.CommentResponseDTO;
+import io.howstheairtoday.communitydomainrds.dto.CommentPageListDTO;
 import io.howstheairtoday.communitydomainrds.entity.Comment;
 
 @ActiveProfiles("test")
@@ -65,12 +62,14 @@ public class CommentServiceTest {
     @Test
     void getComment() {
 
+        //given
+        Integer page = 0;
+
         //when
-        PageRequest pageRequest = PageRequest.of(0, 10, Sort.by("createdAt").descending());
-        Slice<CommentResponseDTO> result = commentService.getComment(postId, pageRequest);
+        CommentPageListDTO result = commentService.getComment(postId, page);
 
         //then
-        assertThat(result.getContent().get(0).getContent()).isEqualTo(commentRequestDTO.getContent());
+        assertThat(result.getCommentPageDTOList().get(0).getCommentId()).isEqualTo(savedComment.getCommentId());
     }
 
     @DisplayName("댓글 수정")

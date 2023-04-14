@@ -87,8 +87,12 @@ class CommentControllerTest {
     @Test
     void getComment() throws Exception{
 
+        //given
+        Integer page = 0;
+
         //when
         ResultActions resultActions = mockMvc.perform(get("/api/v1/post/{postId}/comments", postId)
+            .param("page", page.toString())
             .contentType(MediaType.APPLICATION_JSON));
 
         //then

@@ -4,12 +4,10 @@ import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.UUID;
 
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 
 import io.howstheairtoday.appcommunityexternalapi.service.dto.request.CommentRequestDTO;
-import io.howstheairtoday.appcommunityexternalapi.service.dto.response.CommentResponseDTO;
+import io.howstheairtoday.communitydomainrds.dto.CommentPageListDTO;
 import io.howstheairtoday.communitydomainrds.entity.Comment;
 
 import io.howstheairtoday.communitydomainrds.service.DomainCommunityService;
@@ -36,18 +34,9 @@ public class CommentService {
     }
 
     //게시물 댓글 조회 처리
-    public Slice<CommentResponseDTO> getComment(UUID postId, Pageable pageable) {
+    public CommentPageListDTO getComment(UUID postId, Integer pageable) {
 
-        Slice<Comment> comments = domainCommunityService.findbyComments(postId, pageable);
-
-        return comments.map(comment -> CommentResponseDTO.builder()
-            .commentId(comment.getCommentId())
-            .content(comment.getContent())
-            .memberId(comment.getMemberId())
-            .postId(comment.getPostId())
-            .createdAt(comment.getCreatedAt())
-            .updatedAt(comment.getUpdatedAt())
-            .build());
+        return domainCommunityService.getComment(postId, pageable);
     }
 
     //게시물 댓글 수정 처리

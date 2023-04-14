@@ -3,12 +3,7 @@ package io.howstheairtoday.appcommunityexternalapi.controller;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Slice;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -21,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import io.howstheairtoday.appcommunityexternalapi.common.ApiResponse;
 import io.howstheairtoday.appcommunityexternalapi.service.dto.request.CommentRequestDTO;
 import io.howstheairtoday.appcommunityexternalapi.service.CommentService;
-import io.howstheairtoday.appcommunityexternalapi.service.dto.response.CommentResponseDTO;
+import io.howstheairtoday.communitydomainrds.dto.CommentPageListDTO;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
@@ -46,12 +41,11 @@ public class CommentController {
 
     //게시물 댓글 조회
     @GetMapping("/{postId}/comments")
-    public ApiResponse<Slice<CommentResponseDTO>> getComment(@PathVariable("postId") UUID postId,
-        @PageableDefault(sort = "createdAt", direction = Sort.Direction.ASC, size = 10) Pageable pageable) {
+    public ApiResponse<CommentPageListDTO> getComment(@PathVariable("postId") UUID postId, Integer page) {
 
-        Slice<CommentResponseDTO> comments = commentService.getComment(postId, pageable);
+        CommentPageListDTO comments = commentService.getComment(postId, page);
 
-        return ApiResponse.<Slice<CommentResponseDTO>>builder()
+        return ApiResponse.<CommentPageListDTO>builder()
             .statusCode(HttpStatus.CREATED.value())
             .msg("조회 성공했습니다.")
             .data(comments)
