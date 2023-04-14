@@ -1,9 +1,14 @@
 package io.howstheairtoday.appcommunityexternalapi.service;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
+
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 import org.junit.jupiter.api.DisplayName;
@@ -13,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 
+import io.howstheairtoday.appcommunityexternalapi.exception.posts.PostNotExistException;
 import io.howstheairtoday.appcommunityexternalapi.service.dto.request.PostRequestDto;
 import io.howstheairtoday.communitydomainrds.entity.Post;
 import io.howstheairtoday.communitydomainrds.entity.PostImage;
@@ -52,7 +58,8 @@ public class ExternalPostServiceTest {
             .region("가락동")
             .build();
 
-        Post post = Post.createPost(postRequestDto.getContent(), postRequestDto.getRegion());
+        Post post = Post.createPost(postRequestDto.getContent(),
+            postRequestDto.getRegion(), postRequestDto.getMemberId());
 
         post.getImageArray()
             .forEach(postImage -> post.insertImages(
@@ -63,6 +70,49 @@ public class ExternalPostServiceTest {
 
         //then
         assertNotNull(post);
+
+    }
+
+    @DisplayName("게시물 업데이트")
+    @Test
+    public void updatePostService() {
+
+        //given
+        Post post = Post.builder().region("동남로").content("게시글 내용").build();
+
+        PostImage postImage = PostImage.builder()
+            .postImageNumber(1)
+            .post(post)
+            .postImageUrl("https://amazons3.com/kjh")
+            .build();
+
+        post.insertImages(postImage);
+
+        domainCommunityService.savePost(post);
+
+        assertThat(post.getContent()).isEqualTo("게시글 내용");
+        assertThat(post.getRegion()).isEqualTo("동남로");
+        assertThat(post.getImageArray().get(0).getPostImageNumber()).isEqualTo(1);
+        assertThat(post.getImageArray().get(0).getPostImageUrl()).isEqualTo("https://amazons3.com/kjh");
+
+        //when
+        final List<PostImage> postImageList = new ArrayList<>();
+
+        post.getImageArray().forEach(postImageDto -> {
+            PostImage postImages = PostImage.builder()
+                .postImageUrl("업데이트 된 url !")
+                .postImageNumber(3)
+                .build();
+            postImageList.add(postImages);
+        });
+
+        post.updatePost("업데이트", "지역도업데이트", postImageList);
+
+        //then
+        assertThat(post.getContent()).isEqualTo("업데이트");
+        assertThat(post.getRegion()).isEqualTo("지역도업데이트");
+        assertThat(post.getImageArray().get(0).getPostImageUrl()).isEqualTo("업데이트 된 url !");
+        assertThat(post.getImageArray().get(0).getPostImageNumber()).isEqualTo(3);
 
     }
 

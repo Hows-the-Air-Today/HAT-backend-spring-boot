@@ -18,6 +18,7 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 /**
  * 게시물의 이미지 정보를 관리합니다.
@@ -40,6 +41,7 @@ public class PostImage extends BaseTimeEntity {
     // PostImage 엔티티는 Post 엔티티와 다대일 관계입니다.
     @ManyToOne
     @JoinColumn(name = "post_id")
+    @Setter
     private Post postId;
 
     // 포스트의 이미지 번호

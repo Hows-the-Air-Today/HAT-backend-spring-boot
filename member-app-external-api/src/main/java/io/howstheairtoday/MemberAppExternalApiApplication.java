@@ -11,5 +11,4 @@ public class MemberAppExternalApiApplication {
     public static void main(String[] args) {
         SpringApplication.run(MemberAppExternalApiApplication.class, args);
     }
-
 }

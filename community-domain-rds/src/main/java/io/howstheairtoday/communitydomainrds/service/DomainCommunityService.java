@@ -44,8 +44,11 @@ public class DomainCommunityService {
      */
     @Transactional
     public void savePost(final Post post) {
-
         postRepository.save(post);
+    }
+
+    public Optional<Post> findById(final UUID uuid) {
+        return postRepository.findById(uuid);
     }
 
     //게시글 댓글 저장 메소드
@@ -59,7 +62,7 @@ public class DomainCommunityService {
 
     //게시물 ID 검색 메소드
     @Transactional
-    public Optional<Comment> findCommentId(UUID commentID){
+    public Optional<Comment> findCommentId(UUID commentID) {
 
         return commentRepository.findByCommentId(commentID);
     }

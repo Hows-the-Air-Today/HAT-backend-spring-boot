@@ -1,26 +1,42 @@
 package io.howstheairtoday.memberappexternalapi.service;
 
+import java.util.Optional;
+import java.util.UUID;
+
+import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import io.howstheairtoday.memberappexternalapi.common.ApiResponse;
 import io.howstheairtoday.memberappexternalapi.common.MemberExceptionHandler;
+import io.howstheairtoday.memberappexternalapi.exception.ConflictException;
 import io.howstheairtoday.memberappexternalapi.exception.DuplicationIdException;
 import io.howstheairtoday.memberappexternalapi.exception.DuplicationNicknameException;
+import io.howstheairtoday.memberappexternalapi.exception.NotFoundException;
 import io.howstheairtoday.memberappexternalapi.exception.PasswordNotMatchedException;
+import io.howstheairtoday.memberappexternalapi.service.dto.request.ChangePasswordRequestDto;
+import io.howstheairtoday.memberappexternalapi.service.dto.request.ModifyNicknameRequestDto;
+import io.howstheairtoday.memberappexternalapi.service.dto.request.ModifyProfileImageRequestDto;
 import io.howstheairtoday.memberappexternalapi.service.dto.request.SignUpRequestDTO;
+import io.howstheairtoday.memberappexternalapi.service.dto.response.ChangePasswordResponseDto;
+import io.howstheairtoday.memberappexternalapi.service.dto.response.ModifyNicknameResponseDto;
+import io.howstheairtoday.memberappexternalapi.service.dto.response.ProfileImageResponseDto;
+import io.howstheairtoday.memberappexternalapi.service.dto.response.ProfileResponseDto;
 import io.howstheairtoday.memberdomainrds.entity.LoginRole;
 import io.howstheairtoday.memberdomainrds.entity.LoginType;
 import io.howstheairtoday.memberdomainrds.entity.Member;
 import io.howstheairtoday.memberdomainrds.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
-
+import lombok.extern.log4j.Log4j2;
 
 @Service
 @RequiredArgsConstructor
+@Log4j2
 public class AuthService {
 
+    private final ModelMapper modelMapper;
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
     private final MemberExceptionHandler memberExceptionHandler;
@@ -65,4 +81,78 @@ public class AuthService {
 
         return ApiResponse.res(HttpStatus.OK.value(), "회원 가입이 완료되었습니다.");
     }
+
+    /**
+     * 회원 정보 조회 - 마이페이지
+     */
+    public ProfileResponseDto read(UUID memberId) {
+        Optional<Member> result = memberRepository.findByMemberId(memberId);
+        Member member = result.orElseThrow(() -> new IllegalArgumentException("해당하는 회원이 존재하지 않습니다."));
+        return modelMapper.map(member, ProfileResponseDto.class);
+    }
+
+    /**
+     * 회원 닉네임 수정
+     */
+    @Transactional
+    public ApiResponse<?> modifyNickname(ModifyNicknameRequestDto request) {
+
+        Member member = memberRepository.findByMemberId(request.getMemberId())
+            .orElseThrow(() -> new NotFoundException("존재하지 않는 사용자입니다."));
+
+        if (memberRepository.existsByNickname(request.getNickname())) {
+            throw new ConflictException("이미 사용 중인 닉네임입니다.");
+        }
+
+        member.modifiyNickname(request.getNickname());
+        ModifyNicknameResponseDto response = ModifyNicknameResponseDto.builder()
+            .memberId(member.getMemberId())
+            .nickname(member.getNickname())
+            .build();
+        return ApiResponse.res(HttpStatus.OK.value(), "닉네임 변경이 완료 되었습니다.", response);
+    }
+
+    /**
+     * 회원 패스워드 변경
+     */
+    @Transactional
+    public ApiResponse<?> changePassword(ChangePasswordRequestDto request) {
+
+        String loginPassword = request.getLoginPassword();
+        String loginPasswordCheck = request.getLoginPasswordCheck();
+
+        Member member = memberRepository.findByMemberId(request.getMemberId())
+            .orElseThrow(() -> new NotFoundException("존재하지 않는 사용자입니다."));
+
+        if (!loginPassword.equals(loginPasswordCheck)) {
+            throw new PasswordNotMatchedException("비밀번호가 서로 일치하지 않습니다.");
+        }
+
+        // 새로운 비밀번호 설정
+        String encodedPassword = passwordEncoder.encode(request.getLoginPassword());
+        member.changePassword(encodedPassword);
+        ChangePasswordResponseDto result = ChangePasswordResponseDto.builder()
+            .memberId(member.getMemberId())
+            .loginPassword(member.getLoginPassword())
+            .build();
+        return ApiResponse.res(HttpStatus.OK.value(), "비밀번호 변경이 완료되었습니다.", result);
+    }
+
+    /**
+     * 회원 프로필 이미지 수정
+     */
+    @Transactional
+    public ApiResponse<?> modifyProfileImg(ModifyProfileImageRequestDto request) {
+
+        Member member = memberRepository.findByMemberId(request.getMemberId())
+            .orElseThrow(() -> new NotFoundException("존재하지 않는 사용자입니다."));
+
+        member.modifyProfileImage(request.getMemberProfileImage());
+        ProfileImageResponseDto response = ProfileImageResponseDto.builder()
+            .memberId(member.getMemberId())
+            .memberProfileImage(member.getMemberProfileImage())
+            .build();
+        return ApiResponse.res(HttpStatus.OK.value(), "이미지 변경이 완료 되었습니다.", response);
+    }
+
 }
