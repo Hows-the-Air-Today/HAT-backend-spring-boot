@@ -11,7 +11,7 @@ import java.io.IOException;
 
 public class LoggingInterceptor implements ClientHttpRequestInterceptor {
 
-    public static final Logger LOGGER = LoggerFactory.getLogger(LoggingInterceptor.class);
+    public static final Logger logger = LoggerFactory.getLogger(LoggingInterceptor.class);
 
     @Override
     public ClientHttpResponse intercept(HttpRequest request, byte[] body, ClientHttpRequestExecution execution) throws IOException {
@@ -25,18 +25,18 @@ public class LoggingInterceptor implements ClientHttpRequestInterceptor {
 
     private void logRequest(HttpRequest request, byte[] body) {
 
-        LOGGER.info("Request URL: {}", request.getURI());
-        LOGGER.info("Request Method: {}", request.getMethod());
-        LOGGER.info("Request Headers: {}", request.getHeaders());
-        LOGGER.info("Request Body: {}", new String(body));
+        logger.info("Request URL: {}", request.getURI());
+        logger.info("Request Method: {}", request.getMethod());
+        logger.info("Request Headers: {}", request.getHeaders());
+        logger.info("Request Body: {}", new String(body));
     }
 
     private void logResponse(ClientHttpResponse response) throws IOException {
 
-        LOGGER.info("Response Status Code: {}", response.getStatusCode());
-        LOGGER.info("Response Status Text: {}", response.getStatusText());
-        LOGGER.info("Response Headers: {}", response.getHeaders());
-        LOGGER.info("Response Body: {}", response.getBody());
+        logger.info("Response Status Code: {}", response.getStatusCode());
+        logger.info("Response Status Text: {}", response.getStatusText());
+        logger.info("Response Headers: {}", response.getHeaders());
+        logger.info("Response Body: {}", response.getBody());
     }
 
 }
