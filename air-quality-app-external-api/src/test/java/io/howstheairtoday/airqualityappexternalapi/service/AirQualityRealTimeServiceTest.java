@@ -26,52 +26,6 @@ import io.howstheairtoday.airqualitydomainrds.repository.AirQualityRealTimeRepos
 @SpringBootTest
 public class AirQualityRealTimeServiceTest {
 
-    @DisplayName("TM 좌표를 계산해주는 API 호출")
-    @Test
-    public void getTMTest() {
-
-        // Given
-        String expectedTMX = "171207.04807"; // 기대하는 tmX 좌표
-        String expectedTMY = "447286.409085"; // 기대하는 tmY 좌표
-
-        // RestTemplate를 통한 API 호출
-        RestTemplate restTemplate = new RestTemplate();
-
-        // url을 String으로 정의
-        String queryParams = "/test/api";
-
-        MockRestServiceServer mockServer = MockRestServiceServer.createServer(restTemplate);
-
-        // 예상되는 요청과 응답 설정
-        String expectedResponse = "{\"response\":{\"body\":{\"totalCount\":1,\"items\":[{\"sggName\":\"서구\",\"umdName\":\"가정동\",\"tmX\":\"171207.04807\",\"tmY\":\"447286.409085\",\"sidoName\":\"인천광역시\"}],\"pageNo\":1,\"numOfRows\":100},\"header\":{\"resultMsg\":\"NORMAL_CODE\",\"resultCode\":\"00\"}}}";
-        mockServer.expect(requestTo(queryParams))
-            .andExpect(method(HttpMethod.GET))
-            .andRespond(withSuccess(expectedResponse, MediaType.APPLICATION_JSON));
-
-
-        // When
-        // restTemplate 대신에 mockServer를 사용하여 API 호출
-        ResponseEntity<String> response = restTemplate.getForEntity(queryParams, String.class);
-
-        // Then
-
-        // 목 서버 검증
-        mockServer.verify();
-        // JSON 객체에 있는 값을 사용하기 위한 작업
-        assertNotNull(response.getBody());
-        JSONObject root = new JSONObject(response.getBody());
-        JSONObject res = root.getJSONObject("response");
-        JSONObject body = res.getJSONObject("body");
-        JSONArray items = body.getJSONArray("items");
-        JSONObject item = items.getJSONObject(0);
-
-        // tmX, tmY 좌표
-        String actualTMX = item.getString("tmX");
-        String actualTMY = item.getString("tmY");
-        assertEquals(expectedTMX, actualTMX);
-        assertEquals(expectedTMY, actualTMY);
-    }
-
     @DisplayName("가까운 측정소 위치 API 호출")
     @Test
     public void getNearTest() {
