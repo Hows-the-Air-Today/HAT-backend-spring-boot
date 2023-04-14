@@ -30,7 +30,7 @@ class JwTUtilTest {
         Map<String, Object> claimMap = Map.of("loginId", "test");
 
         // when
-        jwtToken = jwtUtil.generateToken(claimMap, 1);
+        jwtToken = jwtUtil.generateToken(claimMap, 1, "");
     }
 
     @DisplayName("JWT 토큰 생성 설정 확인")

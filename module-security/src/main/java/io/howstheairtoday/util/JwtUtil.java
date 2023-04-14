@@ -8,6 +8,7 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import io.howstheairtoday.memberdomainrds.entity.Member;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -20,8 +21,9 @@ public class JwtUtil {
     @Value("${io.hat.memberjwt.secret}")
     private String key;
 
+    private Member member;
 
-    public String generateToken(Map<String, Object> valueMap, int minutes) {
+    public String generateToken(Map<String, Object> valueMap, int minutes, String memberId) {
 
         // Header Part
         Map<String, Object> headers = new HashMap<>();
@@ -30,7 +32,9 @@ public class JwtUtil {
 
         // Payload Part Setting
         Map<String, Object> payloads = new HashMap<>();
+
         payloads.putAll(valueMap);
+        payloads.put("memberId", memberId);
 
         int time = 1 * minutes; // 1분
 
