@@ -10,16 +10,16 @@ public class PMForecastEntityToDtoConverter {
         throw new AssertionError("Cannot instantiate PMForecastEntityToDtoConverter class.");
     }
 
-    public static PMForecast toDto(PMForecastResponse response) {
+    public static PMForecastResponse toDto(PMForecast entity) {
 
-        return PMForecast.builder()
-                .informCode(response.getInformCode())
-                .informGrade(response.getInformGrade())
-                .informOverall(response.getInformOverall())
-                .informCause(response.getInformCause())
-                .actionKnack(response.getActionKnack())
-                .informData(response.getInformData())
-                .dataTime(response.getDataTime())
+        return PMForecastResponse.builder()
+                .informCode(entity.getInformCode())
+                .informGrade(entity.getInformGrade())
+                .informOverall(entity.getInformOverall())
+                .informCause(entity.getInformCause())
+                .actionKnack(entity.getActionKnack())
+                .informData(entity.getInformData())
+                .dataTime(entity.getDataTime())
                 .build();
     }
 }
