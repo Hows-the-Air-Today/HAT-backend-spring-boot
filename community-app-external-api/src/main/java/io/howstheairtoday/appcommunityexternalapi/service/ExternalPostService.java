@@ -63,4 +63,13 @@ public class ExternalPostService {
 
     }
 
+    public void deletePost(final PostRequestDto.PostUUIDDto postUUIDDto) {
+
+        Post post = domainCommunityService.findById(postUUIDDto.getPostUUID())
+            .orElseThrow(PostNotExistException::new);
+
+        post.deletePost();
+
+        domainCommunityService.savePost(post);
+    }
 }

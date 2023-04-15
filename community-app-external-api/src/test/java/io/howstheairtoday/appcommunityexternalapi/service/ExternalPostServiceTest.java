@@ -2,15 +2,13 @@ package io.howstheairtoday.appcommunityexternalapi.service;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -113,6 +111,28 @@ public class ExternalPostServiceTest {
         assertThat(post.getRegion()).isEqualTo("지역도업데이트");
         assertThat(post.getImageArray().get(0).getPostImageUrl()).isEqualTo("업데이트 된 url !");
         assertThat(post.getImageArray().get(0).getPostImageNumber()).isEqualTo(3);
+
+    }
+
+    @DisplayName("게시물 삭제")
+    @Test()
+    public void deletePost() {
+        //given
+        Post post = Post.builder().region("동남로").content("게시글 내용").build();
+
+        PostImage postImage = PostImage.builder()
+            .postImageNumber(1)
+            .post(post)
+            .postImageUrl("https://amazons3.com/kjh")
+            .build();
+
+        post.insertImages(postImage);
+
+        Assertions.assertDoesNotThrow(() -> domainCommunityService.savePost(post));
+
+        post.deletePost();
+
+        Assertions.assertNotNull(post.getDeletedAt());
 
     }
 
