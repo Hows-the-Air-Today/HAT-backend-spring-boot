@@ -44,6 +44,7 @@ public class PostRepositoryTest {
         for (int i = 0; i < 3; i++) {
             PostImage postImage = PostImage.builder()
                 .postImageNumber(i)
+                .memeberId(post.getMemberId())
                 .post(post)
                 .postImageUrl("https://amazons3.com/kjh" + i)
                 .build();
@@ -56,6 +57,7 @@ public class PostRepositoryTest {
         Post savePost = postRepository.save(post);
 
         assertSame(post, savePost);
+
         Assertions.assertThat(savePost.getContent()).isEqualTo("게시글 내용");
         Assertions.assertThat(savePost.getRegion()).isEqualTo("동남로");
         Assertions.assertThat(savePost.getImageArray().get(0).getPostImageNumber()).isEqualTo(0);
