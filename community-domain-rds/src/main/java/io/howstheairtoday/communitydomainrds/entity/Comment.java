@@ -46,6 +46,7 @@ public class Comment extends BaseTimeEntity {
     @Column(name = "memeber_id")
     private UUID memberId;
 
+
     @Builder
     public Comment(final String content, final UUID postId, final UUID memberId) {
 
