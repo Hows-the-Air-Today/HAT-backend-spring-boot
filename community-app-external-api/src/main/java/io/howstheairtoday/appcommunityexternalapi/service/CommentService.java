@@ -4,12 +4,12 @@ import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.UUID;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import io.howstheairtoday.appcommunityexternalapi.service.dto.request.CommentRequestDTO;
+import io.howstheairtoday.communitydomainrds.dto.CommentPageListDTO;
 import io.howstheairtoday.communitydomainrds.entity.Comment;
-import io.howstheairtoday.communitydomainrds.repository.CommentRepository;
+
 import io.howstheairtoday.communitydomainrds.service.DomainCommunityService;
 import lombok.RequiredArgsConstructor;
 
@@ -31,6 +31,12 @@ public class CommentService {
         domainCommunityService.saveComment(comment);
 
         return comment;
+    }
+
+    //게시물 댓글 조회 처리
+    public CommentPageListDTO getComment(UUID postId, Integer pageable) {
+
+        return domainCommunityService.getComment(postId, pageable);
     }
 
     //게시물 댓글 수정 처리
@@ -60,5 +66,4 @@ public class CommentService {
 
         return deletedComment;
     }
-
 }

@@ -1,11 +1,23 @@
 package io.howstheairtoday.communitydomainrds.service;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Service;
 
+import io.howstheairtoday.communitydomainrds.dto.CommentPageDTO;
+import io.howstheairtoday.communitydomainrds.dto.CommentPageListDTO;
 import io.howstheairtoday.communitydomainrds.entity.Comment;
 import io.howstheairtoday.communitydomainrds.entity.Post;
 import io.howstheairtoday.communitydomainrds.repository.CommentRepository;
@@ -41,9 +53,11 @@ public class DomainCommunityService {
 
     //게시글 댓글 저장 메소드
     @Transactional
-    public void saveComment(Comment comment) {
+    public Comment saveComment(Comment comment){
 
         commentRepository.save(comment);
+
+        return comment;
     }
 
     //게시물 ID 검색 메소드
@@ -53,4 +67,33 @@ public class DomainCommunityService {
         return commentRepository.findByCommentId(commentID);
     }
 
+    //게시물 페이징 메소드
+    @Transactional
+    public CommentPageListDTO getComment(UUID postId, Integer page) {
+
+        int size = 10;
+        Sort.Direction direction = Sort.Direction.ASC;
+        String sort = "createdAt";
+
+        Pageable pageable = PageRequest.of(page, size, Sort.by(direction, sort));
+
+        Slice<Comment> comments = commentRepository.findByPostIdAndDeletedAtIsNull(postId, pageable);
+
+        List<CommentPageDTO> commentDTOs = comments.getContent().stream()
+            .map(comment -> {
+                CommentPageDTO commentPageDTO = CommentPageDTO.builder()
+                    .commentId(comment.getCommentId())
+                    .content(comment.getContent())
+                    .memberId(comment.getMemberId())
+                    .postId(comment.getPostId())
+                    .createdAt(comment.getCreatedAt())
+                    .updatedAt(comment.getUpdatedAt())
+                    .build();
+
+                return commentPageDTO;
+
+            }).collect(Collectors.toList());
+
+        return new CommentPageListDTO(commentDTOs, comments.hasNext(), comments.getNumber(), comments.getSize(), comments.isFirst(), comments.isLast());
+    }
 }

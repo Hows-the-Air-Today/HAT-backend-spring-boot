@@ -49,16 +49,16 @@ public class LoginSuccessHandler implements AuthenticationSuccessHandler {
         log.info("💡 authentication =====> " + authentication);
         log.info("💡 LOGINID =====> " + authentication.getName());
 
-        Map<String, Object> claim = Map.of("loginId", authentication.getName());
-        // AccessToken 유효기간 30분
-        String accessToken = jwtUtil.generateToken(claim, 30);
-        // RefreshToken 유효기간 7일
-        String refreshToken = jwtUtil.generateToken(claim, 7 * 24 * 60);
-
         // Member 엔티티를 조회합니다. 로그인한 사용자의 ID를 기준으로 조회합니다.
         String loginId = authentication.getName();
         Member member = memberRepository.findByLoginId(loginId)
             .orElseThrow(() -> new RuntimeException("등록된 아이디가 없습니다."));
+
+        Map<String, Object> claim = Map.of("loginId", authentication.getName());
+        // AccessToken 유효기간 30분
+        String accessToken = jwtUtil.generateToken(claim, 30, String.valueOf(member.getMemberId()));
+        // RefreshToken 유효기간 7일
+        String refreshToken = jwtUtil.generateToken(claim, 7 * 24 * 60, String.valueOf(member.getMemberId()));
 
         // Member 엔티티에 RefreshToken 값을 저장합니다.
         member.setRefreshToken(refreshToken);
@@ -68,7 +68,12 @@ public class LoginSuccessHandler implements AuthenticationSuccessHandler {
 
         Map<String, String> keyMap = Map.of(
             "accessToken", accessToken,
-            "refreshToken", refreshToken
+            "refreshToken", refreshToken,
+            "memberId", String.valueOf(member.getMemberId()),
+            "loginId", loginId,
+            "email", member.getEmail(),
+            "nickname", member.getNickname(),
+            "memberProfileImage", member.getMemberProfileImage()
         );
 
         String jsonStr = gson.toJson(keyMap);

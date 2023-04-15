@@ -119,6 +119,19 @@ public class PostRepositoryTest {
             .content("게시글 상세를 조회")
             .build();
 
+    /**
+     * 임의 의 uuid생성 후 게시물을 저장 후 삭제한다
+     */
+    @DisplayName("게시물 삭제")
+    @Test
+    public void deletePost() {
+
+        UUID uuid = UUID.fromString("dc718b8f-fb97-48d4-b55d-855e7c845983");
+
+        Post post = Post.builder().region("게시글 삭제 시작 지역")
+            .id(uuid)
+            .content("게시글 삭제 시작 내용").build();
+
         for (int i = 0; i < 3; i++) {
             PostImage postImage = PostImage.builder()
                 .postImageNumber(i)
@@ -129,6 +142,7 @@ public class PostRepositoryTest {
 
             post.insertImages(postImage);
         }
+
         postRepository.save(post);
 
         //given
@@ -139,6 +153,12 @@ public class PostRepositoryTest {
         Assertions.assertThat(getDetailPost.get().getContent()).isEqualTo(post.getContent());
         Assertions.assertThat(getDetailPost.get().getRegion()).isEqualTo(post.getRegion());
 
+        Post savePost = postRepository.save(post);
 
+        savePost.deletePost();
+
+        Assertions.assertThat(savePost.getDeletedAt()).isNotNull();
+        System.out.println(savePost.getDeletedAt());
+        Assertions.assertThat(savePost.getDeletedAt()).isEqualTo(savePost.getDeletedAt());
     }
 }

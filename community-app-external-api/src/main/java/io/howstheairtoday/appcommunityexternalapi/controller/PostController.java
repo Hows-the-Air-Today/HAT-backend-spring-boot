@@ -4,6 +4,7 @@ import java.util.UUID;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -57,6 +58,14 @@ public class PostController {
             .statusCode(HttpStatus.OK.value())
             .msg("success")
             .data(dto)
+
+    @DeleteMapping("/post")
+    public ApiResponse<Object> deletePost(@Valid @RequestBody PostRequestDto.PostUUIDDto postsId
+    ) {
+        externalPostService.deletePost(postsId);
+        return ApiResponse.<Object>builder()
+            .statusCode(HttpStatus.OK.value())
+            .msg("success")
             .build();
     }
 }
