@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 import org.assertj.core.api.Assertions;
@@ -135,6 +136,40 @@ public class PostRepositoryTest {
         Assertions.assertThat(savePost.getDeletedAt()).isNotNull();
         System.out.println(savePost.getDeletedAt());
         Assertions.assertThat(savePost.getDeletedAt()).isEqualTo(savePost.getDeletedAt());
+
+    }
+    @DisplayName("게시물 상세 조회")
+    @Test
+    public void getDetailPost() {
+
+        UUID memberId = UUID.fromString("dc718b8f-fb97-48d4-b55d-855e7c845987");
+
+        Post post = Post.builder()
+            .memberId(memberId)
+            .region("게시글 상세를 조회")
+            .content("게시글 상세를 조회")
+            .build();
+
+        for (int i = 0; i < 3; i++) {
+            PostImage postImage = PostImage.builder()
+                .postImageNumber(i)
+                .memeberId(memberId)
+                .post(post)
+                .postImageUrl("https://amazo3.com/kjh" + i)
+                .build();
+
+            post.insertImages(postImage);
+        }
+        postRepository.save(post);
+
+        //given
+        Optional<Post> getDetailPost = postRepository.findById(post.getId());
+        //then
+        System.out.println();
+        Assertions.assertThat(getDetailPost.get().getMemberId()).isEqualTo(memberId);
+        Assertions.assertThat(getDetailPost.get().getContent()).isEqualTo(post.getContent());
+        Assertions.assertThat(getDetailPost.get().getRegion()).isEqualTo(post.getRegion());
+
 
     }
 }
