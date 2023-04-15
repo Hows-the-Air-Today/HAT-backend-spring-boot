@@ -10,4 +10,5 @@ import io.howstheairtoday.communitydomainrds.entity.Post;
 public interface PostRepository extends JpaRepository<Post, UUID> {
 
     Optional<Post> findById(UUID uuid);
+
 }
