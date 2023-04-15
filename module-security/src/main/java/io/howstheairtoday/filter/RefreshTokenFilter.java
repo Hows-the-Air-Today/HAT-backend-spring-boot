@@ -13,6 +13,8 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import com.google.gson.Gson;
 
 import io.howstheairtoday.exception.RefreshTokenException;
+import io.howstheairtoday.memberdomainrds.entity.Member;
+import io.howstheairtoday.memberdomainrds.repository.MemberRepository;
 import io.howstheairtoday.util.JwtUtil;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.MalformedJwtException;
@@ -29,6 +31,8 @@ public class RefreshTokenFilter extends OncePerRequestFilter {
 
     private final String refreshPath;
     private final JwtUtil jwtUtil;
+    private Member member;
+    private MemberRepository memberRepository;
 
     private Map<String, String> parseRequestJSON(HttpServletRequest request) {
 
@@ -144,11 +148,12 @@ public class RefreshTokenFilter extends OncePerRequestFilter {
         log.info("💡 GAP Time =====> " + gapTime);
 
         String loginId = (String)refreshClaims.get("loginId");
-        String accessTokenValue = jwtUtil.generateToken(Map.of("loginId", loginId), 30);
+        String memberId = (String)refreshClaims.get("memberId");
+        String accessTokenValue = jwtUtil.generateToken(Map.of("loginId", loginId), 30, memberId);
         String refreshTokenValue = tokens.get("refreshToken");
         if (gapTime < (1000 * 60 * 60 * 24 * 3)) {
             log.info("🛠️ Refresh Token Required -------------------- 🛠️");
-            refreshTokenValue = jwtUtil.generateToken(Map.of("loginId", loginId), 60 * 24 * 3);
+            refreshTokenValue = jwtUtil.generateToken(Map.of("loginId", loginId), 60 * 24 * 3, memberId);
         }
 
         log.info("🛠️ Refresh Token Result -------------------- 🛠️");
