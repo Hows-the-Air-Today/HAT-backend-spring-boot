@@ -39,7 +39,7 @@ public class ExternalPostService {
         postImages.forEach(
             postImg -> post.insertImages(
                 PostImage.create(postImg.getPostImageNumber(), postImg.getPostImageUrl(),
-                    post)));
+                    post, post.getMemberId())));
 
         domainCommunityService.savePost(post);
     }
