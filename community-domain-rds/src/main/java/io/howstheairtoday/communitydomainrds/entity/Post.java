@@ -11,6 +11,7 @@ import io.howstheairtoday.communitydomainrds.common.BaseTimeEntity;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
@@ -58,7 +59,7 @@ public class Post extends BaseTimeEntity {
     /**
      * 게시글 이미지 목록
      */
-    @OneToMany(mappedBy = "postId", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "postId", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     @Setter
     private List<PostImage> imageArray;
 
@@ -78,7 +79,7 @@ public class Post extends BaseTimeEntity {
      * 게시글 생성 메소드
      *
      * @param content 게시글 내용
-     * @param region 게시글 위치
+     * @param region  게시글 위치
      * @return 생성된 게시글
      */
     public static Post createPost(final String content, final String region, final UUID memberId) {
