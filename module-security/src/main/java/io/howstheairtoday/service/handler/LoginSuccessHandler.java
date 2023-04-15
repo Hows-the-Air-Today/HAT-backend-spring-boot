@@ -68,7 +68,12 @@ public class LoginSuccessHandler implements AuthenticationSuccessHandler {
 
         Map<String, String> keyMap = Map.of(
             "accessToken", accessToken,
-            "refreshToken", refreshToken
+            "refreshToken", refreshToken,
+            "memberId", String.valueOf(member.getMemberId()),
+            "loginId", loginId,
+            "email", member.getEmail(),
+            "nickname", member.getNickname(),
+            "memberProfileImage", member.getMemberProfileImage()
         );
 
         String jsonStr = gson.toJson(keyMap);
