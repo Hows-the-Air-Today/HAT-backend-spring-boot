@@ -8,12 +8,12 @@ group = 'io.howstheairtoday'
 version = '0.0.1-SNAPSHOT'
 sourceCompatibility = '17'
 
-repositories {
-    mavenCentral()
+bootJar {
+    enabled = false
 }
 
 jar {
-    enabled = false
+    enabled = true
 }
 
 configurations {
@@ -27,18 +27,21 @@ configurations {
     }
 }
 
+repositories {
+    mavenCentral()
+}
+
 dependencies {
-    implementation 'org.springframework.boot:spring-boot-starter'
+    // lombok
+    compileOnly 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
+
     implementation 'org.springframework.boot:spring-boot-starter-web'
-    developmentOnly 'org.springframework.boot:spring-boot-devtools'
+    implementation 'org.springframework.retry:spring-retry'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
 
     // LOGGING
     implementation 'org.springframework.boot:spring-boot-starter-log4j2'
-
-    // 스프링 배치를 사용하기 위한 의존성 주입
-    implementation 'org.springframework.boot:spring-boot-starter-batch'
-    testImplementation 'org.springframework.batch:spring-batch-test'
 
     // https://mvnrepository.com/artifact/org.json/json
     implementation 'org.json:json:20230227'
