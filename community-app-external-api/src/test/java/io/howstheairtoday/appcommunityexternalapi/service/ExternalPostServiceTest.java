@@ -18,6 +18,7 @@ import org.springframework.test.context.ActiveProfiles;
 
 import io.howstheairtoday.appcommunityexternalapi.exception.posts.PostNotExistException;
 import io.howstheairtoday.appcommunityexternalapi.service.dto.request.PostRequestDto;
+import io.howstheairtoday.appcommunityexternalapi.service.dto.response.PostResponseDto;
 import io.howstheairtoday.communitydomainrds.entity.Post;
 import io.howstheairtoday.communitydomainrds.entity.PostImage;
 import io.howstheairtoday.communitydomainrds.service.DomainCommunityService;
@@ -28,6 +29,9 @@ public class ExternalPostServiceTest {
 
     @Autowired
     private DomainCommunityService domainCommunityService;
+
+    @Autowired
+    private ExternalPostService externalPostService;
 
     /*
      * domainCommunityService에 Post를 Entity를 넘기고 성공적으로 데이터베이스에 삽입 성공
@@ -61,7 +65,8 @@ public class ExternalPostServiceTest {
 
         post.getImageArray()
             .forEach(postImage -> post.insertImages(
-                PostImage.create(postImage.getPostImageNumber(), postImage.getPostImageUrl(), post)));
+                PostImage.create(postImage.getPostImageNumber(), postImage.getPostImageUrl(),
+                    post, post.getMemberId())));
 
         //when
         domainCommunityService.savePost(post);
@@ -134,6 +139,35 @@ public class ExternalPostServiceTest {
 
         Assertions.assertNotNull(post.getDeletedAt());
 
+    }
+
+    @DisplayName("게시물 상세")
+    @Test
+    public void getDetailServicePosts() {
+
+        UUID uuid = UUID.fromString("dc718b8f-fb97-48d4-b55d-855e7c845987");
+        Post post = Post.builder().memberId(uuid).region("동남로").content("게시글 내용").build();
+
+        PostImage postImage = PostImage.builder()
+            .postImageNumber(1)
+            .post(post)
+            .postImageUrl("https://amazons3.com/kjh")
+            .build();
+
+        post.insertImages(postImage);
+
+        domainCommunityService.savePost(post);
+
+        //given
+        Post getPost = domainCommunityService.findById(post.getId()).orElseThrow(PostNotExistException::new);
+
+        //when
+        PostResponseDto.PostResponseDetail postResponseDetail = externalPostService.getDetailPost(getPost.getId());
+
+        //then
+        assertThat(getPost.getContent()).isEqualTo("게시글 내용");
+        assertThat(getPost.getRegion()).isEqualTo("동남로");
+        assertThat(getPost.getId()).isEqualTo(postResponseDetail.getPostDto().getPostId());
     }
 
 }
