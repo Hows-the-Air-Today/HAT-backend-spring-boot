@@ -153,7 +153,6 @@ public class ExternalPostServiceTest {
     @Test()
     public void createWithImageUploadPost() throws IOException {
         //given
-
         PostRequestDto.SaveRequestDto saveRequestDto = PostRequestDto.SaveRequestDto.builder()
             .content("e")
             .region("#4")
@@ -164,6 +163,17 @@ public class ExternalPostServiceTest {
 
         File newFile = new File(getClass().getClassLoader().getResource("qr.jpeg").getFile());
 
+        MockMultipartFile file = new MockMultipartFile("image/jpeg",
+            new FileInputStream(
+                newFile));
+        PostRequestDto.PostImagesDto postImagesDto = PostRequestDto.PostImagesDto.builder()
+            .postImageNumber(1)
+            .postImageUrl(file)
+            .build();
+
+        postImagesDtos.add(postImagesDto);
+
+        externalPostService.createPost(saveRequestDto, postImagesDtos);
     }
 
     @DisplayName("게시물 상세")
