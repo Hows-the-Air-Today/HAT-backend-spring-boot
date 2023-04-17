@@ -75,7 +75,8 @@ public class TokenCheckFilter extends OncePerRequestFilter {
          */
         if (path.startsWith("/api/v1/post/") || // TODO: Post와 Member 개발 완료 후 제거
             path.startsWith("/api/v1/airquality/") ||
-            path.startsWith("/api/v1/auth/register")) {
+            path.startsWith("/api/v1/auth/register") ||
+            path.startsWith("/api/v1/auth/logout")) {
             filterChain.doFilter(request, response);
             return;
         }
