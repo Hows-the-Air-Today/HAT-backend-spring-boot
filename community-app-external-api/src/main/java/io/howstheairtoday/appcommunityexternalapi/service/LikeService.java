@@ -6,6 +6,7 @@ import java.util.UUID;
 import org.springframework.stereotype.Service;
 
 import io.howstheairtoday.appcommunityexternalapi.service.dto.request.LikeRequestDTO;
+import io.howstheairtoday.appcommunityexternalapi.service.dto.response.LikeResponseDTO;
 import io.howstheairtoday.communitydomainrds.entity.Like;
 import io.howstheairtoday.communitydomainrds.service.DomainCommunityService;
 import lombok.RequiredArgsConstructor;
@@ -18,18 +19,24 @@ public class LikeService {
 
 
     //좋아요 등록 및 삭제 로직
-    public Like createLike(UUID postId, LikeRequestDTO likeRequestDTO){
+    public LikeResponseDTO createLike(UUID postId, LikeRequestDTO likeRequestDTO){
 
         Optional<Like> like = domainCommunityService.changeStatus(postId, likeRequestDTO.getMemberId());
 
         Like liked;
+        LikeResponseDTO likedto;
 
         if(like.isPresent()){
             liked = like.get();
             liked.changeStatus();
             domainCommunityService.saveLike(liked);
 
-            return liked;
+            likedto = LikeResponseDTO.builder()
+                .isLike(liked.getLiked())
+                .likeCount(getLikeCount(postId))
+                .build();
+
+            return likedto;
         }
 
         liked = Like.builder()
@@ -40,7 +47,12 @@ public class LikeService {
 
         domainCommunityService.saveLike(liked);
 
-        return liked;
+        likedto = LikeResponseDTO.builder()
+            .isLike(liked.getLiked())
+            .likeCount(getLikeCount(postId))
+            .build();
+
+        return likedto;
     }
 
     //좋아요 개수 출력

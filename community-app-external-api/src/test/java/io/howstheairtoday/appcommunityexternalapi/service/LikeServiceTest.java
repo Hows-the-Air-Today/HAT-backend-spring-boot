@@ -14,6 +14,7 @@ import org.springframework.test.context.ActiveProfiles;
 
 import io.howstheairtoday.appcommunityexternalapi.service.dto.request.CommentRequestDTO;
 import io.howstheairtoday.appcommunityexternalapi.service.dto.request.LikeRequestDTO;
+import io.howstheairtoday.appcommunityexternalapi.service.dto.response.LikeResponseDTO;
 import io.howstheairtoday.communitydomainrds.entity.Comment;
 import io.howstheairtoday.communitydomainrds.entity.Like;
 
@@ -38,7 +39,7 @@ class LikeServiceTest {
             .memberId(UUID.randomUUID())
             .build();
 
-        Like savedLike = likeService.createLike(postId, likeRequestDTO);
+        LikeResponseDTO savedLike = likeService.createLike(postId, likeRequestDTO);
 
         //then
         assertNotNull(savedLike);

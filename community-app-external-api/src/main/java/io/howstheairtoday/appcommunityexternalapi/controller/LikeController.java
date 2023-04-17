@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 import io.howstheairtoday.appcommunityexternalapi.common.ApiResponse;
 import io.howstheairtoday.appcommunityexternalapi.service.LikeService;
 import io.howstheairtoday.appcommunityexternalapi.service.dto.request.LikeRequestDTO;
+import io.howstheairtoday.appcommunityexternalapi.service.dto.response.LikeResponseDTO;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
@@ -21,19 +22,17 @@ import lombok.RequiredArgsConstructor;
 @RestController
 public class LikeController {
 
-    @Autowired
-    private LikeService likeService;
+    private final LikeService likeService;
 
     @PostMapping("/{postId}/likes")
     public ApiResponse<Object> createLike(@PathVariable("postId") UUID postId, @RequestBody LikeRequestDTO likeRequestDTO) {
 
-        likeService.createLike(postId, likeRequestDTO);
-        int likeCount = likeService.getLikeCount(postId);
+        LikeResponseDTO like = likeService.createLike(postId, likeRequestDTO);
 
         return ApiResponse.<Object>builder()
             .statusCode(HttpStatus.CREATED.value())
             .msg("성공")
-            .data(likeCount)
+            .data(like)
             .build();
     }
 }

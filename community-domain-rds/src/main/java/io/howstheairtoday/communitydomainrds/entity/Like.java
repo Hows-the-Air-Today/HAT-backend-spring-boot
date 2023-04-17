@@ -28,7 +28,7 @@ public class Like {
     @GenericGenerator(name = "uuid2", strategy = "org.hibernate.id.UUIDGenerator")
     @JdbcTypeCode(SqlTypes.VARCHAR)
     @Column(name = "like_id")
-    private UUID likeID;
+    private UUID likeId;
 
     //좋아요 여부
     @Column(name = "liked")
