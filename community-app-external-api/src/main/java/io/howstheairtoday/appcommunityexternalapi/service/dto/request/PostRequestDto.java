@@ -39,10 +39,6 @@ public class PostRequestDto {
         @NotNull(message = "유저아이디가 존재하지 않습니다.")
         private UUID memberId;
 
-        /**
-         * 게시글에 첨부된 이미지 목록
-         */
-        // private List<PostImagesDto> postImageDtoList;
 
     }
 
