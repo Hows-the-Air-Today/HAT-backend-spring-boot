@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import io.howstheairtoday.appcommunityexternalapi.exception.posts.PostNotExistException;
 import io.howstheairtoday.appcommunityexternalapi.service.dto.request.PostRequestDto;
 import io.howstheairtoday.appcommunityexternalapi.service.dto.response.PostResponseDto;
+import io.howstheairtoday.communitydomainrds.dto.DomainPostResponseDto;
 import io.howstheairtoday.communitydomainrds.entity.Post;
 import io.howstheairtoday.communitydomainrds.entity.PostImage;
 import io.howstheairtoday.communitydomainrds.service.DomainCommunityService;
@@ -74,6 +75,7 @@ public class ExternalPostService {
 
         domainCommunityService.savePost(post);
     }
+
     public PostResponseDto.PostResponseDetail getDetailPost(UUID postsId) {
 
         Post getDetailPost = domainCommunityService.findById(postsId).orElseThrow(PostNotExistException::new);
@@ -107,6 +109,17 @@ public class ExternalPostService {
             .build();
 
         return getPostresponseDetail;
+
+    }
+
+    public List<PostResponseDto.PostImageDto> getMyPost(UUID memberId) {
+        List<DomainPostResponseDto.PostImageDto> post = domainCommunityService.getMyPost(memberId);
+        List<PostResponseDto.PostImageDto> list =
+            post.stream()
+                .map(postImage -> new PostResponseDto.PostImageDto(postImage.getPostImageUrl(),
+                    postImage.getPostImageNumber(), postImage.getMemberId(), postImage.getPostId()))
+                .collect(Collectors.toList());
+        return list;
 
     }
 }

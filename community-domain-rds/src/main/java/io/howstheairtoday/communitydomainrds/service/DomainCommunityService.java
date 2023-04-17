@@ -2,6 +2,7 @@ package io.howstheairtoday.communitydomainrds.service;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -18,8 +19,10 @@ import org.springframework.stereotype.Service;
 
 import io.howstheairtoday.communitydomainrds.dto.CommentPageDTO;
 import io.howstheairtoday.communitydomainrds.dto.CommentPageListDTO;
+import io.howstheairtoday.communitydomainrds.dto.DomainPostResponseDto;
 import io.howstheairtoday.communitydomainrds.entity.Comment;
 import io.howstheairtoday.communitydomainrds.entity.Post;
+import io.howstheairtoday.communitydomainrds.entity.PostImage;
 import io.howstheairtoday.communitydomainrds.repository.CommentRepository;
 import io.howstheairtoday.communitydomainrds.repository.PostRepository;
 import jakarta.transaction.Transactional;
@@ -53,11 +56,22 @@ public class DomainCommunityService {
 
     //게시글 댓글 저장 메소드
     @Transactional
-    public Comment saveComment(Comment comment){
+    public Comment saveComment(Comment comment) {
 
         commentRepository.save(comment);
 
         return comment;
+    }
+
+    @Transactional
+    public List<DomainPostResponseDto.PostImageDto> getMyPost(UUID memberId) {
+        List<PostImage> list = postRepository.findByMemberIdAndDeletedAtIsNull(memberId);
+
+        List<DomainPostResponseDto.PostImageDto> domainPostImageDto = list.stream().
+            map(postImage -> new DomainPostResponseDto.PostImageDto(postImage.getPostImageUrl(),
+                postImage.getPostImageNumber(), postImage.getMemberId(), postImage.getPostImageId()))
+            .collect(Collectors.toList());
+        return domainPostImageDto;
     }
 
     //게시물 ID 검색 메소드
@@ -94,6 +108,7 @@ public class DomainCommunityService {
 
             }).collect(Collectors.toList());
 
-        return new CommentPageListDTO(commentDTOs, comments.hasNext(), comments.getNumber(), comments.getSize(), comments.isFirst(), comments.isLast());
+        return new CommentPageListDTO(commentDTOs, comments.hasNext(), comments.getNumber(), comments.getSize(),
+            comments.isFirst(), comments.isLast());
     }
 }
