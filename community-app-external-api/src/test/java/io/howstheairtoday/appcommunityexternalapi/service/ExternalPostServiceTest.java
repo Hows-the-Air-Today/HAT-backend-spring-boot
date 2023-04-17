@@ -25,6 +25,7 @@ import org.springframework.web.multipart.MultipartResolver;
 
 import io.howstheairtoday.appcommunityexternalapi.exception.posts.PostNotExistException;
 import io.howstheairtoday.appcommunityexternalapi.service.dto.request.PostRequestDto;
+import io.howstheairtoday.appcommunityexternalapi.service.dto.response.PostResponseDto;
 import io.howstheairtoday.communitydomainrds.entity.Post;
 import io.howstheairtoday.communitydomainrds.entity.PostImage;
 import io.howstheairtoday.communitydomainrds.repository.PostRepository;
@@ -73,7 +74,7 @@ public class ExternalPostServiceTest {
         post.getImageArray()
             .forEach(postImage -> post.insertImages(
                 PostImage.create(postImage.getPostImageNumber(), postImage.getPostImageUrl(), post,
-                    postImage.getPostImageId())));
+                    post.getMemberId())));
 
         //when
         domainCommunityService.savePost(post);
@@ -163,19 +164,35 @@ public class ExternalPostServiceTest {
 
         File newFile = new File(getClass().getClassLoader().getResource("qr.jpeg").getFile());
 
-        MockMultipartFile file = new MockMultipartFile("image/jpeg",
-            new FileInputStream(
-                newFile));
-        PostRequestDto.PostImagesDto postImagesDto = PostRequestDto.PostImagesDto.builder()
+    }
+
+    @DisplayName("게시물 상세")
+    @Test
+    public void getDetailServicePosts() {
+
+        UUID uuid = UUID.fromString("dc718b8f-fb97-48d4-b55d-855e7c845987");
+        Post post = Post.builder().memberId(uuid).region("동남로").content("게시글 내용").build();
+
+        PostImage postImage = PostImage.builder()
             .postImageNumber(1)
-            .postImageUrl(file)
+            .post(post)
+            .postImageUrl("https://amazons3.com/kjh")
             .build();
 
-        postImagesDtos.add(postImagesDto);
+        post.insertImages(postImage);
 
-        externalPostService.createPost(saveRequestDto, postImagesDtos);
+        domainCommunityService.savePost(post);
 
+        //given
+        Post getPost = domainCommunityService.findById(post.getId()).orElseThrow(PostNotExistException::new);
+
+        //when
+        PostResponseDto.PostResponseDetail postResponseDetail = externalPostService.getDetailPost(getPost.getId());
+
+        //then
+        assertThat(getPost.getContent()).isEqualTo("게시글 내용");
+        assertThat(getPost.getRegion()).isEqualTo("동남로");
+        assertThat(getPost.getId()).isEqualTo(postResponseDetail.getPostDto().getPostId());
     }
 
 }
-
