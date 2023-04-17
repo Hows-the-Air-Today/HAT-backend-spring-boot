@@ -40,7 +40,7 @@ public class PostImage extends BaseTimeEntity {
     private UUID postImageId;
 
     // PostImage 엔티티는 Post 엔티티와 다대일 관계입니다.
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "post_id")
     @Setter
     private Post postId;
