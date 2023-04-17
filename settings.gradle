@@ -9,6 +9,7 @@ include 'module-security'
 
 // 내부 모듈 계층
 include 'module-core'
+include 'air-quality-client'
 
 // 도메인 모듈 계층
 include 'air-quality-domain-service'

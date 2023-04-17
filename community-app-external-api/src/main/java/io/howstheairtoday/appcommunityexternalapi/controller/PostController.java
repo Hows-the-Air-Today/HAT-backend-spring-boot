@@ -8,18 +8,21 @@ import org.springframework.http.MediaType;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestPart;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import io.howstheairtoday.appcommunityexternalapi.common.ApiResponse;
 import io.howstheairtoday.appcommunityexternalapi.service.ExternalPostService;
 import io.howstheairtoday.appcommunityexternalapi.service.dto.request.PostRequestDto;
+import io.howstheairtoday.appcommunityexternalapi.service.dto.response.PostResponseDto;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
@@ -70,6 +73,17 @@ public class PostController {
         return ApiResponse.<Object>builder()
             .statusCode(HttpStatus.OK.value())
             .msg("success")
+            .build();
+    }
+
+    @GetMapping("/post-detail")
+    public ApiResponse<Object> getDetailPost(@RequestParam UUID postsId
+    ) {
+        PostResponseDto.PostResponseDetail dto = externalPostService.getDetailPost(postsId);
+        return ApiResponse.<Object>builder()
+            .statusCode(HttpStatus.OK.value())
+            .msg("success")
+            .data(dto)
             .build();
     }
 }

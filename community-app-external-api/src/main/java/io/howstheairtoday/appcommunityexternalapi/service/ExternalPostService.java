@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -12,6 +13,7 @@ import org.springframework.web.multipart.MultipartFile;
 import io.howstheairtoday.appcommunityexternalapi.exception.AwsCustomServiceException;
 import io.howstheairtoday.appcommunityexternalapi.exception.posts.PostNotExistException;
 import io.howstheairtoday.appcommunityexternalapi.service.dto.request.PostRequestDto;
+import io.howstheairtoday.appcommunityexternalapi.service.dto.response.PostResponseDto;
 import io.howstheairtoday.communitydomainrds.entity.Post;
 import io.howstheairtoday.communitydomainrds.entity.PostImage;
 import io.howstheairtoday.communitydomainrds.service.DomainCommunityService;
@@ -53,6 +55,9 @@ public class ExternalPostService {
                         post));
 
             });
+            postImg -> post.insertImages(
+                PostImage.create(postImg.getPostImageNumber(), postImg.getPostImageUrl(),
+                    post, post.getMemberId())));
 
         domainCommunityService.savePost(post);
     }
@@ -91,5 +96,40 @@ public class ExternalPostService {
         post.deletePost();
 
         domainCommunityService.savePost(post);
+    }
+    public PostResponseDto.PostResponseDetail getDetailPost(UUID postsId) {
+
+        Post getDetailPost = domainCommunityService.findById(postsId).orElseThrow(PostNotExistException::new);
+
+        List<PostResponseDto.PostImageResponseDto> imagesDtos = getDetailPost.getImageArray().stream()
+            .map(postImage -> PostResponseDto.PostImageResponseDto.builder()
+                .imageId(postImage.getPostImageId())
+                .memberId(postImage.getMemberId())
+                .postId(postImage.getPostId().getId())
+                .imageNumber(postImage.getPostImageNumber())
+                .imageUrl(postImage.getPostImageUrl())
+                .createdAt(postImage.getCreatedAt())
+                .updatedAt(postImage.getUpdatedAt())
+                .deletedAt(postImage.getDeletedAt())
+                .build())
+            .collect(Collectors.toList());
+
+        PostResponseDto.PostDto postDto = PostResponseDto.PostDto.builder()
+            .postId(getDetailPost.getId())
+            .region(getDetailPost.getRegion())
+            .memberId(getDetailPost.getMemberId())
+            .content(getDetailPost.getContent())
+            .deletedAt(getDetailPost.getDeletedAt())
+            .updatedAt(getDetailPost.getUpdatedAt())
+            .createdAt(getDetailPost.getCreatedAt())
+            .build();
+
+        PostResponseDto.PostResponseDetail getPostresponseDetail = PostResponseDto.PostResponseDetail.builder()
+            .postDto(postDto)
+            .imageDto(imagesDtos)
+            .build();
+
+        return getPostresponseDetail;
+
     }
 }

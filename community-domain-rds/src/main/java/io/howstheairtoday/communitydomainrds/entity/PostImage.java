@@ -8,6 +8,7 @@ import io.howstheairtoday.communitydomainrds.common.BaseTimeEntity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
@@ -44,6 +45,9 @@ public class PostImage extends BaseTimeEntity {
     @Setter
     private Post postId;
 
+    @Column(name = "member_id")
+    private UUID memberId;
+
     // 포스트의 이미지 번호
     @Column(name = "post_image_number")
     private Integer postImageNumber;
@@ -60,9 +64,10 @@ public class PostImage extends BaseTimeEntity {
      * @param post            해당 이미지와 연관된 포스트 엔티티
      */
     @Builder
-    public PostImage(Integer postImageNumber, String postImageUrl, Post post) {
+    public PostImage(Integer postImageNumber, String postImageUrl, Post post, final UUID memeberId) {
         this.postImageNumber = postImageNumber;
         this.postImageUrl = postImageUrl;
+        this.memberId = memeberId;
         this.postId = post;
     }
 
@@ -74,11 +79,12 @@ public class PostImage extends BaseTimeEntity {
      * @param post            해당 이미지와 연관된 포스트 엔티티
      * @return 생성된 PostImage 인스턴스
      */
-    public static PostImage create(Integer postImageNumber, String postImageUrl, Post post) {
+    public static PostImage create(Integer postImageNumber, String postImageUrl, Post post, final UUID memeberId) {
         return PostImage.builder()
             .postImageNumber(postImageNumber)
             .postImageUrl(postImageUrl)
             .post(post)
+            .memeberId(memeberId)
             .build();
     }
 }
