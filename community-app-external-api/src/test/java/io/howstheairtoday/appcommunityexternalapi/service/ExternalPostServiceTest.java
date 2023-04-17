@@ -3,6 +3,10 @@ package io.howstheairtoday.appcommunityexternalapi.service;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 
 import java.util.List;
@@ -14,12 +18,16 @@ import org.junit.jupiter.api.Test;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartResolver;
 
 import io.howstheairtoday.appcommunityexternalapi.exception.posts.PostNotExistException;
 import io.howstheairtoday.appcommunityexternalapi.service.dto.request.PostRequestDto;
 import io.howstheairtoday.communitydomainrds.entity.Post;
 import io.howstheairtoday.communitydomainrds.entity.PostImage;
+import io.howstheairtoday.communitydomainrds.repository.PostRepository;
 import io.howstheairtoday.communitydomainrds.service.DomainCommunityService;
 
 @ActiveProfiles("test")
@@ -28,6 +36,9 @@ public class ExternalPostServiceTest {
 
     @Autowired
     private DomainCommunityService domainCommunityService;
+
+    @Autowired
+    private ExternalPostService externalPostService;
 
     /*
      * domainCommunityService에 Post를 Entity를 넘기고 성공적으로 데이터베이스에 삽입 성공
@@ -43,7 +54,7 @@ public class ExternalPostServiceTest {
         for (int i = 0; i < 3; i++) {
             PostRequestDto.PostImagesDto postImagesDto = PostRequestDto.PostImagesDto.builder()
                 .postImageNumber(i)
-                .postImageUrl("https://amazon.com" + i)
+                // .postImageUrl("https://amazon.com")
                 .build();
             postImagesList.add(postImagesDto);
         }
@@ -52,7 +63,7 @@ public class ExternalPostServiceTest {
         PostRequestDto.SaveRequestDto postRequestDto = PostRequestDto.SaveRequestDto.builder()
             .content("안녕하세요")
             .memberId(uuid)
-            .postImageDtoList(postImagesList)
+            // .postImageDtoList(postImagesList)
             .region("가락동")
             .build();
 
@@ -133,6 +144,35 @@ public class ExternalPostServiceTest {
         post.deletePost();
 
         Assertions.assertNotNull(post.getDeletedAt());
+
+    }
+
+    @DisplayName("게시물 업로드 ")
+    @Test()
+    public void createWithImageUploadPost() throws IOException {
+        //given
+
+        PostRequestDto.SaveRequestDto saveRequestDto = PostRequestDto.SaveRequestDto.builder()
+            .content("e")
+            .region("#4")
+            .memberId(UUID.fromString("dc718b8f-fb97-48d4-b55d-855e7c845987"))
+            .build();
+
+        List<PostRequestDto.PostImagesDto> postImagesDtos = new ArrayList<>();
+
+        File newFile = new File(getClass().getClassLoader().getResource("qr.jpeg").getFile());
+
+        MockMultipartFile file = new MockMultipartFile("image/jpeg",
+            new FileInputStream(
+                newFile));
+        PostRequestDto.PostImagesDto postImagesDto = PostRequestDto.PostImagesDto.builder()
+            .postImageNumber(1)
+            .postImageUrl(file)
+            .build();
+
+        postImagesDtos.add(postImagesDto);
+
+        externalPostService.createPost(saveRequestDto, postImagesDtos);
 
     }
 
