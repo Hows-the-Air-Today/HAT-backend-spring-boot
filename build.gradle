@@ -167,7 +167,7 @@ project('community-app-external-api') {
         implementation project(':module-common')
 //        implementation project(':module-security')
 
-        //implementation project(":module-core")
+        api project(":module-core")
         implementation project(":community-domain-rds")
     }
 }
