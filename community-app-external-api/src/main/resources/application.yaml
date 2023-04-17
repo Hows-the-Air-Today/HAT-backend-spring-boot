@@ -5,3 +5,4 @@ spring:
       - classpath:security/community-app-external-api/application.yaml
       - classpath:security/mariadb/application.yaml
       - classpath:security/module-security/application.yaml
+      - classpath:security/module-core/application.yaml

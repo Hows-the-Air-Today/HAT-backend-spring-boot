@@ -3,6 +3,8 @@ package io.howstheairtoday.appcommunityexternalapi.service.dto.request;
 import java.util.List;
 import java.util.UUID;
 
+import org.springframework.web.multipart.MultipartFile;
+
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -34,11 +36,6 @@ public class PostRequestDto {
         @NotNull(message = "유저아이디가 존재하지 않습니다.")
         private UUID memberId;
 
-        /**
-         * 게시글에 첨부된 이미지 목록
-         */
-        private List<PostImagesDto> postImageDtoList;
-
     }
 
     @Getter
@@ -48,7 +45,7 @@ public class PostRequestDto {
         /**
          * 게시글에 첨부된 이미지 URL
          */
-        private String postImageUrl;
+        private MultipartFile postImageUrl;
 
         /**
          * 게시글에 첨부된 이미지 번호
