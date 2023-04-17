@@ -1,18 +1,23 @@
 package io.howstheairtoday.appcommunityexternalapi.service.dto.request;
 
+import java.io.File;
 import java.util.List;
 import java.util.UUID;
+
+import org.springframework.web.multipart.MultipartFile;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.Setter;
 
 public class PostRequestDto {
 
     @AllArgsConstructor
     @Getter
+    @Setter
     @Builder
     public static class SaveRequestDto {
 
@@ -37,18 +42,19 @@ public class PostRequestDto {
         /**
          * 게시글에 첨부된 이미지 목록
          */
-        private List<PostImagesDto> postImageDtoList;
+        // private List<PostImagesDto> postImageDtoList;
 
     }
 
     @Getter
+    @Setter
     @Builder
     public static class PostImagesDto {
 
         /**
          * 게시글에 첨부된 이미지 URL
          */
-        private String postImageUrl;
+        private MultipartFile postImageUrl;
 
         /**
          * 게시글에 첨부된 이미지 번호
