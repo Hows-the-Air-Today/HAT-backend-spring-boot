@@ -75,11 +75,11 @@ class MemberRepositoryTest {
         savedMember.modifiyNickname("modNick");
 
         // when
-        List<Member> memberList = memberRepository.findAll();
-        Member result = memberList.get(0);
+        Optional<Member> foundMember = memberRepository.findById(savedMember.getMemberId());
 
         // then
-        Assertions.assertEquals(result.getNickname(), "modNick");
+        assertThat(foundMember).isPresent();
+        assertThat(foundMember.get().getNickname()).isEqualTo("modNick");
     }
 
     @DisplayName("회원 비밀번호 변경")

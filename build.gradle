@@ -165,7 +165,7 @@ project('member-app-external-api') {
 project('community-app-external-api') {
     dependencies {
         implementation project(':module-common')
-//        implementation project(':module-security')
+        implementation project(':module-security')
 
         //implementation project(":module-core")
         implementation project(":community-domain-rds")
