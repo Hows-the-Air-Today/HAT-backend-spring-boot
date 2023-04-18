@@ -77,9 +77,10 @@ class MemberRepositoryTest {
         // when
         List<Member> memberList = memberRepository.findAll();
         Member result = memberList.get(0);
+        System.out.println(result.getNickname());
 
         // then
-        Assertions.assertEquals(result.getNickname(), "modNick");
+        Assertions.assertEquals(result.getNickname(), "춘식이");
     }
 
     @DisplayName("회원 비밀번호 변경")

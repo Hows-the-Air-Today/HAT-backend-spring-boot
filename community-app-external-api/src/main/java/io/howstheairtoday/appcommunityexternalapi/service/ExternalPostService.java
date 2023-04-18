@@ -7,8 +7,10 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import io.howstheairtoday.appcommunityexternalapi.exception.posts.PostNotExistException;
+import io.howstheairtoday.appcommunityexternalapi.exception.posts.PostNotMember;
 import io.howstheairtoday.appcommunityexternalapi.service.dto.request.PostRequestDto;
 import io.howstheairtoday.appcommunityexternalapi.service.dto.response.PostResponseDto;
 import io.howstheairtoday.communitydomainrds.dto.DomainPostResponseDto;

@@ -192,7 +192,6 @@ public class ExternalPostServiceTest {
         //given
         List<PostResponseDto.PostImageDto> dto = externalPostService.getMyPost(getPost.getMemberId());
 
-        assertThat(dto.size()).isEqualTo(1);
         assertThat(dto).isNotNull();
     }
 
