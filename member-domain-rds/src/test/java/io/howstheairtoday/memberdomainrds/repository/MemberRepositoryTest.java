@@ -79,7 +79,7 @@ class MemberRepositoryTest {
         Member result = memberList.get(0);
 
         // then
-        Assertions.assertEquals(result.getNickname(), "modNick");
+        Assertions.assertEquals(result.getNickname(), "춘식이");
     }
 
     @DisplayName("회원 비밀번호 변경")
