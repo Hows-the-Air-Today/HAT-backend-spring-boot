@@ -1,5 +1,6 @@
 package io.howstheairtoday.appcommunityexternalapi.service;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -10,10 +11,12 @@ import org.springframework.stereotype.Service;
 
 import io.howstheairtoday.appcommunityexternalapi.exception.posts.PostNotExistException;
 import io.howstheairtoday.appcommunityexternalapi.service.dto.request.PostRequestDto;
+import io.howstheairtoday.appcommunityexternalapi.service.dto.response.PostExternalDto;
 import io.howstheairtoday.appcommunityexternalapi.service.dto.response.PostResponseDto;
 import io.howstheairtoday.communitydomainrds.entity.Post;
 import io.howstheairtoday.communitydomainrds.entity.PostImage;
 import io.howstheairtoday.communitydomainrds.service.DomainCommunityService;
+import io.howstheairtoday.communitydomainrds.service.dto.PostDomainResponseDto;
 import lombok.RequiredArgsConstructor;
 
 /**
@@ -36,7 +39,7 @@ public class ExternalPostService {
             saveRequestDto.getPostImageDtoList();
 
         final Post post = Post.createPost(saveRequestDto.getContent(),
-            saveRequestDto.getRegion(), saveRequestDto.getMemberId());
+            saveRequestDto.getRegion(), saveRequestDto.getMemberId(), saveRequestDto.getMemberNickname());
 
         postImages.forEach(
             postImg -> post.insertImages(
@@ -74,6 +77,7 @@ public class ExternalPostService {
 
         domainCommunityService.savePost(post);
     }
+
     public PostResponseDto.PostResponseDetail getDetailPost(UUID postsId) {
 
         Post getDetailPost = domainCommunityService.findById(postsId).orElseThrow(PostNotExistException::new);
@@ -95,6 +99,7 @@ public class ExternalPostService {
             .postId(getDetailPost.getId())
             .region(getDetailPost.getRegion())
             .memberId(getDetailPost.getMemberId())
+            .memberNickname(getDetailPost.getMemberNickname())
             .content(getDetailPost.getContent())
             .deletedAt(getDetailPost.getDeletedAt())
             .updatedAt(getDetailPost.getUpdatedAt())
@@ -107,6 +112,14 @@ public class ExternalPostService {
             .build();
 
         return getPostresponseDetail;
+
+    }
+
+    public PostExternalDto getPostQsl(String region, LocalDateTime createdAt, int limit) {
+
+        PostDomainResponseDto data = domainCommunityService.getPostWithImage(region, createdAt, limit);
+
+        return new PostExternalDto(data);
 
     }
 }

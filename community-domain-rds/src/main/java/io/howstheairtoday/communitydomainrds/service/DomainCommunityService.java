@@ -3,6 +3,7 @@ package io.howstheairtoday.communitydomainrds.service;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -21,9 +22,12 @@ import io.howstheairtoday.communitydomainrds.dto.CommentPageListDTO;
 import io.howstheairtoday.communitydomainrds.entity.Comment;
 import io.howstheairtoday.communitydomainrds.entity.Post;
 import io.howstheairtoday.communitydomainrds.repository.CommentRepository;
+import io.howstheairtoday.communitydomainrds.repository.PostQslRepository;
 import io.howstheairtoday.communitydomainrds.repository.PostRepository;
+import io.howstheairtoday.communitydomainrds.service.dto.PostDomainResponseDto;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * 도메인 커뮤니티 서비스 클래스
@@ -31,11 +35,13 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 @EnableJpaAuditing
+@Slf4j
 public class DomainCommunityService {
 
     private final PostRepository postRepository;
 
     private final CommentRepository commentRepository;
+    private final PostQslRepository postQslRepository;
 
     /**
      * 게시글 저장 메소드
@@ -53,7 +59,7 @@ public class DomainCommunityService {
 
     //게시글 댓글 저장 메소드
     @Transactional
-    public Comment saveComment(Comment comment){
+    public Comment saveComment(Comment comment) {
 
         commentRepository.save(comment);
 
@@ -94,6 +100,18 @@ public class DomainCommunityService {
 
             }).collect(Collectors.toList());
 
-        return new CommentPageListDTO(commentDTOs, comments.hasNext(), comments.getNumber(), comments.getSize(), comments.isFirst(), comments.isLast());
+        return new CommentPageListDTO(commentDTOs, comments.hasNext(), comments.getNumber(), comments.getSize(),
+            comments.isFirst(), comments.isLast());
+    }
+
+    @Transactional
+    public PostDomainResponseDto getPostWithImage(String region, LocalDateTime createdAt, int limit) {
+        List<Map<String, Object>> post = postQslRepository.findByRegionList(region, createdAt, limit);
+
+        log.info("post = {}", post.toString());
+        log.info("post = {}", post);
+
+        return new PostDomainResponseDto(post);
+
     }
 }
