@@ -4,6 +4,8 @@ import java.util.UUID;
 
 import org.hibernate.annotations.GenericGenerator;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import io.howstheairtoday.communitydomainrds.common.BaseTimeEntity;
 
 import jakarta.persistence.Column;
@@ -42,6 +44,7 @@ public class PostImage extends BaseTimeEntity {
     // PostImage 엔티티는 Post 엔티티와 다대일 관계입니다.
     @ManyToOne
     @JoinColumn(name = "post_id")
+    @JsonBackReference
     @Setter
     private Post postId;
 

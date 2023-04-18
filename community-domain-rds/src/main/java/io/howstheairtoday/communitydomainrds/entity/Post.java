@@ -7,6 +7,8 @@ import java.util.UUID;
 
 import org.hibernate.annotations.GenericGenerator;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import io.howstheairtoday.communitydomainrds.common.BaseTimeEntity;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -60,6 +62,7 @@ public class Post extends BaseTimeEntity {
      * 게시글 이미지 목록
      */
     @OneToMany(mappedBy = "postId", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    @JsonManagedReference
     @Setter
     private List<PostImage> imageArray;
 
