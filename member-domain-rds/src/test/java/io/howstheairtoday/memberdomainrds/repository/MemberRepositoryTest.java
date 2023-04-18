@@ -82,7 +82,8 @@ class MemberRepositoryTest {
      
 
         assertThat(foundMember).isPresent();
-        assertThat(foundMember.get().getNickname()).isEqualTo("춘식이");
+        Assertions.assertEquals(result.getNickname(), "modNick");
+
 
     }
 
