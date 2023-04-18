@@ -114,6 +114,11 @@ public class CustomSecurityConfig {
 
         http.addFilterBefore(new RefreshTokenFilter("/api/**/auth/login", jwtUtil), TokenCheckFilter.class);
 
+        /**
+         * 로그아웃
+         */
+        http.logout().disable();
+
         http.csrf().disable();
         // Spring Security에서 세션을 사용하지 않도록 설정
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
