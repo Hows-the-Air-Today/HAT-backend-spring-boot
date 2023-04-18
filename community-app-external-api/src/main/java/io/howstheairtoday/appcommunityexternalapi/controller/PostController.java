@@ -1,5 +1,6 @@
 package io.howstheairtoday.appcommunityexternalapi.controller;
 
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 import org.springframework.http.HttpStatus;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import io.howstheairtoday.appcommunityexternalapi.common.ApiResponse;
 import io.howstheairtoday.appcommunityexternalapi.service.ExternalPostService;
 import io.howstheairtoday.appcommunityexternalapi.service.dto.request.PostRequestDto;
+import io.howstheairtoday.appcommunityexternalapi.service.dto.response.PostExternalDto;
 import io.howstheairtoday.appcommunityexternalapi.service.dto.response.PostResponseDto;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -70,6 +72,22 @@ public class PostController {
     public ApiResponse<Object> getDetailPost(@RequestParam UUID postsId
     ) {
         PostResponseDto.PostResponseDetail dto = externalPostService.getDetailPost(postsId);
+        return ApiResponse.<Object>builder()
+            .statusCode(HttpStatus.OK.value())
+            .msg("success")
+            .data(dto)
+            .build();
+    }
+
+    @GetMapping("/post")
+    public ApiResponse<Object> getPost(
+        @RequestParam("region") String region,
+        @RequestParam(value = "createdAt", required = false) LocalDateTime createdAt,
+        // lastId가 없는 경우에는 null로 처리됨
+        @RequestParam("limit") int limit
+    ) {
+        PostExternalDto dto = externalPostService.getPostQsl(region, createdAt, limit);
+
         return ApiResponse.<Object>builder()
             .statusCode(HttpStatus.OK.value())
             .msg("success")
