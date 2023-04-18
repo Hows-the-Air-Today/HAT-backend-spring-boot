@@ -43,6 +43,9 @@ dependencies {
     annotationProcessor "com.querydsl:querydsl-apt:${queryDslVersion}:jakarta"
     annotationProcessor "jakarta.annotation:jakarta.annotation-api"
     annotationProcessor "jakarta.persistence:jakarta.persistence-api"
+
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.12.5'  // 사용하는 버전에 따라 버전 번호를 변경해주세요
+
 }
 
 tasks.named('test') {
