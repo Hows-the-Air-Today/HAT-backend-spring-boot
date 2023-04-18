@@ -199,6 +199,6 @@ public class PostRepositoryTest {
         List<PostImage> getMyPost = postRepository.findByMemberIdAndDeletedAtIsNull(memberId);
 
         Assertions.assertThat(getMyPost).isNotEmpty();
-        Assertions.assertThat(getMyPost.size()).isEqualTo(1);
+        Assertions.assertThat(getMyPost.get(0).getMemberId()).isEqualTo(memberId);
     }
 }
