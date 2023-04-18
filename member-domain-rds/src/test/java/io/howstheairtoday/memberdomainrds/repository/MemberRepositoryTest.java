@@ -81,12 +81,11 @@ class MemberRepositoryTest {
 
      
 
-         List<Member> memberList = memberRepository.findAll();
-        Member result = memberList.get(0);
+      
 
         // then
-        Assertions.assertEquals(result.getNickname(), "modNick");
-
+         assertThat(foundMember).isPresent();
+        assertThat(foundMember.get().getNickname()).isEqualTo("춘식이");
     }
 
     @DisplayName("회원 비밀번호 변경")
