@@ -85,7 +85,7 @@ class MemberRepositoryTest {
 
         // then
          assertThat(foundMember).isPresent();
-        assertThat(foundMember.get().getNickname()).isEqualTo("춘식이");
+        assertThat(foundMember.get().getNickname()).isEqualTo("modNick");
     }
 
     @DisplayName("회원 비밀번호 변경")
