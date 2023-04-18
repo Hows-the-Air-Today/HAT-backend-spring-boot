@@ -48,6 +48,9 @@ public class Post extends BaseTimeEntity {
     @Column(name = "member_id")
     private UUID memberId;
 
+    @Column(name = "member_nickname")
+    private String memberNickname;
+
     /**
      * 게시글 내용
      */
@@ -71,8 +74,9 @@ public class Post extends BaseTimeEntity {
      */
     @Builder
     public Post(final UUID id, final String content, final String region,
-        final UUID memberId) {
+        final UUID memberId, final String memberNickname) {
         this.memberId = memberId;
+        this.memberNickname = memberNickname;
         this.content = content;
         this.region = region;
         this.imageArray = new ArrayList<>();
@@ -85,11 +89,13 @@ public class Post extends BaseTimeEntity {
      * @param region  게시글 위치
      * @return 생성된 게시글
      */
-    public static Post createPost(final String content, final String region, final UUID memberId) {
+    public static Post createPost(final String content, final String region, final UUID memberId,
+        final String memberNickname) {
         return Post.builder()
             .content(content)
             .region(region)
             .memberId(memberId)
+            .memberNickname(memberNickname)
             .build();
     }
 
