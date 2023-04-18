@@ -20,9 +20,14 @@ import org.springframework.stereotype.Service;
 import io.howstheairtoday.communitydomainrds.dto.CommentPageDTO;
 import io.howstheairtoday.communitydomainrds.dto.CommentPageListDTO;
 import io.howstheairtoday.communitydomainrds.entity.Comment;
+import io.howstheairtoday.communitydomainrds.entity.Like;
 import io.howstheairtoday.communitydomainrds.entity.Post;
 import io.howstheairtoday.communitydomainrds.repository.CommentRepository;
+
 import io.howstheairtoday.communitydomainrds.repository.PostQslRepository;
+
+import io.howstheairtoday.communitydomainrds.repository.LikeRepository;
+
 import io.howstheairtoday.communitydomainrds.repository.PostRepository;
 import io.howstheairtoday.communitydomainrds.service.dto.PostDomainResponseDto;
 import jakarta.transaction.Transactional;
@@ -42,6 +47,8 @@ public class DomainCommunityService {
 
     private final CommentRepository commentRepository;
     private final PostQslRepository postQslRepository;
+
+    private final LikeRepository likeRepository;
 
     /**
      * 게시글 저장 메소드
@@ -114,4 +121,26 @@ public class DomainCommunityService {
         return new PostDomainResponseDto(post);
 
     }
+
+
+    //좋아요 등록
+    @Transactional
+    public Like saveLike(Like like){
+
+        return likeRepository.save(like);
+    }
+
+    //게시물 좋아요 개수
+    @Transactional
+    public List<Like> LikeCount(UUID postId) {
+
+        return likeRepository.findLikeByPostIdIsAndLikedIsTrue(postId);
+    }
+
+    //좋아요 확인
+    @Transactional
+    public Optional<Like> changeStatus(UUID postId, UUID memberId) {
+        return likeRepository.findLikeByPostIdAndMemberId(postId, memberId);
+    }
+
 }
