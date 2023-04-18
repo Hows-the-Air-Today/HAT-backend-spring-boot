@@ -3,6 +3,7 @@ package io.howstheairtoday.appcommunityexternalapi.service.dto.response;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
@@ -32,6 +33,7 @@ public class PostResponseDto {
         private UUID postId;
         private UUID memberId;
         private String content;
+        private String memberNickname;
         private String region;
 
         private LocalDateTime createdAt;
