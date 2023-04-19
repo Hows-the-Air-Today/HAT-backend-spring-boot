@@ -95,17 +95,22 @@ public class PostController {
     ) {
         PostExternalDto dto = externalPostService.getPostQsl(region, createdAt, limit);
 
-    @GetMapping("my-page/{memberId}")
-    public ApiResponse<Object> getDetailMyPagePost(@PathVariable UUID memberId
-    ) {
-
-        List<PostResponseDto.PostImageDto> domainPostResponseDtos = externalPostService.getMyPost(memberId);
-
-
         return ApiResponse.<Object>builder()
             .statusCode(HttpStatus.OK.value())
             .msg("success")
             .data(dto)
+            .build();
+    }
+
+    @GetMapping("my-page/{memberId}")
+    public ApiResponse<Object> getDetailMyPagePost(@PathVariable UUID memberId
+    ) {
+        List<PostResponseDto.PostImageDto> domainPostResponseDtos = externalPostService.getMyPost(memberId);
+
+        return ApiResponse.<Object>builder()
+            .statusCode(HttpStatus.OK.value())
+            .msg("success")
+            .data(domainPostResponseDtos)
             .build();
     }
 }

@@ -203,6 +203,11 @@ public class PostRepositoryTest {
             post.insertImages(postImage);
         }
         postRepository.save(post);
+
+        List<PostImage> getMyPost = postRepository.findByMemberIdAndDeletedAtIsNull(memberId);
+
+        Assertions.assertThat(getMyPost).isNotEmpty();
+        Assertions.assertThat(getMyPost.get(0).getMemberId()).isEqualTo(memberId);
     }
 
     @DisplayName("게시물 조회")
@@ -239,10 +244,5 @@ public class PostRepositoryTest {
 
         //then
         Assertions.assertThat(posts).isNotNull();
-
-        List<PostImage> getMyPost = postRepository.findByMemberIdAndDeletedAtIsNull(memberId);
-
-        Assertions.assertThat(getMyPost).isNotEmpty();
-        Assertions.assertThat(getMyPost.get(0).getMemberId()).isEqualTo(memberId);
     }
 }
