@@ -1,6 +1,8 @@
 package io.howstheairtoday.communitydomainrds.service;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -16,9 +18,11 @@ import org.springframework.stereotype.Service;
 
 import io.howstheairtoday.communitydomainrds.dto.CommentPageDTO;
 import io.howstheairtoday.communitydomainrds.dto.CommentPageListDTO;
+import io.howstheairtoday.communitydomainrds.dto.DomainPostResponseDto;
 import io.howstheairtoday.communitydomainrds.entity.Comment;
 import io.howstheairtoday.communitydomainrds.entity.Like;
 import io.howstheairtoday.communitydomainrds.entity.Post;
+import io.howstheairtoday.communitydomainrds.entity.PostImage;
 import io.howstheairtoday.communitydomainrds.repository.CommentRepository;
 import io.howstheairtoday.communitydomainrds.repository.LikeRepository;
 import io.howstheairtoday.communitydomainrds.repository.PostQslRepository;
@@ -65,6 +69,17 @@ public class DomainCommunityService {
         commentRepository.save(comment);
 
         return comment;
+    }
+
+    @Transactional
+    public List<DomainPostResponseDto.PostImageDto> getMyPost(UUID memberId) {
+        List<PostImage> list = postRepository.findByMemberIdAndDeletedAtIsNull(memberId);
+
+        List<DomainPostResponseDto.PostImageDto> domainPostImageDto = list.stream().
+            map(postImage -> new DomainPostResponseDto.PostImageDto(postImage.getPostImageUrl(),
+                postImage.getPostImageNumber(), postImage.getMemberId(), postImage.getPostImageId()))
+            .collect(Collectors.toList());
+        return domainPostImageDto;
     }
 
     //게시물 ID 검색 메소드

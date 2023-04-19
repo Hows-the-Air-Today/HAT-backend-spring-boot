@@ -178,7 +178,31 @@ public class PostRepositoryTest {
         Assertions.assertThat(getDetailPost.get().getMemberId()).isEqualTo(memberId);
         Assertions.assertThat(getDetailPost.get().getContent()).isEqualTo(post.getContent());
         Assertions.assertThat(getDetailPost.get().getRegion()).isEqualTo(post.getRegion());
+    }
 
+    @Test
+    @DisplayName("자기가 쓴 게시글을 조회한다")
+    public void getMyPost() {
+
+        UUID memberId = UUID.fromString("dc718b8f-fb97-48d4-b55d-855e7c845980");
+
+        Post post = Post.builder()
+            .memberId(memberId)
+            .region("자기가 쓴 게시글 조회하기")
+            .content("자기가 쓴 게시글 조회하기")
+            .build();
+
+        for (int i = 0; i < 3; i++) {
+            PostImage postImage = PostImage.builder()
+                .postImageNumber(i)
+                .memeberId(memberId)
+                .post(post)
+                .postImageUrl("https://amazo3.com/kjh" + i)
+                .build();
+
+            post.insertImages(postImage);
+        }
+        postRepository.save(post);
     }
 
     @DisplayName("게시물 조회")
@@ -216,5 +240,9 @@ public class PostRepositoryTest {
         //then
         Assertions.assertThat(posts).isNotNull();
 
+        List<PostImage> getMyPost = postRepository.findByMemberIdAndDeletedAtIsNull(memberId);
+
+        Assertions.assertThat(getMyPost).isNotEmpty();
+        Assertions.assertThat(getMyPost.get(0).getMemberId()).isEqualTo(memberId);
     }
 }

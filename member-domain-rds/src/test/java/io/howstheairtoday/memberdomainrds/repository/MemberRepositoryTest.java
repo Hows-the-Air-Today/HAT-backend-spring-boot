@@ -72,14 +72,14 @@ class MemberRepositoryTest {
             .refreshToken("TEST.REFRESH.TOKEN")
             .build();
         Member savedMember = memberRepository.save(member);
-        savedMember.modifiyNickname("modNick");
+        savedMember.modifiyNickname("닉네임수정");
 
         // when
         Optional<Member> foundMember = memberRepository.findById(savedMember.getMemberId());
 
         // then
         assertThat(foundMember).isPresent();
-        assertThat(foundMember.get().getNickname()).isEqualTo("modNick");
+        assertThat(foundMember.get().getNickname()).isEqualTo("닉네임수정");
     }
 
     @DisplayName("회원 비밀번호 변경")

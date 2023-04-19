@@ -57,6 +57,16 @@ public class PostResponseDto {
 
         private LocalDateTime updatedAt;
         private LocalDateTime deletedAt;
+    }
+
+    @AllArgsConstructor
+    @Getter
+    @Builder
+    public static class PostImageDto {
+        private String postImageUrl;
+        private int postImageNumber;
+        private UUID memberId;
+        private UUID postId;
 
     }
 }
