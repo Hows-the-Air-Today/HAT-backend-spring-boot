@@ -8,12 +8,15 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.multipart.MultipartFile;
 
 import io.howstheairtoday.appcommunityexternalapi.exception.AwsCustomServiceException;
 import io.howstheairtoday.appcommunityexternalapi.exception.posts.PostNotExistException;
+import io.howstheairtoday.appcommunityexternalapi.exception.posts.PostNotMember;
 import io.howstheairtoday.appcommunityexternalapi.service.dto.request.PostRequestDto;
 import io.howstheairtoday.appcommunityexternalapi.service.dto.response.PostResponseDto;
+import io.howstheairtoday.communitydomainrds.dto.DomainPostResponseDto;
 import io.howstheairtoday.communitydomainrds.entity.Post;
 import io.howstheairtoday.communitydomainrds.entity.PostImage;
 import io.howstheairtoday.communitydomainrds.service.DomainCommunityService;
@@ -85,6 +88,16 @@ public class ExternalPostService {
 
     }
 
+    public void deletePost(final PostRequestDto.PostUUIDDto postUUIDDto) {
+
+        Post post = domainCommunityService.findById(postUUIDDto.getPostUUID())
+            .orElseThrow(PostNotExistException::new);
+
+        post.deletePost();
+
+        domainCommunityService.savePost(post);
+    }
+    
     public PostResponseDto.PostResponseDetail getDetailPost(UUID postsId) {
 
         Post getDetailPost = domainCommunityService.findById(postsId).orElseThrow(PostNotExistException::new);
@@ -121,14 +134,13 @@ public class ExternalPostService {
 
     }
 
-    public void deletePost(final PostRequestDto.PostUUIDDto postUUIDDto) {
-
-        Post post = domainCommunityService.findById(postUUIDDto.getPostUUID())
-            .orElseThrow(PostNotExistException::new);
-
-        post.deletePost();
-
-        domainCommunityService.savePost(post);
+    public List<PostResponseDto.PostImageDto> getMyPost(UUID memberId) {
+        List<DomainPostResponseDto.PostImageDto> post = domainCommunityService.getMyPost(memberId);
+        List<PostResponseDto.PostImageDto> list =
+                post.stream()
+                        .map(postImage -> new PostResponseDto.PostImageDto(postImage.getPostImageUrl(),
+                                postImage.getPostImageNumber(), postImage.getMemberId(), postImage.getPostId()))
+                        .collect(Collectors.toList());
+        return list;
     }
 }
-

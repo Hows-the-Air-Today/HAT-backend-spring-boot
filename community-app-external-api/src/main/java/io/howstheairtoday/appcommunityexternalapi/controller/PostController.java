@@ -5,6 +5,7 @@ import java.util.UUID;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -16,9 +17,11 @@ import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.howstheairtoday.appcommunityexternalapi.common.ApiResponse;
+import io.howstheairtoday.appcommunityexternalapi.exception.posts.PostNotMember;
 import io.howstheairtoday.appcommunityexternalapi.service.ExternalPostService;
 import io.howstheairtoday.appcommunityexternalapi.service.dto.request.PostRequestDto;
 import io.howstheairtoday.appcommunityexternalapi.service.dto.response.PostResponseDto;
+import io.howstheairtoday.communitydomainrds.dto.DomainPostResponseDto;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
@@ -78,6 +81,18 @@ public class PostController {
             .statusCode(HttpStatus.OK.value())
             .msg("success")
             .data(dto)
+            .build();
+    }
+    @GetMapping("my-page/{memberId}")
+    public ApiResponse<Object> getDetailMyPagePost(@PathVariable UUID memberId
+    ) {
+
+        List<PostResponseDto.PostImageDto> domainPostResponseDtos = externalPostService.getMyPost(memberId);
+
+        return ApiResponse.<Object>builder()
+            .statusCode(HttpStatus.OK.value())
+            .msg("success")
+            .data(domainPostResponseDtos)
             .build();
     }
 }

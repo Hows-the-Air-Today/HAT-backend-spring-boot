@@ -205,4 +205,29 @@ public class ExternalPostServiceTest {
         assertThat(getPost.getId()).isEqualTo(postResponseDetail.getPostDto().getPostId());
     }
 
+    @Test
+    @DisplayName("나의 게시글을 조회한다")
+    public void getMyPost() {
+        UUID uuid = UUID.fromString("dc718b8f-fb97-48d4-b55d-855e7c845981");
+        Post post = Post.builder().memberId(uuid).region("동남로").content("게시글 내용").build();
+
+        PostImage postImage = PostImage.builder()
+            .postImageNumber(1)
+            .post(post)
+            .memeberId(uuid)
+            .postImageUrl("https://amazons3.com/kjh")
+            .build();
+
+        post.insertImages(postImage);
+
+        domainCommunityService.savePost(post);
+
+        Post getPost = domainCommunityService.findById(post.getId()).orElseThrow(PostNotExistException::new);
+
+        //given
+        List<PostResponseDto.PostImageDto> dto = externalPostService.getMyPost(getPost.getMemberId());
+
+        assertThat(dto).isNotNull();
+    }
+
 }
