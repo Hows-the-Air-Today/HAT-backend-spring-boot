@@ -88,4 +88,13 @@ public class AuthController {
             .msg("이미지 변경이 완료 되었습니다.")
             .build();
     }
+
+    @PostMapping("/logout")
+    public ApiResponse<Object> logout() {
+        // 클라이언트 측에서 로그아웃 처리를 하면 됩니다.
+        return ApiResponse.<Object>builder()
+            .statusCode(HttpStatus.OK.value())
+            .msg("로그아웃이 완료되었습니다.")
+            .build();
+    }
 }

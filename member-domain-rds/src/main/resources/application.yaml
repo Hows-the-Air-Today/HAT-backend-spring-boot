@@ -3,3 +3,4 @@ spring:
     import:
       - classpath:security/common/application.yaml
       - classpath:security/mariadb/application.yaml
+      - classpath:security/module-core/application.yaml

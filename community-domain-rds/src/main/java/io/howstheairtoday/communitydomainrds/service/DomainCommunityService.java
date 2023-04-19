@@ -21,9 +21,11 @@ import io.howstheairtoday.communitydomainrds.dto.CommentPageDTO;
 import io.howstheairtoday.communitydomainrds.dto.CommentPageListDTO;
 import io.howstheairtoday.communitydomainrds.dto.DomainPostResponseDto;
 import io.howstheairtoday.communitydomainrds.entity.Comment;
+import io.howstheairtoday.communitydomainrds.entity.Like;
 import io.howstheairtoday.communitydomainrds.entity.Post;
 import io.howstheairtoday.communitydomainrds.entity.PostImage;
 import io.howstheairtoday.communitydomainrds.repository.CommentRepository;
+import io.howstheairtoday.communitydomainrds.repository.LikeRepository;
 import io.howstheairtoday.communitydomainrds.repository.PostRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -39,6 +41,8 @@ public class DomainCommunityService {
     private final PostRepository postRepository;
 
     private final CommentRepository commentRepository;
+
+    private final LikeRepository likeRepository;
 
     /**
      * 게시글 저장 메소드
@@ -111,4 +115,26 @@ public class DomainCommunityService {
         return new CommentPageListDTO(commentDTOs, comments.hasNext(), comments.getNumber(), comments.getSize(),
             comments.isFirst(), comments.isLast());
     }
+
+
+    //좋아요 등록
+    @Transactional
+    public Like saveLike(Like like){
+
+        return likeRepository.save(like);
+    }
+
+    //게시물 좋아요 개수
+    @Transactional
+    public List<Like> LikeCount(UUID postId) {
+
+        return likeRepository.findLikeByPostIdIsAndLikedIsTrue(postId);
+    }
+
+    //좋아요 확인
+    @Transactional
+    public Optional<Like> changeStatus(UUID postId, UUID memberId) {
+        return likeRepository.findLikeByPostIdAndMemberId(postId, memberId);
+    }
+
 }
