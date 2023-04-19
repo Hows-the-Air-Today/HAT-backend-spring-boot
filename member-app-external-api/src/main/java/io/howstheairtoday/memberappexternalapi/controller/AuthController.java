@@ -3,6 +3,7 @@ package io.howstheairtoday.memberappexternalapi.controller;
 import java.util.UUID;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -89,12 +90,26 @@ public class AuthController {
             .build();
     }
 
+    /**
+     * 로그아웃
+     */
     @PostMapping("/logout")
     public ApiResponse<Object> logout() {
-        // 클라이언트 측에서 로그아웃 처리를 하면 됩니다.
         return ApiResponse.<Object>builder()
             .statusCode(HttpStatus.OK.value())
             .msg("로그아웃이 완료되었습니다.")
+            .build();
+    }
+
+    /**
+     * 회원탈퇴
+     */
+    @DeleteMapping("/{memberId}")
+    public ApiResponse<Object> delete(@PathVariable("memberId") UUID memberId) {
+        authService.delMember(memberId);
+        return ApiResponse.<Object>builder()
+            .statusCode(HttpStatus.OK.value())
+            .msg("회원탈퇴가 완료되었습니다.")
             .build();
     }
 }
