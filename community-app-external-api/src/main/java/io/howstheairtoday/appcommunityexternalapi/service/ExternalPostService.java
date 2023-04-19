@@ -137,20 +137,10 @@ public class ExternalPostService {
     public List<PostResponseDto.PostImageDto> getMyPost(UUID memberId) {
         List<DomainPostResponseDto.PostImageDto> post = domainCommunityService.getMyPost(memberId);
         List<PostResponseDto.PostImageDto> list =
-            post.stream()
-                .map(postImage -> new PostResponseDto.PostImageDto(postImage.getPostImageUrl(),
-                    postImage.getPostImageNumber(), postImage.getMemberId(), postImage.getPostId()))
-                .collect(Collectors.toList());
+                post.stream()
+                        .map(postImage -> new PostResponseDto.PostImageDto(postImage.getPostImageUrl(),
+                                postImage.getPostImageNumber(), postImage.getMemberId(), postImage.getPostId()))
+                        .collect(Collectors.toList());
         return list;
-
-    public void deletePost(final PostRequestDto.PostUUIDDto postUUIDDto) {
-
-        Post post = domainCommunityService.findById(postUUIDDto.getPostUUID())
-            .orElseThrow(PostNotExistException::new);
-
-        post.deletePost();
-
-        domainCommunityService.savePost(post);
     }
 }
-
