@@ -1,4 +1,4 @@
-package io.howstheairtoday.batch.scheduler;
+package io.howstheairtoday.airqualityappbatch.batch.scheduler;
 
 import org.springframework.batch.core.JobExecution;
 import org.springframework.batch.core.JobParameters;
@@ -10,8 +10,8 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
-import io.howstheairtoday.batch.configuration.BatchConfiguration;
-import io.howstheairtoday.batch.listener.JobCompletionNotificationListener;
+import io.howstheairtoday.airqualityappbatch.batch.configuration.BatchConfiguration;
+import io.howstheairtoday.airqualityappbatch.batch.listener.JobCompletionNotificationListener;
 import lombok.extern.log4j.Log4j2;
 
 // 잡을 실행시켜줄 스케쥴러

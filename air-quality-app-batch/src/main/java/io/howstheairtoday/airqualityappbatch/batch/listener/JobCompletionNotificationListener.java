@@ -1,4 +1,4 @@
-package io.howstheairtoday.batch.listener;
+package io.howstheairtoday.airqualityappbatch.batch.listener;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

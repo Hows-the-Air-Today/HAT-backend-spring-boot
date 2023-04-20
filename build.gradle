@@ -45,6 +45,9 @@ allprojects {
 }
 
 subprojects {
+    tasks.withType(Test) {
+        systemProperty 'file.encoding', 'UTF-8'
+    }
     configurations {
         compileOnly {
             extendsFrom annotationProcessor

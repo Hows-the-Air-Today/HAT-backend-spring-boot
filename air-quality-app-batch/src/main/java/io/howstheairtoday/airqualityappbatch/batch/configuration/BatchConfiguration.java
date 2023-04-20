@@ -1,4 +1,4 @@
-package io.howstheairtoday.batch.configuration;
+package io.howstheairtoday.airqualityappbatch.batch.configuration;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,8 +19,8 @@ import org.springframework.transaction.PlatformTransactionManager;
 
 import io.howstheairtoday.airqualitydomainrds.dto.response.CurrentDustResponseDTO;
 import io.howstheairtoday.airqualitydomainrds.entity.AirQualityRealTime;
-import io.howstheairtoday.batch.listener.JobCompletionNotificationListener;
-import io.howstheairtoday.service.AirQualityRealTimeService;
+import io.howstheairtoday.airqualityappbatch.batch.listener.JobCompletionNotificationListener;
+import io.howstheairtoday.airqualityappbatch.service.AirQualityRealTimeService;
 import jakarta.persistence.EntityManagerFactory;
 
 // 배치 Job 생성을 위한 Configuration
