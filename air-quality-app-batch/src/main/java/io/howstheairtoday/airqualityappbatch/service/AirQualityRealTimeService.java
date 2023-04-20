@@ -1,4 +1,4 @@
-package io.howstheairtoday.service;
+package io.howstheairtoday.airqualityappbatch.service;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
