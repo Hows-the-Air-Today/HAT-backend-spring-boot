@@ -25,6 +25,7 @@ import org.springframework.web.multipart.MultipartResolver;
 
 import io.howstheairtoday.appcommunityexternalapi.exception.posts.PostNotExistException;
 import io.howstheairtoday.appcommunityexternalapi.service.dto.request.PostRequestDto;
+import io.howstheairtoday.appcommunityexternalapi.service.dto.response.PostExternalDto;
 import io.howstheairtoday.appcommunityexternalapi.service.dto.response.PostResponseDto;
 import io.howstheairtoday.communitydomainrds.entity.Post;
 import io.howstheairtoday.communitydomainrds.entity.PostImage;
@@ -64,12 +65,13 @@ public class ExternalPostServiceTest {
         PostRequestDto.SaveRequestDto postRequestDto = PostRequestDto.SaveRequestDto.builder()
             .content("안녕하세요")
             .memberId(uuid)
-            // .postImageDtoList(postImagesList)
+            .memberNickname("멤버닉네임")
+            .postImageDtoList(postImagesList)
             .region("가락동")
             .build();
 
         Post post = Post.createPost(postRequestDto.getContent(),
-            postRequestDto.getRegion(), postRequestDto.getMemberId());
+            postRequestDto.getRegion(), postRequestDto.getMemberId(), postRequestDto.getMemberNickname());
 
         post.getImageArray()
             .forEach(postImage -> post.insertImages(
@@ -205,6 +207,34 @@ public class ExternalPostServiceTest {
         assertThat(getPost.getId()).isEqualTo(postResponseDetail.getPostDto().getPostId());
     }
 
+    @DisplayName("게시물 조회")
+    @Test
+    public void getActivePostsWithImages() {
+
+        Post post = Post.builder().region("지지").memberNickname("멤버닉네임").content("게시글 내용").build();
+
+        for (int i = 0; i < 3; i++) {
+            PostImage postImage = PostImage.builder()
+                .postImageNumber(i)
+                .post(post)
+                .postImageUrl("https://amazons3.com/kjh" + i)
+                .build();
+
+            post.insertImages(postImage);
+
+        }
+
+        //when
+        domainCommunityService.savePost(post);
+
+        PostExternalDto getDto = externalPostService.getPostQsl("지지", null, 10);
+
+        Assertions.assertNotNull(getDto);
+        // Assertion
+        // PostResponseDto getPost = domainCommunityService.getPostWithImage("동남로", 0, 10);
+
+    }
+
     @Test
     @DisplayName("나의 게시글을 조회한다")
     public void getMyPost() {
@@ -229,5 +259,4 @@ public class ExternalPostServiceTest {
 
         assertThat(dto).isNotNull();
     }
-
 }

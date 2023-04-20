@@ -7,6 +7,8 @@ import java.util.UUID;
 
 import org.hibernate.annotations.GenericGenerator;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import io.howstheairtoday.communitydomainrds.common.BaseTimeEntity;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -46,6 +48,9 @@ public class Post extends BaseTimeEntity {
     @Column(name = "member_id")
     private UUID memberId;
 
+    @Column(name = "member_nickname")
+    private String memberNickname;
+
     /**
      * 게시글 내용
      */
@@ -60,6 +65,7 @@ public class Post extends BaseTimeEntity {
      * 게시글 이미지 목록
      */
     @OneToMany(mappedBy = "postId", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    @JsonManagedReference
     @Setter
     private List<PostImage> imageArray;
 
@@ -68,8 +74,9 @@ public class Post extends BaseTimeEntity {
      */
     @Builder
     public Post(final UUID id, final String content, final String region,
-        final UUID memberId) {
+        final UUID memberId, final String memberNickname) {
         this.memberId = memberId;
+        this.memberNickname = memberNickname;
         this.content = content;
         this.region = region;
         this.imageArray = new ArrayList<>();
@@ -82,11 +89,13 @@ public class Post extends BaseTimeEntity {
      * @param region  게시글 위치
      * @return 생성된 게시글
      */
-    public static Post createPost(final String content, final String region, final UUID memberId) {
+    public static Post createPost(final String content, final String region, final UUID memberId,
+        final String memberNickname) {
         return Post.builder()
             .content(content)
             .region(region)
             .memberId(memberId)
+            .memberNickname(memberNickname)
             .build();
     }
 

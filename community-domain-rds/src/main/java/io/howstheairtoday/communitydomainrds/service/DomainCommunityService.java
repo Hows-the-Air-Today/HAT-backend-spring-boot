@@ -4,17 +4,16 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
-import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Service;
 
 import io.howstheairtoday.communitydomainrds.dto.CommentPageDTO;
@@ -26,9 +25,12 @@ import io.howstheairtoday.communitydomainrds.entity.Post;
 import io.howstheairtoday.communitydomainrds.entity.PostImage;
 import io.howstheairtoday.communitydomainrds.repository.CommentRepository;
 import io.howstheairtoday.communitydomainrds.repository.LikeRepository;
+import io.howstheairtoday.communitydomainrds.repository.PostQslRepository;
 import io.howstheairtoday.communitydomainrds.repository.PostRepository;
+import io.howstheairtoday.communitydomainrds.service.dto.PostDomainResponseDto;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * 도메인 커뮤니티 서비스 클래스
@@ -36,12 +38,14 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 @EnableJpaAuditing
+@Slf4j
 public class DomainCommunityService {
 
     private final PostRepository postRepository;
 
     private final CommentRepository commentRepository;
 
+    private final PostQslRepository postQslRepository;
     private final LikeRepository likeRepository;
 
     /**
@@ -116,10 +120,20 @@ public class DomainCommunityService {
             comments.isFirst(), comments.isLast());
     }
 
+    @Transactional
+    public PostDomainResponseDto getPostWithImage(String region, LocalDateTime createdAt, int limit) {
+        List<Map<String, Object>> post = postQslRepository.findByRegionList(region, createdAt, limit);
+
+        log.info("post = {}", post.toString());
+        log.info("post = {}", post);
+
+        return new PostDomainResponseDto(post);
+
+    }
 
     //좋아요 등록
     @Transactional
-    public Like saveLike(Like like){
+    public Like saveLike(Like like) {
 
         return likeRepository.save(like);
     }

@@ -4,22 +4,26 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 
 import io.howstheairtoday.communitydomainrds.entity.Post;
 import io.howstheairtoday.communitydomainrds.entity.PostImage;
+import io.howstheairtoday.communitydomainrds.querydsl.PostQslImpl;
 
 @DataJpaTest
 @ActiveProfiles("test")
@@ -31,6 +35,9 @@ public class PostRepositoryTest {
 
     @Autowired
     private PostRepository postRepository;
+
+    @Mock
+    private PostQslRepository postQslRepository;
 
     //게시물 삽입을 할때 테스트 URL 을 3개를 넣고 작성
     @DisplayName("게시물 삽입")
@@ -147,6 +154,7 @@ public class PostRepositoryTest {
 
         Post post = Post.builder()
             .memberId(memberId)
+            .memberNickname("닉네임입니다")
             .region("게시글 상세를 조회")
             .content("게시글 상세를 조회")
             .build();
@@ -200,5 +208,41 @@ public class PostRepositoryTest {
 
         Assertions.assertThat(getMyPost).isNotEmpty();
         Assertions.assertThat(getMyPost.get(0).getMemberId()).isEqualTo(memberId);
+    }
+
+    @DisplayName("게시물 조회")
+    @Test
+    public void getPost() {
+
+        // given
+        String region = "서초구";
+        int page = 0;
+        int limit = 20;
+
+        for (int i = 0; i < 5; i++) {
+            Post post = Post.builder()
+                .region(region)
+                .memberNickname("멤버닉네임")
+                .content("게시글 내용" + i)
+                .build();
+
+            for (int j = 0; j < 2; j++) {
+                PostImage postImage = PostImage.builder()
+                    .postImageNumber(j)
+                    .post(post)
+                    .postImageUrl("https://amazons3.com/kjh" + j)
+                    .build();
+
+                post.insertImages(postImage);
+            }
+
+            postRepository.save(post);
+        }
+
+        //when
+        List<Map<String, Object>> posts = postQslRepository.findByRegionList(region, null, 10);
+
+        //then
+        Assertions.assertThat(posts).isNotNull();
     }
 }

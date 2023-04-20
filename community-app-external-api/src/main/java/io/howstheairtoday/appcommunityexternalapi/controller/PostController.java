@@ -1,5 +1,6 @@
 package io.howstheairtoday.appcommunityexternalapi.controller;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -20,6 +21,7 @@ import io.howstheairtoday.appcommunityexternalapi.common.ApiResponse;
 import io.howstheairtoday.appcommunityexternalapi.exception.posts.PostNotMember;
 import io.howstheairtoday.appcommunityexternalapi.service.ExternalPostService;
 import io.howstheairtoday.appcommunityexternalapi.service.dto.request.PostRequestDto;
+import io.howstheairtoday.appcommunityexternalapi.service.dto.response.PostExternalDto;
 import io.howstheairtoday.appcommunityexternalapi.service.dto.response.PostResponseDto;
 import io.howstheairtoday.communitydomainrds.dto.DomainPostResponseDto;
 import jakarta.validation.Valid;
@@ -83,10 +85,26 @@ public class PostController {
             .data(dto)
             .build();
     }
+
+    @GetMapping("/post")
+    public ApiResponse<Object> getPost(
+        @RequestParam("region") String region,
+        @RequestParam(value = "createdAt", required = false) LocalDateTime createdAt,
+        // lastId가 없는 경우에는 null로 처리됨
+        @RequestParam("limit") int limit
+    ) {
+        PostExternalDto dto = externalPostService.getPostQsl(region, createdAt, limit);
+
+        return ApiResponse.<Object>builder()
+            .statusCode(HttpStatus.OK.value())
+            .msg("success")
+            .data(dto)
+            .build();
+    }
+
     @GetMapping("my-page/{memberId}")
     public ApiResponse<Object> getDetailMyPagePost(@PathVariable UUID memberId
     ) {
-
         List<PostResponseDto.PostImageDto> domainPostResponseDtos = externalPostService.getMyPost(memberId);
 
         return ApiResponse.<Object>builder()
