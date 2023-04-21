@@ -1,5 +1,6 @@
 package io.howstheairtoday.memberappexternalapi.service;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.UUID;
@@ -9,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import io.howstheairtoday.memberappexternalapi.common.ApiResponse;
 import io.howstheairtoday.memberappexternalapi.common.MemberExceptionHandler;
@@ -29,6 +31,7 @@ import io.howstheairtoday.memberdomainrds.entity.LoginRole;
 import io.howstheairtoday.memberdomainrds.entity.LoginType;
 import io.howstheairtoday.memberdomainrds.entity.Member;
 import io.howstheairtoday.memberdomainrds.repository.MemberRepository;
+import io.howstheairtoday.modulecore.service.AwsS3UploadService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 
@@ -41,6 +44,7 @@ public class AuthService {
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
     private final MemberExceptionHandler memberExceptionHandler;
+    private final AwsS3UploadService awsS3UploadService;
 
     /**
      * 회원가입
@@ -143,17 +147,16 @@ public class AuthService {
      * 회원 프로필 이미지 수정
      */
     @Transactional
-    public ApiResponse<?> modifyProfileImg(ModifyProfileImageRequestDto request) {
+    public void modifyProfileImg(UUID memberId, MultipartFile profileImage) throws IOException {
 
-        Member member = memberRepository.findByMemberIdAndDeletedAtIsNull(request.getMemberId())
+        Member findMember = memberRepository.findByMemberIdAndDeletedAtIsNull(memberId)
             .orElseThrow(() -> new NotFoundException("존재하지 않는 사용자입니다."));
 
-        member.modifyProfileImage(request.getMemberProfileImage());
-        ProfileImageResponseDto response = ProfileImageResponseDto.builder()
-            .memberId(member.getMemberId())
-            .memberProfileImage(member.getMemberProfileImage())
-            .build();
-        return ApiResponse.res(HttpStatus.OK.value(), "이미지 변경이 완료 되었습니다.", response);
+        String path = awsS3UploadService.uploadImages(profileImage, "프로필이미지");
+
+        //
+        findMember.modifyProfileImage(path);
+
     }
 
     /**
