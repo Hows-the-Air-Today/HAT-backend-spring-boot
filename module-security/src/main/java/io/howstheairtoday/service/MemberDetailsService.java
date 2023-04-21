@@ -33,6 +33,11 @@ public class MemberDetailsService implements UserDetailsService {
 
         log.info("🛠️ MemberDetailsService member -------------------- 🛠️");
 
+        // deletedAt 컬럼이 null인 경우에만 로그인 허용
+        if (member.getDeletedAt() != null) {
+            throw new UsernameNotFoundException("탈퇴된 회원 정보 입니다.");
+        }
+
         MemberDto dto = new MemberDto(
             member.getLoginId(),
             member.getLoginPassword(),

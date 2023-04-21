@@ -1,5 +1,6 @@
 package io.howstheairtoday.memberappexternalapi.service;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -86,7 +87,7 @@ public class AuthService {
      * 회원 정보 조회 - 마이페이지
      */
     public ProfileResponseDto read(UUID memberId) {
-        Optional<Member> result = memberRepository.findByMemberId(memberId);
+        Optional<Member> result = memberRepository.findByMemberIdAndDeletedAtIsNull(memberId);
         Member member = result.orElseThrow(() -> new IllegalArgumentException("해당하는 회원이 존재하지 않습니다."));
         return modelMapper.map(member, ProfileResponseDto.class);
     }
@@ -97,7 +98,7 @@ public class AuthService {
     @Transactional
     public ApiResponse<?> modifyNickname(ModifyNicknameRequestDto request) {
 
-        Member member = memberRepository.findByMemberId(request.getMemberId())
+        Member member = memberRepository.findByMemberIdAndDeletedAtIsNull(request.getMemberId())
             .orElseThrow(() -> new NotFoundException("존재하지 않는 사용자입니다."));
 
         if (memberRepository.existsByNickname(request.getNickname())) {
@@ -121,7 +122,7 @@ public class AuthService {
         String loginPassword = request.getLoginPassword();
         String loginPasswordCheck = request.getLoginPasswordCheck();
 
-        Member member = memberRepository.findByMemberId(request.getMemberId())
+        Member member = memberRepository.findByMemberIdAndDeletedAtIsNull(request.getMemberId())
             .orElseThrow(() -> new NotFoundException("존재하지 않는 사용자입니다."));
 
         if (!loginPassword.equals(loginPasswordCheck)) {
@@ -144,7 +145,7 @@ public class AuthService {
     @Transactional
     public ApiResponse<?> modifyProfileImg(ModifyProfileImageRequestDto request) {
 
-        Member member = memberRepository.findByMemberId(request.getMemberId())
+        Member member = memberRepository.findByMemberIdAndDeletedAtIsNull(request.getMemberId())
             .orElseThrow(() -> new NotFoundException("존재하지 않는 사용자입니다."));
 
         member.modifyProfileImage(request.getMemberProfileImage());
@@ -155,4 +156,17 @@ public class AuthService {
         return ApiResponse.res(HttpStatus.OK.value(), "이미지 변경이 완료 되었습니다.", response);
     }
 
+    /**
+     * 회원 탈퇴 기능 - Soft Delete
+     */
+    @Transactional
+    public ApiResponse<?> delMember(UUID memberId) {
+
+        Member member = memberRepository.findByMemberIdAndDeletedAtIsNull(memberId)
+            .orElseThrow(() -> new NotFoundException("존재하지 않는 사용자입니다."));
+
+        member.setDeletedAt(LocalDateTime.now());
+        memberRepository.save(member);
+        return ApiResponse.res(HttpStatus.OK.value(), "탈퇴가 완료되었습니다.");
+    }
 }
