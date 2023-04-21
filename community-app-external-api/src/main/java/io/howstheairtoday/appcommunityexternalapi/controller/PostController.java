@@ -31,7 +31,7 @@ import lombok.RequiredArgsConstructor;
  * 게시글 컨트롤러
  */
 @RequiredArgsConstructor
-@RequestMapping("/api/v1")
+@RequestMapping("/api/v1/post")
 @RestController
 public class PostController {
     private final ExternalPostService externalPostService;
@@ -42,7 +42,7 @@ public class PostController {
      * @param saveRequestDto 생성할 게시글 정보
      * @return ApiResponse
      */
-    @PostMapping(path = "/post")
+    @PostMapping(path = "/")
     public ApiResponse<Object> createPost(
         @Valid @RequestPart PostRequestDto.SaveRequestDto saveRequestDto,
         @RequestPart List<PostRequestDto.PostImagesDto> postImages) {
@@ -53,7 +53,7 @@ public class PostController {
             .build();
     }
 
-    @PatchMapping("/post/{postsId}")
+    @PatchMapping("/{postsId}")
     public ApiResponse<Object> updatePost(@Valid @RequestPart final PostRequestDto.SaveRequestDto saveRequestDto,
         @RequestPart List<PostRequestDto.PostImagesDto> postImages,
         @PathVariable UUID postsId
@@ -65,7 +65,7 @@ public class PostController {
             .build();
     }
 
-    @DeleteMapping("/post")
+    @DeleteMapping("/")
     public ApiResponse<Object> deletePost(@Valid @RequestBody PostRequestDto.PostUUIDDto postsId
     ) {
         externalPostService.deletePost(postsId);
@@ -86,7 +86,7 @@ public class PostController {
             .build();
     }
 
-    @GetMapping("/post")
+    @GetMapping("/")
     public ApiResponse<Object> getPost(
         @RequestParam("region") String region,
         @RequestParam(value = "createdAt", required = false) LocalDateTime createdAt,
