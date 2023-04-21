@@ -43,7 +43,7 @@ public class ExternalPostService {
      * @param saveRequestDto 생성할 게시글 정보
      */
     public void createPost(final PostRequestDto.SaveRequestDto saveRequestDto,
-        List<PostRequestDto.PostImagesDto> postImages) {
+        List<MultipartFile> postImages) {
 
         final Post post = Post.createPost(saveRequestDto.getContent(),
             saveRequestDto.getRegion(), saveRequestDto.getMemberId(), saveRequestDto.getMemberNickname());
@@ -52,12 +52,12 @@ public class ExternalPostService {
             postImg -> {
                 String uploadImage = "";
                 try {
-                    uploadImage = awsS3UploadService.uploadImages(postImg.getPostImageUrl(), "게시판");
+                    uploadImage = awsS3UploadService.uploadImages(postImg, "게시판");
                 } catch (IOException e) {
                     throw new AwsCustomServiceException();
                 }
                 post.insertImages(
-                    PostImage.create(postImg.getPostImageNumber(), uploadImage,
+                    PostImage.create(uploadImage,
                         post, post.getMemberId()));
 
             });
@@ -66,7 +66,7 @@ public class ExternalPostService {
     }
 
     public void updatePost(final PostRequestDto.SaveRequestDto saveRequestDto, final UUID uuid,
-        List<PostRequestDto.PostImagesDto> postImagesDtos) {
+        List<MultipartFile> postImagesDtos) {
 
         final List<PostImage> postImageList = new ArrayList<>();
 
@@ -75,13 +75,12 @@ public class ExternalPostService {
         postImagesDtos.forEach(postImageDto -> {
             String updateImage = null;
             try {
-                updateImage = awsS3UploadService.uploadImages(postImageDto.getPostImageUrl(), "게시판");
+                updateImage = awsS3UploadService.uploadImages(postImageDto, "게시판");
             } catch (IOException e) {
                 throw new AwsCustomServiceException();
             }
             PostImage postImages = PostImage.builder()
                 .postImageUrl(updateImage)
-                .postImageNumber(postImageDto.getPostImageNumber())
                 .build();
             postImageList.add(postImages);
         });
@@ -100,7 +99,7 @@ public class ExternalPostService {
 
         domainCommunityService.savePost(post);
     }
-    
+
     public PostResponseDto.PostResponseDetail getDetailPost(UUID postsId) {
 
         Post getDetailPost = domainCommunityService.findById(postsId).orElseThrow(PostNotExistException::new);
@@ -148,10 +147,10 @@ public class ExternalPostService {
     public List<PostResponseDto.PostImageDto> getMyPost(UUID memberId) {
         List<DomainPostResponseDto.PostImageDto> post = domainCommunityService.getMyPost(memberId);
         List<PostResponseDto.PostImageDto> list =
-                post.stream()
-                        .map(postImage -> new PostResponseDto.PostImageDto(postImage.getPostImageUrl(),
-                                postImage.getPostImageNumber(), postImage.getMemberId(), postImage.getPostId()))
-                        .collect(Collectors.toList());
+            post.stream()
+                .map(postImage -> new PostResponseDto.PostImageDto(postImage.getPostImageUrl(),
+                    postImage.getPostImageNumber(), postImage.getMemberId(), postImage.getPostId()))
+                .collect(Collectors.toList());
         return list;
     }
 }
