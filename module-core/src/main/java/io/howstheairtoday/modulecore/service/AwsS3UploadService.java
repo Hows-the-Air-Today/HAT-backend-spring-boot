@@ -76,6 +76,9 @@ public class AwsS3UploadService {
         String fileName = "";
         if (type.equals("게시판")) {
             fileName = "post/" + originalFileName + "_" + timeStamp + extension;
+        } else if (type.equals("프로필이미지")) {
+            fileName = "member/" + originalFileName + "_" + timeStamp + extension;
+
         }
         return fileName;
     }
