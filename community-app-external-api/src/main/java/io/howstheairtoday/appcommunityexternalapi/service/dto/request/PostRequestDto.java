@@ -41,7 +41,6 @@ public class PostRequestDto {
         /**
          * 게시글에 첨부된 이미지 목록
          */
-        private List<PostImagesDto> postImageDtoList;
 
     }
 
