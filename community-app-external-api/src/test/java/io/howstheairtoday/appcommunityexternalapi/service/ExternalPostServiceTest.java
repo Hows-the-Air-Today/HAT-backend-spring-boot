@@ -66,7 +66,7 @@ public class ExternalPostServiceTest {
             .content("안녕하세요")
             .memberId(uuid)
             .memberNickname("멤버닉네임")
-            .postImageDtoList(postImagesList)
+            // .postImageDtoList(postImagesList)
             .region("가락동")
             .build();
 
