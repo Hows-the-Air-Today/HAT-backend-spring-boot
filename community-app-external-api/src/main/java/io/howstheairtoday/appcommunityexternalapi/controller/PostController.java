@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import io.howstheairtoday.appcommunityexternalapi.common.ApiResponse;
 import io.howstheairtoday.appcommunityexternalapi.exception.posts.PostNotMember;
@@ -42,11 +43,11 @@ public class PostController {
      * @param saveRequestDto 생성할 게시글 정보
      * @return ApiResponse
      */
-    @PostMapping(path = "/")
+    @PostMapping(path = "/create-post")
     public ApiResponse<Object> createPost(
-        @Valid @RequestPart PostRequestDto.SaveRequestDto saveRequestDto,
-        @RequestPart List<PostRequestDto.PostImagesDto> postImages) {
-        externalPostService.createPost(saveRequestDto, postImages);
+        @RequestPart("saveRequestDto") final PostRequestDto.SaveRequestDto saveRequestDto,
+        @RequestPart("postImagesDto") final List<MultipartFile> postImagesDto) {
+        externalPostService.createPost(saveRequestDto, postImagesDto);
         return ApiResponse.<Object>builder()
             .statusCode(HttpStatus.CREATED.value())
             .msg("success")
@@ -54,11 +55,12 @@ public class PostController {
     }
 
     @PatchMapping("/{postsId}")
-    public ApiResponse<Object> updatePost(@Valid @RequestPart final PostRequestDto.SaveRequestDto saveRequestDto,
-        @RequestPart List<PostRequestDto.PostImagesDto> postImages,
+    public ApiResponse<Object> updatePost(
+        @RequestPart("saveRequestDto") final PostRequestDto.SaveRequestDto saveRequestDto,
+        @RequestPart("postImagesDto") final List<MultipartFile> postImagesDto,
         @PathVariable UUID postsId
     ) {
-        externalPostService.updatePost(saveRequestDto, postsId, postImages);
+        externalPostService.updatePost(saveRequestDto, postsId, postImagesDto);
         return ApiResponse.<Object>builder()
             .statusCode(HttpStatus.OK.value())
             .msg("success")
