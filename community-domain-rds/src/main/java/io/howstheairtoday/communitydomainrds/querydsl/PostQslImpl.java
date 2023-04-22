@@ -15,10 +15,14 @@ import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport
 import org.springframework.stereotype.Repository;
 
 import com.querydsl.core.BooleanBuilder;
+import com.querydsl.core.Tuple;
+import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.JPQLQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
 import io.howstheairtoday.communitydomainrds.entity.Post;
+import io.howstheairtoday.communitydomainrds.entity.QComment;
+import io.howstheairtoday.communitydomainrds.entity.QLike;
 import io.howstheairtoday.communitydomainrds.entity.QPost;
 import io.howstheairtoday.communitydomainrds.entity.QPostImage;
 import io.howstheairtoday.communitydomainrds.repository.PostQslRepository;
@@ -31,6 +35,8 @@ public class PostQslImpl extends QuerydslRepositorySupport implements PostQslRep
 
     QPost post = QPost.post;
     QPostImage qPostImage = QPostImage.postImage;
+    QComment qComment = QComment.comment;
+    QLike qLike = QLike.like;
 
     public PostQslImpl(EntityManager entityManager) {
         super(Post.class);
@@ -48,6 +54,15 @@ public class PostQslImpl extends QuerydslRepositorySupport implements PostQslRep
             .where(builder)
             .orderBy(post.createdAt.desc())
             .limit(limit);
+
+        JPQLQuery<Post> popularPosts = jpaQueryFactory.selectFrom(post)
+            .leftJoin(post.likes, qLike).fetchJoin()
+            .where(post.region.eq(region))
+            .groupBy(post.id)
+            .orderBy(qLike.count().desc())
+            .limit(5);
+
+        List<Post> popularPostList = popularPosts.fetch();
 
         // 조회한 게시물 및 이미지 배열 리스트를 반환
         List<Post> postList = posts.fetch();
@@ -72,7 +87,9 @@ public class PostQslImpl extends QuerydslRepositorySupport implements PostQslRep
                 Map<String, Object> resultMap = new HashMap<>();
                 resultMap.put("post", post);
                 resultMap.put("hasNext", hasNext && post.equals(postList.get(postList.size() - 1)));
-
+                resultMap.put("commentCount", post.getComment().size());
+                resultMap.put("likeCount", post.getLikes().size());
+                resultMap.put("popularPostList", popularPostList);
                 return resultMap;
             })
             .collect(Collectors.toList());
