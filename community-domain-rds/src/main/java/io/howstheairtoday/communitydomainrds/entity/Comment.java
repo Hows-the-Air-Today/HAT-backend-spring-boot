@@ -7,11 +7,16 @@ import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import io.howstheairtoday.communitydomainrds.common.BaseTimeEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.Builder;
 import lombok.Getter;
@@ -42,10 +47,13 @@ public class Comment extends BaseTimeEntity {
     @Column(name = "post_id")
     private UUID postId;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JsonBackReference
+    @JoinColumn(name = "post")
+    private Post post;
     //댓글 작성자 ID
     @Column(name = "memeber_id")
     private UUID memberId;
-
 
     @Builder
     public Comment(final String content, final UUID postId, final UUID memberId) {
