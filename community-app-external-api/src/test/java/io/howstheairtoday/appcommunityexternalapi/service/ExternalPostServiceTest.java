@@ -66,7 +66,7 @@ public class ExternalPostServiceTest {
             .content("안녕하세요")
             .memberId(uuid)
             .memberNickname("멤버닉네임")
-            .postImageDtoList(postImagesList)
+            // .postImageDtoList(postImagesList)
             .region("가락동")
             .build();
 
@@ -75,7 +75,7 @@ public class ExternalPostServiceTest {
 
         post.getImageArray()
             .forEach(postImage -> post.insertImages(
-                PostImage.create(postImage.getPostImageNumber(), postImage.getPostImageUrl(), post,
+                PostImage.create(postImage.getPostImageUrl(), post,
                     post.getMemberId())));
 
         //when
@@ -161,7 +161,7 @@ public class ExternalPostServiceTest {
             .memberId(UUID.fromString("dc718b8f-fb97-48d4-b55d-855e7c845987"))
             .build();
 
-        List<PostRequestDto.PostImagesDto> postImagesDtos = new ArrayList<>();
+        List<MultipartFile> postImagesDtos = new ArrayList<>();
 
         File newFile = new File(getClass().getClassLoader().getResource("qr.jpeg").getFile());
 
@@ -173,7 +173,7 @@ public class ExternalPostServiceTest {
             .postImageUrl(file)
             .build();
 
-        postImagesDtos.add(postImagesDto);
+        postImagesDtos.add(file);
 
         externalPostService.createPost(saveRequestDto, postImagesDtos);
     }

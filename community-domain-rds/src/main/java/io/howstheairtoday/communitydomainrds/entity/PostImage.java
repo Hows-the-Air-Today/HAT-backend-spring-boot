@@ -74,17 +74,8 @@ public class PostImage extends BaseTimeEntity {
         this.postId = post;
     }
 
-    /**
-     * 이미지 정보를 받아서 PostImage 인스턴스를 생성하는 메서드
-     *
-     * @param postImageNumber 이미지 순서 번호
-     * @param postImageUrl    이미지 URL
-     * @param post            해당 이미지와 연관된 포스트 엔티티
-     * @return 생성된 PostImage 인스턴스
-     */
-    public static PostImage create(Integer postImageNumber, String postImageUrl, Post post, final UUID memeberId) {
+    public static PostImage create(String postImageUrl, Post post, final UUID memeberId) {
         return PostImage.builder()
-            .postImageNumber(postImageNumber)
             .postImageUrl(postImageUrl)
             .post(post)
             .memeberId(memeberId)

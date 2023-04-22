@@ -17,8 +17,7 @@ public interface PostRepository extends JpaRepository<Post, UUID> {
 
     Optional<Post> findById(UUID uuid);
 
-    @Query("SELECT pi FROM PostImage pi WHERE pi.memberId = :memberId AND pi.deletedAt IS NULL")
+    @Query("SELECT pi FROM PostImage pi WHERE pi.memberId = :memberId AND pi.deletedAt IS NULL ORDER BY pi.createdAt DESC")
     List<PostImage> findByMemberIdAndDeletedAtIsNull(@Param("memberId") UUID memberId);
-
 
 }
