@@ -59,6 +59,7 @@ public class PostQslImpl extends QuerydslRepositorySupport implements PostQslRep
             .leftJoin(post.likes, qLike).fetchJoin()
             .where(post.region.eq(region))
             .groupBy(post.id)
+            .having(qLike.count().gt(0))
             .orderBy(qLike.count().desc())
             .limit(5);
 
