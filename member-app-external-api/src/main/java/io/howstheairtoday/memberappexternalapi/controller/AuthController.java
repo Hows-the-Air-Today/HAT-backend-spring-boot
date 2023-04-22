@@ -1,5 +1,6 @@
 package io.howstheairtoday.memberappexternalapi.controller;
 
+import java.io.IOException;
 import java.util.UUID;
 
 import org.springframework.http.HttpStatus;
@@ -10,7 +11,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import io.howstheairtoday.memberappexternalapi.common.ApiResponse;
 import io.howstheairtoday.memberappexternalapi.service.AuthService;
@@ -21,10 +24,12 @@ import io.howstheairtoday.memberappexternalapi.service.dto.request.SignUpRequest
 import io.howstheairtoday.memberappexternalapi.service.dto.response.ProfileResponseDto;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/auth")
+@Slf4j
 public class AuthController {
 
     private final AuthService authService;
@@ -81,9 +86,13 @@ public class AuthController {
     /**
      * 프로필 이미지 변경
      */
-    @PatchMapping("/profileimg")
-    public ApiResponse<Object> modifyProfileImg(@Valid @RequestBody final ModifyProfileImageRequestDto request) {
-        authService.modifyProfileImg(request);
+    @PatchMapping("/profile-change")
+    public ApiResponse<Object> modifyProfileImg(@RequestPart("profileImg") MultipartFile memberProfileImage,
+        UUID memberId) throws IOException {
+        log.info("memberProfileImage" + memberProfileImage);
+        log.info("memberId" + memberId);
+
+        authService.modifyProfileImg(memberId, memberProfileImage);
         return ApiResponse.<Object>builder()
             .statusCode(HttpStatus.OK.value())
             .msg("이미지 변경이 완료 되었습니다.")
