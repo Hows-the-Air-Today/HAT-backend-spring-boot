@@ -149,7 +149,7 @@ public class ExternalPostService {
         List<PostResponseDto.PostImageDto> list =
             post.stream()
                 .map(postImage -> new PostResponseDto.PostImageDto(postImage.getPostImageUrl(),
-                    postImage.getPostImageNumber(), postImage.getMemberId(), postImage.getPostId()))
+                    postImage.getMemberId(), postImage.getPostId()))
                 .collect(Collectors.toList());
         return list;
     }

@@ -64,7 +64,6 @@ public class PostResponseDto {
     @Builder
     public static class PostImageDto {
         private String postImageUrl;
-        private int postImageNumber;
         private UUID memberId;
         private UUID postId;
 

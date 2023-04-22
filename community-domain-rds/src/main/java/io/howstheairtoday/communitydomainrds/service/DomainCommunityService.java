@@ -77,7 +77,7 @@ public class DomainCommunityService {
 
         List<DomainPostResponseDto.PostImageDto> domainPostImageDto = list.stream().
             map(postImage -> new DomainPostResponseDto.PostImageDto(postImage.getPostImageUrl(),
-                postImage.getPostImageNumber(), postImage.getMemberId(), postImage.getPostImageId()))
+                postImage.getMemberId(), postImage.getPostImageId()))
             .collect(Collectors.toList());
         return domainPostImageDto;
     }
