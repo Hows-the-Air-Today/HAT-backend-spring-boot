@@ -21,11 +21,9 @@ import io.howstheairtoday.memberappexternalapi.exception.NotFoundException;
 import io.howstheairtoday.memberappexternalapi.exception.PasswordNotMatchedException;
 import io.howstheairtoday.memberappexternalapi.service.dto.request.ChangePasswordRequestDto;
 import io.howstheairtoday.memberappexternalapi.service.dto.request.ModifyNicknameRequestDto;
-import io.howstheairtoday.memberappexternalapi.service.dto.request.ModifyProfileImageRequestDto;
 import io.howstheairtoday.memberappexternalapi.service.dto.request.SignUpRequestDTO;
 import io.howstheairtoday.memberappexternalapi.service.dto.response.ChangePasswordResponseDto;
 import io.howstheairtoday.memberappexternalapi.service.dto.response.ModifyNicknameResponseDto;
-import io.howstheairtoday.memberappexternalapi.service.dto.response.ProfileImageResponseDto;
 import io.howstheairtoday.memberappexternalapi.service.dto.response.ProfileResponseDto;
 import io.howstheairtoday.memberdomainrds.entity.LoginRole;
 import io.howstheairtoday.memberdomainrds.entity.LoginType;
@@ -77,7 +75,8 @@ public class AuthService {
             .loginPassword(loginPassword)
             .email(email)
             .nickname(nickname)
-            .memberProfileImage("default.jpg")
+            // S3에 등록된 기본 이미지
+            .memberProfileImage("https://kakao4-hat-bucket.s3.ap-northeast-2.amazonaws.com/member/hat-default.png")
             .loginType(LoginType.LOCAL)
             .loginRole(LoginRole.ROLE_USER)
             .build();
@@ -147,16 +146,15 @@ public class AuthService {
      * 회원 프로필 이미지 수정
      */
     @Transactional
-    public void modifyProfileImg(UUID memberId, MultipartFile profileImage) throws IOException {
+    public String modifyProfileImg(UUID memberId, MultipartFile profileImage) throws IOException {
 
         Member findMember = memberRepository.findByMemberIdAndDeletedAtIsNull(memberId)
             .orElseThrow(() -> new NotFoundException("존재하지 않는 사용자입니다."));
 
         String path = awsS3UploadService.uploadImages(profileImage, "프로필이미지");
 
-        //
         findMember.modifyProfileImage(path);
-
+        return path;
     }
 
     /**
