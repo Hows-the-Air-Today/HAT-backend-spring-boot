@@ -42,6 +42,9 @@ public class Post extends BaseTimeEntity {
     @Column(name = "member_nickname")
     private String memberNickname;
 
+    @Column(name = "member_image")
+    private String memberImage;
+
     private String content;
 
     private String region;
@@ -61,21 +64,23 @@ public class Post extends BaseTimeEntity {
 
     @Builder
     public Post(final UUID id, final String content, final String region,
-        final UUID memberId, final String memberNickname) {
+        final UUID memberId, final String memberNickname, final String memberImage) {
         this.memberId = memberId;
         this.memberNickname = memberNickname;
         this.content = content;
         this.region = region;
+        this.memberImage = memberImage;
         this.imageArray = new ArrayList<>();
     }
 
     public static Post createPost(final String content, final String region, final UUID memberId,
-        final String memberNickname) {
+        final String memberNickname, final String memberImage) {
         return Post.builder()
             .content(content)
             .region(region)
             .memberId(memberId)
             .memberNickname(memberNickname)
+            .memberImage(memberImage)
             .build();
     }
 
