@@ -66,12 +66,14 @@ public class ExternalPostServiceTest {
             .content("안녕하세요")
             .memberId(uuid)
             .memberNickname("멤버닉네임")
+            .memberImageUrl("asdf")
             // .postImageDtoList(postImagesList)
             .region("가락동")
             .build();
 
         Post post = Post.createPost(postRequestDto.getContent(),
-            postRequestDto.getRegion(), postRequestDto.getMemberId(), postRequestDto.getMemberNickname());
+            postRequestDto.getRegion(), postRequestDto.getMemberId(), postRequestDto.getMemberNickname(),
+            postRequestDto.getMemberImageUrl());
 
         post.getImageArray()
             .forEach(postImage -> post.insertImages(
