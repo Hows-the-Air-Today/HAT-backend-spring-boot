@@ -204,7 +204,7 @@ public class PostRepositoryTest {
         }
         postRepository.save(post);
 
-        List<PostImage> getMyPost = postRepository.findByMemberIdAndDeletedAtIsNull(memberId);
+        List<Post> getMyPost = postRepository.findByMemberIdAndDeletedAtIsNull(memberId);
 
         Assertions.assertThat(getMyPost).isNotEmpty();
         Assertions.assertThat(getMyPost.get(0).getMemberId()).isEqualTo(memberId);

@@ -73,11 +73,11 @@ public class DomainCommunityService {
 
     @Transactional
     public List<DomainPostResponseDto.PostImageDto> getMyPost(UUID memberId) {
-        List<PostImage> list = postRepository.findByMemberIdAndDeletedAtIsNull(memberId);
+        List<Post> list = postRepository.findByMemberIdAndDeletedAtIsNull(memberId);
 
         List<DomainPostResponseDto.PostImageDto> domainPostImageDto = list.stream().
-            map(postImage -> new DomainPostResponseDto.PostImageDto(postImage.getPostImageUrl(),
-                postImage.getMemberId(), postImage.getPostImageId()))
+            map(postImage -> new DomainPostResponseDto.PostImageDto(postImage.getImageArray().get(0).getPostImageUrl(),
+                postImage.getMemberId(), postImage.getId()))
             .collect(Collectors.toList());
         return domainPostImageDto;
     }
