@@ -39,10 +39,6 @@ public class Like {
     @Column(name = "liked")
     private Boolean liked;
 
-    //게시물 ID
-    @Column(name = "post_id")
-    private UUID postId;
-
     //좋아요 누른 사용자 ID
     @Column(name = "memeber_id")
     private UUID memberId;
@@ -58,10 +54,10 @@ public class Like {
     }
 
     @Builder
-    public Like(final Boolean liked, final UUID postId, final UUID memberId) {
+    public Like(final Boolean liked, final Post post, final UUID memberId) {
 
         this.liked = liked;
-        this.postId = postId;
+        this.post = post;
         this.memberId = memberId;
     }
 

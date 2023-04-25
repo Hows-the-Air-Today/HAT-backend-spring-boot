@@ -9,7 +9,6 @@ import org.springframework.stereotype.Repository;
 
 import io.howstheairtoday.communitydomainrds.entity.Like;
 
-@Repository
 public interface LikeRepository extends JpaRepository<Like, UUID> {
 
     //게시물 좋아요 총 개수 출력

@@ -4,6 +4,7 @@ import static org.assertj.core.api.AssertionsForClassTypes.*;
 
 import java.util.UUID;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,18 +17,29 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import io.howstheairtoday.communitydomainrds.entity.Like;
+import io.howstheairtoday.communitydomainrds.entity.Post;
 
 @DataJpaTest
 @ActiveProfiles("test")
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-@ContextConfiguration(classes = {LikeRepository.class})
+@ContextConfiguration(classes = {LikeRepositoryTest.class})
 @EnableJpaRepositories(basePackages = "io.howstheairtoday.communitydomainrds.repository")
 @EntityScan("io.howstheairtoday.communitydomainrds.entity")
-@Transactional(propagation = Propagation.NOT_SUPPORTED)
 public class LikeRepositoryTest {
 
     @Autowired
     private LikeRepository likeRepository;
+
+    @Autowired
+    private PostRepository postRepository;
+
+    private Post post;
+
+    @BeforeEach
+    void setUp() {
+        post = Post.builder().region("동남로").content("게시글 내용").build();
+        postRepository.save(post);
+    }
 
     @DisplayName("좋아요 등록")
     @Test
@@ -36,7 +48,7 @@ public class LikeRepositoryTest {
         //given
         Like liked = Like.builder()
             .memberId(UUID.randomUUID())
-            .postId(UUID.randomUUID())
+            .post(post)
             .liked(true)
             .build();
 
@@ -54,7 +66,7 @@ public class LikeRepositoryTest {
         //given
         Like liked = Like.builder()
             .memberId(UUID.randomUUID())
-            .postId(UUID.randomUUID())
+            .post(post)
             .liked(true)
             .build();
         likeRepository.save(liked);
