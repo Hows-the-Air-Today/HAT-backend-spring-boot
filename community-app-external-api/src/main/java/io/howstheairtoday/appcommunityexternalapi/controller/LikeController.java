@@ -15,6 +15,7 @@ import io.howstheairtoday.appcommunityexternalapi.common.ApiResponse;
 import io.howstheairtoday.appcommunityexternalapi.service.LikeService;
 import io.howstheairtoday.appcommunityexternalapi.service.dto.request.LikeRequestDTO;
 import io.howstheairtoday.appcommunityexternalapi.service.dto.response.LikeResponseDTO;
+import io.howstheairtoday.communitydomainrds.entity.Post;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
@@ -25,7 +26,7 @@ public class LikeController {
     private final LikeService likeService;
 
     @PostMapping("/{postId}/likes")
-    public ApiResponse<Object> createLike(@PathVariable("postId") UUID postId, @RequestBody LikeRequestDTO likeRequestDTO) {
+    public ApiResponse<Object> createLike(@PathVariable("postId") Post postId, @RequestBody LikeRequestDTO likeRequestDTO) {
 
         LikeResponseDTO like = likeService.createLike(postId, likeRequestDTO);
 

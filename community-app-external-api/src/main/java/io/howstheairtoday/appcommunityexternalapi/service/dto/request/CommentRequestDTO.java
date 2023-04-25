@@ -18,5 +18,11 @@ public class CommentRequestDTO {
 
     //댓글 작성자 아이디
     private UUID memberId;
+
+    //댓글 작성자 닉네임
+    private String nickname;
+
+    //댓글 작성자 프로필
+    private String memberProfileImage;
 }
 

@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import java.util.Optional;
 import java.util.UUID;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,19 +20,29 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import io.howstheairtoday.communitydomainrds.entity.Comment;
+import io.howstheairtoday.communitydomainrds.entity.Post;
 
 @DataJpaTest
 @ActiveProfiles("test")
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-@ContextConfiguration(classes = {CommentRepository.class})
+@ContextConfiguration(classes = {CommentRepositoryTest.class})
 @EnableJpaRepositories(basePackages = "io.howstheairtoday.communitydomainrds.repository")
 @EntityScan("io.howstheairtoday.communitydomainrds.entity")
-@Transactional(propagation = Propagation.NOT_SUPPORTED)
 public class CommentRepositoryTest {
 
     @Autowired
     private CommentRepository commentRepository;
 
+    @Autowired
+    private PostRepository postRepository;
+
+    private Post post;
+
+    @BeforeEach
+    void setUp() {
+        post = Post.builder().region("동남로").content("게시글 내용").build();
+        postRepository.save(post);
+    }
     @DisplayName("댓글 작성")
     @Test
     public void insertComment() {
@@ -40,7 +51,7 @@ public class CommentRepositoryTest {
         Comment comment = Comment.builder()
             .memberId(UUID.randomUUID())
             .content("댓글3")
-            .postId(UUID.randomUUID())
+            .post(post)
             .build();
 
         //when
@@ -58,8 +69,9 @@ public class CommentRepositoryTest {
         Comment comment2 = Comment.builder()
             .memberId(UUID.randomUUID())
             .content("댓글6")
-            .postId(UUID.randomUUID())
+            .post(post)
             .build();
+
         commentRepository.save(comment2);
 
         //when
@@ -78,7 +90,7 @@ public class CommentRepositoryTest {
         Comment comment1 = Comment.builder()
             .memberId(UUID.randomUUID())
             .content("댓글4")
-            .postId(UUID.randomUUID())
+            .post(post)
             .build();
         commentRepository.save(comment1);
 
@@ -98,7 +110,7 @@ public class CommentRepositoryTest {
         Comment comment = Comment.builder()
             .memberId(UUID.randomUUID())
             .content("댓글15")
-            .postId(UUID.randomUUID())
+            .post(post)
             .build();
 
         //when

@@ -91,15 +91,15 @@ public class DomainCommunityService {
 
     //게시물 페이징 메소드
     @Transactional
-    public CommentPageListDTO getComment(UUID postId, Integer page) {
+    public CommentPageListDTO getComment(Post postId, Integer page) {
 
         int size = 10;
-        Sort.Direction direction = Sort.Direction.ASC;
+        Sort.Direction direction = Sort.Direction.DESC;
         String sort = "createdAt";
 
         Pageable pageable = PageRequest.of(page, size, Sort.by(direction, sort));
 
-        Slice<Comment> comments = commentRepository.findByPostIdAndDeletedAtIsNull(postId, pageable);
+        Slice<Comment> comments = commentRepository.findByPostIdAndDeletedAtIsNull(postId.getId(), pageable);
 
         List<CommentPageDTO> commentDTOs = comments.getContent().stream()
             .map(comment -> {
@@ -107,7 +107,9 @@ public class DomainCommunityService {
                     .commentId(comment.getCommentId())
                     .content(comment.getContent())
                     .memberId(comment.getMemberId())
-                    .postId(comment.getPostId())
+                    .post(postId)
+                    .nickName(comment.getNickName())
+                    .memberProfileImage(comment.getMemberProfileImage())
                     .createdAt(comment.getCreatedAt())
                     .updatedAt(comment.getUpdatedAt())
                     .build();
@@ -140,15 +142,15 @@ public class DomainCommunityService {
 
     //게시물 좋아요 개수
     @Transactional
-    public List<Like> LikeCount(UUID postId) {
+    public List<Like> LikeCount(Post postId) {
 
-        return likeRepository.findLikeByPostIdIsAndLikedIsTrue(postId);
+        return likeRepository.findLikeByPostIdIsAndLikedIsTrue(postId.getId());
     }
 
     //좋아요 확인
     @Transactional
-    public Optional<Like> changeStatus(UUID postId, UUID memberId) {
-        return likeRepository.findLikeByPostIdAndMemberId(postId, memberId);
+    public Optional<Like> changeStatus(Post postId, UUID memberId) {
+        return likeRepository.findLikeByPostIdAndMemberId(postId.getId(), memberId);
     }
 
 }

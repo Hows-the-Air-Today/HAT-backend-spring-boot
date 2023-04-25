@@ -43,24 +43,31 @@ public class Comment extends BaseTimeEntity {
     @Column(name = "content")
     private String content;
 
-    //게시물 ID
-    @Column(name = "post_id")
-    private UUID postId;
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JsonBackReference
     @JoinColumn(name = "post")
     private Post post;
+
     //댓글 작성자 ID
     @Column(name = "memeber_id")
     private UUID memberId;
 
+    //댓글 작성자 닉네임
+    @Column(name = "memeber_nickname")
+    private String nickName;
+
+    //댓글 프로필 이미지
+    @Column(name = "member_profile_image")
+    private String memberProfileImage;
+
     @Builder
-    public Comment(final String content, final UUID postId, final UUID memberId) {
+    public Comment(final String content, final Post post, final UUID memberId, final String nickName, final String memberProfileImage) {
 
         this.content = content;
-        this.postId = postId;
+        this.post = post;
         this.memberId = memberId;
+        this.nickName = nickName;
+        this.memberProfileImage = memberProfileImage;
     }
 
     //내용 수정 테스트 메소드
