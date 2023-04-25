@@ -16,7 +16,9 @@ import org.springframework.web.bind.annotation.RestController;
 import io.howstheairtoday.appcommunityexternalapi.common.ApiResponse;
 import io.howstheairtoday.appcommunityexternalapi.service.dto.request.CommentRequestDTO;
 import io.howstheairtoday.appcommunityexternalapi.service.CommentService;
+import io.howstheairtoday.appcommunityexternalapi.service.dto.response.CommentResponseDTO;
 import io.howstheairtoday.communitydomainrds.dto.CommentPageListDTO;
+import io.howstheairtoday.communitydomainrds.entity.Post;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
@@ -29,19 +31,20 @@ public class CommentController {
 
     //게시물 댓글 작성
     @PostMapping("/{postId}/comments")
-    public ApiResponse<Object> createComment(@PathVariable("postId") UUID postId, @RequestBody CommentRequestDTO commentRequestDTO) {
+    public ApiResponse<Object> createComment(@PathVariable("postId") Post postId, @RequestBody CommentRequestDTO commentRequestDTO) {
 
-        commentService.createComment(postId, commentRequestDTO);
+        CommentResponseDTO commentResponseDTO = commentService.createComment(postId, commentRequestDTO);
 
         return ApiResponse.<Object>builder()
             .statusCode(HttpStatus.CREATED.value())
             .msg("작성 성공했습니다.")
+            .data(commentResponseDTO)
             .build();
     }
 
     //게시물 댓글 조회
     @GetMapping("/{postId}/comments")
-    public ApiResponse<CommentPageListDTO> getComment(@PathVariable("postId") UUID postId, Integer page) {
+    public ApiResponse<CommentPageListDTO> getComment(@PathVariable("postId") Post postId, Integer page) {
 
         CommentPageListDTO comments = commentService.getComment(postId, page);
 
@@ -76,3 +79,4 @@ public class CommentController {
             .build();
     }
 }
+
