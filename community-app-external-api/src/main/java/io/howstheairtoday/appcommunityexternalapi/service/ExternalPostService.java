@@ -46,7 +46,8 @@ public class ExternalPostService {
         List<MultipartFile> postImages) {
 
         final Post post = Post.createPost(saveRequestDto.getContent(),
-            saveRequestDto.getRegion(), saveRequestDto.getMemberId(), saveRequestDto.getMemberNickname());
+            saveRequestDto.getRegion(), saveRequestDto.getMemberId(), saveRequestDto.getMemberNickname(),
+            saveRequestDto.getMemberImageUrl());
 
         postImages.forEach(
             postImg -> {

@@ -38,6 +38,9 @@ public class PostRequestDto {
 
         @NotNull(message = "유저닉네임이 존재하지 않습니다.")
         private String memberNickname;
+
+        @NotNull(message = "유저 이미지가 존재하지 않습니다.")
+        private String memberImageUrl;
         /**
          * 게시글에 첨부된 이미지 목록
          */
