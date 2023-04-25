@@ -77,8 +77,8 @@ public class PostController {
             .build();
     }
 
-    @GetMapping("/post-detail")
-    public ApiResponse<Object> getDetailPost(@RequestParam UUID postsId
+    @GetMapping("/post-detail/{postsId}")
+    public ApiResponse<Object> getDetailPost(@PathVariable UUID postsId
     ) {
         PostResponseDto.PostResponseDetail dto = externalPostService.getDetailPost(postsId);
         return ApiResponse.<Object>builder()
