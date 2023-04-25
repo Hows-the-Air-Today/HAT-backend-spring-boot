@@ -67,8 +67,8 @@ public class PostController {
             .build();
     }
 
-    @DeleteMapping("/")
-    public ApiResponse<Object> deletePost(@Valid @RequestBody PostRequestDto.PostUUIDDto postsId
+    @DeleteMapping("/{postsId}")
+    public ApiResponse<Object> deletePost(@Valid @PathVariable UUID postsId
     ) {
         externalPostService.deletePost(postsId);
         return ApiResponse.<Object>builder()
