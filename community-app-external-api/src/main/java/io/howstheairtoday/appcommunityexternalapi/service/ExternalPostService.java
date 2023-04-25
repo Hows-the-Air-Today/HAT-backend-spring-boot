@@ -91,9 +91,9 @@ public class ExternalPostService {
 
     }
 
-    public void deletePost(final PostRequestDto.PostUUIDDto postUUIDDto) {
+    public void deletePost(final UUID postsId) {
 
-        Post post = domainCommunityService.findById(postUUIDDto.getPostUUID())
+        Post post = domainCommunityService.findById(postsId)
             .orElseThrow(PostNotExistException::new);
 
         post.deletePost();
