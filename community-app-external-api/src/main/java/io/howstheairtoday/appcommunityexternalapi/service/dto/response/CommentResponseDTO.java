@@ -1,4 +1,4 @@
-package io.howstheairtoday.communitydomainrds.dto;
+package io.howstheairtoday.appcommunityexternalapi.service.dto.response;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -13,7 +13,7 @@ import lombok.Data;
 @Data
 @Builder
 @AllArgsConstructor
-public class CommentPageDTO {
+public class CommentResponseDTO {
 
     private UUID commentId;
 
@@ -21,13 +21,11 @@ public class CommentPageDTO {
 
     private UUID memberId;
 
-    private UUID postId;
-
-    private Post post;
-
     private String nickName;
 
     private String memberProfileImage;
+
+    private Post post;
 
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Seoul")
     private LocalDateTime createdAt;
