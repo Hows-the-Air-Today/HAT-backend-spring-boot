@@ -9,8 +9,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import io.howstheairtoday.communitydomainrds.entity.Comment;
+import io.howstheairtoday.communitydomainrds.entity.Post;
 
-@Repository
 public interface CommentRepository extends JpaRepository<Comment, UUID> {
 
     Optional<Comment> findByCommentId(UUID commentId);
