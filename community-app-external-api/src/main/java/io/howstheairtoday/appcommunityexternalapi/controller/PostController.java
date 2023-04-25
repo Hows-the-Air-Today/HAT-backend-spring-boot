@@ -80,7 +80,7 @@ public class PostController {
     @GetMapping("/post-detail/{postsId}")
     public ApiResponse<Object> getDetailPost(@PathVariable UUID postsId
     ) {
-        PostResponseDto.PostResponseDetail dto = externalPostService.getDetailPost(postsId);
+        PostResponseDto.PostDto dto = externalPostService.getDetailPost(postsId);
         return ApiResponse.<Object>builder()
             .statusCode(HttpStatus.OK.value())
             .msg("success")

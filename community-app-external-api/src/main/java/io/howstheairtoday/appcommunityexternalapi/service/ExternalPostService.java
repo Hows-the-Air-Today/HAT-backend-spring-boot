@@ -101,26 +101,15 @@ public class ExternalPostService {
         domainCommunityService.savePost(post);
     }
 
-    public PostResponseDto.PostResponseDetail getDetailPost(UUID postsId) {
+    public PostResponseDto.PostDto getDetailPost(UUID postsId) {
 
         Post getDetailPost = domainCommunityService.findById(postsId).orElseThrow(PostNotExistException::new);
-
-        List<PostResponseDto.PostImageResponseDto> imagesDtos = getDetailPost.getImageArray().stream()
-            .map(postImage -> PostResponseDto.PostImageResponseDto.builder()
-                .imageId(postImage.getPostImageId())
-                .memberId(postImage.getMemberId())
-                .postId(postImage.getPostId().getId())
-                .imageNumber(postImage.getPostImageNumber())
-                .imageUrl(postImage.getPostImageUrl())
-                .createdAt(postImage.getCreatedAt())
-                .updatedAt(postImage.getUpdatedAt())
-                .deletedAt(postImage.getDeletedAt())
-                .build())
-            .collect(Collectors.toList());
 
         PostResponseDto.PostDto postDto = PostResponseDto.PostDto.builder()
             .postId(getDetailPost.getId())
             .region(getDetailPost.getRegion())
+            .imageUrl(getDetailPost.getImageArray().get(0).getPostImageUrl())
+            .content(getDetailPost.getContent())
             .memberId(getDetailPost.getMemberId())
             .memberNickname(getDetailPost.getMemberNickname())
             .content(getDetailPost.getContent())
@@ -129,12 +118,8 @@ public class ExternalPostService {
             .createdAt(getDetailPost.getCreatedAt())
             .build();
 
-        PostResponseDto.PostResponseDetail getPostresponseDetail = PostResponseDto.PostResponseDetail.builder()
-            .postDto(postDto)
-            .imageDto(imagesDtos)
-            .build();
 
-        return getPostresponseDetail;
+        return postDto;
 
     }
 

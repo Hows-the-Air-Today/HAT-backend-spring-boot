@@ -35,6 +35,7 @@ public class PostResponseDto {
         private String content;
         private String memberNickname;
         private String region;
+        private String imageUrl;
 
         private LocalDateTime createdAt;
         private LocalDateTime updatedAt;
@@ -48,6 +49,7 @@ public class PostResponseDto {
 
         private UUID imageId;
         private UUID memberId;
+        private String content;
 
         private UUID postId;
         private String imageUrl;
