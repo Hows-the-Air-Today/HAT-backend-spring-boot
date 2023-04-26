@@ -111,6 +111,8 @@ public class ExternalPostService {
             .imageUrl(getDetailPost.getImageArray().get(0).getPostImageUrl())
             .content(getDetailPost.getContent())
             .memberId(getDetailPost.getMemberId())
+            .commentCount(getDetailPost.getComment().size())
+            .likeCount(getDetailPost.getLikes().size())
             .memberNickname(getDetailPost.getMemberNickname())
             .content(getDetailPost.getContent())
             .deletedAt(getDetailPost.getDeletedAt())
