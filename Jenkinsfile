@@ -91,7 +91,7 @@ pipeline {
     
     stage('manifest file update') {
       steps {
-        git credentialsId: 'github-HAT-cre',
+        git credentialsId: 'github-HAT-SSH-key-pub',
             url: manifest,
             branch: 'main'
         // 이미지 태그 변경 후 메인 브랜치에 푸시
