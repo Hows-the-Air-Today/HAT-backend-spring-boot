@@ -67,24 +67,33 @@ public class ExternalPostService {
     }
 
     public void updatePost(final PostRequestDto.SaveRequestDto saveRequestDto, final UUID uuid,
-        List<MultipartFile> postImagesDtos) {
+        List<MultipartFile> postImagesDtos, final String stringImagesDto) {
 
         final List<PostImage> postImageList = new ArrayList<>();
 
         final Post post = domainCommunityService.findById(uuid).orElseThrow(PostNotExistException::new);
-
-        postImagesDtos.forEach(postImageDto -> {
-            String updateImage = null;
-            try {
-                updateImage = awsS3UploadService.uploadImages(postImageDto, "게시판");
-            } catch (IOException e) {
-                throw new AwsCustomServiceException();
-            }
+        if (postImagesDtos == null) {
             PostImage postImages = PostImage.builder()
-                .postImageUrl(updateImage)
+                .postImageUrl(stringImagesDto)
                 .build();
             postImageList.add(postImages);
-        });
+        } else {
+            postImagesDtos.forEach(postImageDto ->
+            {
+                String updateImage = null;
+                try {
+
+                    updateImage = awsS3UploadService.uploadImages(postImageDto, "게시판");
+                } catch (IOException e) {
+                    throw new AwsCustomServiceException();
+                }
+                PostImage postImages = PostImage.builder()
+                    .postImageUrl(updateImage)
+                    .build();
+                postImageList.add(postImages);
+            });
+        }
+
         post.updatePost(saveRequestDto.getContent(), saveRequestDto.getRegion(), postImageList);
 
         domainCommunityService.savePost(post);
@@ -120,7 +129,6 @@ public class ExternalPostService {
             .updatedAt(getDetailPost.getUpdatedAt())
             .createdAt(getDetailPost.getCreatedAt())
             .build();
-
 
         return postDto;
 
