@@ -110,7 +110,7 @@ pipeline {
         sh "git commit -m 'fix:${currentBuild.number} image versioning'"
         sh "git branch -M main"
         sh "git remote remove origin"
-        sh "git remote add origin https://github.com/Hows-the-Air-Today/HAT-manifest.git"
+        sh "git remote add origin git@github.com:Hows-the-Air-Today/HAT-manifest.git"
         sh "git push -u origin main"
       }
       post {
