@@ -91,7 +91,10 @@ pipeline {
     
     stage('manifest file update') {
       steps {
-        git credentialsId: 'github-HAT-cre',
+        echo "Git URL: ${manifest}"
+        echo "Git Branch: main"
+        echo "Credentials ID: ${githubCredential}"
+        git credentialsId: githubCredential,
             url: manifest,
             branch: 'main'
         // 이미지 태그 변경 후 메인 브랜치에 푸시
