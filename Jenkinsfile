@@ -11,7 +11,7 @@ pipeline {
     gitEmail = 'sjtxm0320@gmail.com'
     githubCredential = 'github-HAT-cre'
     GIT_SSH_KEY_CREDENTIALS = 'github-HAT-SSH-key-pub'
-    manifest = 'https://github.com/Hows-the-Air-Today/HAT-manifest.git'
+    manifest = 'git@github.com:Hows-the-Air-Today/HAT-manifest.git'
   }
   
   stages {
