@@ -110,6 +110,7 @@ public class ExternalPostService {
             .region(getDetailPost.getRegion())
             .imageUrl(getDetailPost.getImageArray().get(0).getPostImageUrl())
             .content(getDetailPost.getContent())
+            .memberImageUrl(getDetailPost.getMemberImage())
             .memberId(getDetailPost.getMemberId())
             .commentCount(getDetailPost.getComment().size())
             .likeCount(getDetailPost.getLikes().size())
