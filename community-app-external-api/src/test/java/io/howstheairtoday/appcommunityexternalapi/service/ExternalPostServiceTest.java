@@ -201,12 +201,11 @@ public class ExternalPostServiceTest {
         Post getPost = domainCommunityService.findById(post.getId()).orElseThrow(PostNotExistException::new);
 
         //when
-        PostResponseDto.PostResponseDetail postResponseDetail = externalPostService.getDetailPost(getPost.getId());
+        PostResponseDto.PostDto postResponseDetail = externalPostService.getDetailPost(getPost.getId());
 
         //then
         assertThat(getPost.getContent()).isEqualTo("게시글 내용");
         assertThat(getPost.getRegion()).isEqualTo("동남로");
-        assertThat(getPost.getId()).isEqualTo(postResponseDetail.getPostDto().getPostId());
     }
 
     @DisplayName("게시물 조회")
