@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.UUID;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.lang.Nullable;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -57,10 +58,11 @@ public class PostController {
     @PatchMapping("/{postsId}")
     public ApiResponse<Object> updatePost(
         @RequestPart("saveRequestDto") final PostRequestDto.SaveRequestDto saveRequestDto,
-        @RequestPart("postImagesDto") final List<MultipartFile> postImagesDto,
+        @RequestPart(value = "postImagesDto", required = false) final List<MultipartFile> postImagesDto,
+        @RequestPart(value = "stringImagesDto", required = false) @Nullable final String stringImagesDto,
         @PathVariable UUID postsId
     ) {
-        externalPostService.updatePost(saveRequestDto, postsId, postImagesDto);
+        externalPostService.updatePost(saveRequestDto, postsId, postImagesDto, stringImagesDto);
         return ApiResponse.<Object>builder()
             .statusCode(HttpStatus.OK.value())
             .msg("success")
