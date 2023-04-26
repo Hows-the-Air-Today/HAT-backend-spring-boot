@@ -91,26 +91,22 @@ pipeline {
     
     stage('manifest file update') {
       steps {
-        echo "Git URL: ${manifest}"
-        echo "Git Branch: main"
-        echo "Credentials ID: ${githubCredential}"
         git credentialsId: githubCredential,
             url: manifest,
             branch: 'main'
         // 이미지 태그 변경 후 메인 브랜치에 푸시
         sh "git config --global user.email ${gitEmail}"
         sh "git config --global user.name ${gitName}"
+        sh "git init"
         sh "sed -i 's|image:.*air-quality-app-batch:.*|image: 915947332145.dkr.ecr.ap-northeast-2.amazonaws.com/air-quality-app-batch:${currentBuild.number}|g' ./HAT-deployment.yaml"
         sh "sed -i 's|image:.*air-quality-app-external-api:.*|image: 915947332145.dkr.ecr.ap-northeast-2.amazonaws.com/air-quality-app-external-api:${currentBuild.number}|g' ./HAT-deployment.yaml"
         sh "sed -i 's|image:.*community-app-external-api:.*|image: 915947332145.dkr.ecr.ap-northeast-2.amazonaws.com/community-app-external-api:${currentBuild.number}|g' ./HAT-deployment.yaml"
         sh "sed -i 's|image:.*member-app-external-api:.*|image: 915947332145.dkr.ecr.ap-northeast-2.amazonaws.com/member-app-external-api:${currentBuild.number}|g' ./HAT-deployment.yaml"
         sh "chmod +x ./HAT-deployment.yaml"
         sh "git add ./HAT-deployment.yaml"
-        sh "git status"
         sh "git commit -m 'fix:${currentBuild.number} image versioning'"
         sh "git branch -M main"
-        sh "git remote remove origin"
-        sh "git remote add origin git@github.com:Hows-the-Air-Today/HAT-manifest.git"
+        sh "git remote add origin https://github.com/Hows-the-Air-Today/HAT-manifest.git"
         sh "git push -u origin main"
       }
       post {
