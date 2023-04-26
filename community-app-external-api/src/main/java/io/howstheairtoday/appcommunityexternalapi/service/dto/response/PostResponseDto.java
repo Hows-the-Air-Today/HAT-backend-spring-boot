@@ -37,6 +37,10 @@ public class PostResponseDto {
         private String region;
         private String imageUrl;
 
+        private String memberImageUrl;
+        private int commentCount;
+        private int likeCount;
+
         private LocalDateTime createdAt;
         private LocalDateTime updatedAt;
         private LocalDateTime deletedAt;
