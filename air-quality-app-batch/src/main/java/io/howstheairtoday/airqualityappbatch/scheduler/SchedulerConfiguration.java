@@ -1,5 +1,8 @@
-package io.howstheairtoday.airqualityappbatch.batch.scheduler;
+package io.howstheairtoday.airqualityappbatch.scheduler;
 
+import io.howstheairtoday.airqualityappbatch.config.BatchConfiguration;
+import io.howstheairtoday.airqualityappbatch.listener.JobCompletionNotificationListener;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.batch.core.JobExecution;
 import org.springframework.batch.core.JobParameters;
 import org.springframework.batch.core.JobParametersBuilder;
@@ -9,10 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
-
-import io.howstheairtoday.airqualityappbatch.batch.configuration.BatchConfiguration;
-import io.howstheairtoday.airqualityappbatch.batch.listener.JobCompletionNotificationListener;
-import lombok.extern.log4j.Log4j2;
 
 // 잡을 실행시켜줄 스케쥴러
 @Component
@@ -37,14 +36,14 @@ public class SchedulerConfiguration {
     public void runMyJob() {
         try {
             JobParameters jobParameters = new JobParametersBuilder()
-                .addString("jobId", String.valueOf(System.currentTimeMillis()))
-                .toJobParameters();
+                    .addString("jobId", String.valueOf(System.currentTimeMillis()))
+                    .toJobParameters();
 
             batchConfiguration.method();
             JobExecution jobExecution = jobLauncher.run(batchConfiguration.jpaJob(null, jobCompletionNotificationListener, jpaStep), jobParameters);
 
             log.info("JobExecution: " + jobExecution.getStatus());
-        }catch (Exception e){
+        } catch (Exception e) {
             log.error(e.getMessage());
         }
 

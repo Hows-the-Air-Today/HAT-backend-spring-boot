@@ -1,26 +1,21 @@
 package io.howstheairtoday.airqualityappbatch.service;
 
+import io.howstheairtoday.airqualitydomainrds.dto.response.CurrentDustResponseDTO;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
+import org.json.JSONArray;
+import org.json.JSONObject;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.*;
+import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestClientException;
+import org.springframework.web.client.RestTemplate;
+
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-
-import org.json.JSONArray;
-import org.json.JSONObject;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestClientException;
-import org.springframework.web.client.RestTemplate;
-
-import io.howstheairtoday.airqualitydomainrds.dto.response.CurrentDustResponseDTO;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.log4j.Log4j2;
 
 @Service
 @RequiredArgsConstructor
@@ -48,18 +43,18 @@ public class AirQualityRealTimeService {
 
         // url 뒤에 붙일 내용들을 String으로 정의
         String queryParams = "?serviceKey=" + airApiKey
-            + "&returnType=json"
-            + "&numOfRows=642"
-            + "&pageNo=1"
-            + "&sidoName=전국"
-            + "&ver=1.0";
+                + "&returnType=json"
+                + "&numOfRows=642"
+                + "&pageNo=1"
+                + "&sidoName=전국"
+                + "&ver=1.0";
 
         ResponseEntity<String> response = null;
 
-        try{
+        try {
             // restTemplate를 통한 API 호출
             response = restTemplate.exchange(url + queryParams, HttpMethod.GET, entity, String.class);
-        }catch (RestClientException re){
+        } catch (RestClientException re) {
             log.error("Api 호출 오류 및 재시도 실행" + re);
             try {
                 // 5초 대기 후 재시도
@@ -100,31 +95,31 @@ public class AirQualityRealTimeService {
             }
 
             // khaiVaule의 정렬을 위해 Int 타입으로 변환 중 숫자가 아닌 문자가 있으면 나올 수 없는 수로 처리
-            try{
+            try {
                 khaiValue = Integer.parseInt(item.optString("khaiValue"));
-            }catch (NumberFormatException e){
+            } catch (NumberFormatException e) {
                 khaiValue = -1;
             }
-            
+
             CurrentDustResponseDTO currentDustResponseDTO = CurrentDustResponseDTO.builder()
-                .sidoName(item.getString("sidoName"))
-                .stationName(item.getString("stationName"))
-                .so2Value(item.optString("so2Value"))
-                .coValue(item.optString("coValue"))
-                .o3Value(item.optString("o3Value"))
-                .no2Value(item.optString("no2Value"))
-                .pm10Value(item.optString("pm10Value"))
-                .pm25Value(item.optString("pm25Value"))
-                .khaiValue(khaiValue)
-                .khaiGrade(item.optString("khaiGrade"))
-                .so2Grade(item.optString("so2Grade"))
-                .coGrade(item.optString("coGrade"))
-                .o3Grade(item.optString("o3Grade"))
-                .no2Grade(item.optString("no2Grade"))
-                .pm10Grade(item.optString("pm10Grade"))
-                .pm25Grade(item.optString("pm25Grade"))
-                .dataTime(dateTime)
-                .build();
+                    .sidoName(item.getString("sidoName"))
+                    .stationName(item.getString("stationName"))
+                    .so2Value(item.optString("so2Value"))
+                    .coValue(item.optString("coValue"))
+                    .o3Value(item.optString("o3Value"))
+                    .no2Value(item.optString("no2Value"))
+                    .pm10Value(item.optString("pm10Value"))
+                    .pm25Value(item.optString("pm25Value"))
+                    .khaiValue(khaiValue)
+                    .khaiGrade(item.optString("khaiGrade"))
+                    .so2Grade(item.optString("so2Grade"))
+                    .coGrade(item.optString("coGrade"))
+                    .o3Grade(item.optString("o3Grade"))
+                    .no2Grade(item.optString("no2Grade"))
+                    .pm10Grade(item.optString("pm10Grade"))
+                    .pm25Grade(item.optString("pm25Grade"))
+                    .dataTime(dateTime)
+                    .build();
 
             currentDustResponseDTOList.add(currentDustResponseDTO);
         }

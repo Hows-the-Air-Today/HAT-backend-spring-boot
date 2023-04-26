@@ -15,5 +15,4 @@ public class AirQualityAppBatchApplication {
     public static void main(String[] args) {
         SpringApplication.run(AirQualityAppBatchApplication.class, args);
     }
-
 }
