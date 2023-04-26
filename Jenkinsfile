@@ -97,8 +97,6 @@ pipeline {
         // 이미지 태그 변경 후 메인 브랜치에 푸시
         sh "git config --global user.email ${gitEmail}"
         sh "git config --global user.name ${gitName}"
-        sh "git config --global credential.helper store"
-        sh "git init"
         sh "sed -i 's|image:.*air-quality-app-batch:.*|image: 915947332145.dkr.ecr.ap-northeast-2.amazonaws.com/air-quality-app-batch:${currentBuild.number}|g' ./HAT-deployment.yaml"
         sh "sed -i 's|image:.*air-quality-app-external-api:.*|image: 915947332145.dkr.ecr.ap-northeast-2.amazonaws.com/air-quality-app-external-api:${currentBuild.number}|g' ./HAT-deployment.yaml"
         sh "sed -i 's|image:.*community-app-external-api:.*|image: 915947332145.dkr.ecr.ap-northeast-2.amazonaws.com/community-app-external-api:${currentBuild.number}|g' ./HAT-deployment.yaml"
@@ -107,7 +105,7 @@ pipeline {
         sh "git add ./HAT-deployment.yaml"
         sh "git commit -m 'fix:${currentBuild.number} image versioning'"
         sh "git branch -M main"
-        sh "git remote set-url origin https://github.com/Hows-the-Air-Today/HAT-manifest.git"
+        sh "git remote set-url origin git@github.com:Hows-the-Air-Today/HAT-manifest.git"
         sh "git push -u origin main"
       }
       post {
