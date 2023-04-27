@@ -28,7 +28,8 @@
 .idea/**/dynamic.xml
 .idea/**/uiDesigner.xml
 .idea/**/dbnavigator.xml
-
+air-quality-app-external-api/src/main/resources/static/docs/overview.html
+air-quality-app-external-api/src/main/resources/static/docs/index.html
 # Gradle
 .idea/**/gradle.xml
 .idea/**/libraries
