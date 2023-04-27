@@ -1,10 +1,11 @@
 package io.howstheairtoday.memberappexternalapi.controller;
 
-import static org.springframework.mock.http.server.reactive.MockServerHttpRequest.*;
-import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+import java.util.Optional;
+
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,7 +13,6 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
@@ -20,6 +20,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.howstheairtoday.memberappexternalapi.common.AbstractRestDocsTests;
 import io.howstheairtoday.memberappexternalapi.service.dto.request.SignUpRequestDTO;
+import io.howstheairtoday.memberdomainrds.entity.Member;
+import io.howstheairtoday.memberdomainrds.repository.MemberRepository;
 
 @DisplayName("회원 API 테스트")
 @ActiveProfiles("test")
@@ -31,6 +33,17 @@ public class AuthControllerTest extends AbstractRestDocsTests {
     private ObjectMapper objectMapper;
 
     private static final String BASE_URL = "/api/v1/auth";
+    @Autowired
+    private MemberRepository memberRepository;
+
+    @AfterEach
+    public void deletData() {
+
+        Optional<Member> member = memberRepository.findByLoginId("test");
+        if (member != null) {
+            memberRepository.delete(member.get());
+        }
+    }
 
     @DisplayName("회원가입")
     @Test
