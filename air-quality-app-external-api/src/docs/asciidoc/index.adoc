@@ -1,0 +1,21 @@
+= 공기어때 API 명세 - 대기 정보
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+:toc: left
+:toclevels: 3
+:sectlinks:
+
+== Overview
+
+include::overview.adoc[]
+
+== APIs
+
+=== 대기질 실시간 조회
+
+operation::air-quality-controller-test/select-air-quality-real-time-test[snippets='http-request,http-response']
+
+=== 대기질 주간 예보 조회
+
+operation::air-quality-controller-test/get-all-pm-forecast-data-test[snippets='http-request,http-response']
