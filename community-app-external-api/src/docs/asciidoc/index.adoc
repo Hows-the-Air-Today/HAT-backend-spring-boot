@@ -1,0 +1,13 @@
+= 공기어때 API 명세 - 지역별 커뮤니티
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+:toc: left
+:toclevels: 3
+:sectlinks:
+
+== Overview
+
+include::overview.adoc[]
+
+== APIs

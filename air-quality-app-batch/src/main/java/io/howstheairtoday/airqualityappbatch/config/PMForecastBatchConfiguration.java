@@ -59,7 +59,7 @@ public class PMForecastBatchConfiguration {
     public void pmForecastApiMethod() {
 
         // 오늘 날짜로 조회
-        LocalDate searchDate = LocalDate.parse("2023-04-15");
+        LocalDate searchDate = LocalDate.now();
         // 조회할 통보 코드
         List<String> informCodeList = List.of("PM10", "PM25");
 

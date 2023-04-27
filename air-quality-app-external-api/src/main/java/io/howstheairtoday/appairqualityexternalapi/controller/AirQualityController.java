@@ -1,24 +1,23 @@
 package io.howstheairtoday.appairqualityexternalapi.controller;
 
+import io.howstheairtoday.airqualitydomainrds.dto.response.CurrentDustResponseDTO;
+import io.howstheairtoday.appairqualityexternalapi.common.ApiResponse;
+import io.howstheairtoday.appairqualityexternalapi.service.AirQualityRealTimeService;
+import io.howstheairtoday.appairqualityexternalapi.service.PMForecastService;
+import io.howstheairtoday.appairqualityexternalapi.service.dto.response.PMForecastResponse;
+import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.*;
+
 import java.util.HashMap;
 import java.util.Map;
-
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
-
-import io.howstheairtoday.airqualitydomainrds.dto.response.CurrentDustResponseDTO;
-import io.howstheairtoday.appairqualityexternalapi.service.AirQualityRealTimeService;
-import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/airquality")
-public class AirQualityRealTimeController {
+public class AirQualityController {
 
     private final AirQualityRealTimeService airQualityRealTimeService;
+    private final PMForecastService pmForecastService;
 
     // 대기질 측정정보 조회
     @GetMapping("/tm")
@@ -32,5 +31,13 @@ public class AirQualityRealTimeController {
         Map<String, CurrentDustResponseDTO> data = new HashMap<>();
         data.put("airQuality", airQualityRealTimeService.selectAirQualityRealTime(stationName));
         return data;
+    }
+
+    @GetMapping("/forecast")
+    public ApiResponse<PMForecastResponse> getAllPMForecasts() {
+
+        PMForecastResponse pmForecastResponse = pmForecastService.getAllPMForecastData();
+
+        return ApiResponse.success("미세먼지/초미세먼지 주간 예보 정보 조회 성공", pmForecastResponse);
     }
 }
