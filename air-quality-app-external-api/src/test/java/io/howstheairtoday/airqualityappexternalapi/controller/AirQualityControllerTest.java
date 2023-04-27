@@ -1,6 +1,8 @@
 package io.howstheairtoday.airqualityappexternalapi.controller;
 
 import io.howstheairtoday.airqualityappexternalapi.common.AbstractRestDocsTests;
+
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -49,5 +51,16 @@ public class AirQualityControllerTest extends AbstractRestDocsTests {
                 .andExpect(jsonPath("$.data.pm10ForecastList").isNotEmpty())
                 .andExpect(jsonPath("$.data.pm25ForecastList").isNotEmpty())
                 .andDo(print());
+    }
+
+    @DisplayName("랭킹 정보 조회")
+    @Test
+    public void getRanking() throws Exception{
+
+        // When
+        ResultActions resultActions = mockMvc.perform(get("/api/v1/airquality/ranking"));
+
+        // Then
+        resultActions.andExpect(status().isOk()).andDo(print());
     }
 }

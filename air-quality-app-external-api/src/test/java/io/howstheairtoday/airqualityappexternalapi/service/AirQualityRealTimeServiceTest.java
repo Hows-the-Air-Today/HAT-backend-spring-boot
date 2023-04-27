@@ -4,6 +4,8 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.*;
 import static org.springframework.test.web.client.response.MockRestResponseCreators.*;
 
+import java.util.List;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.junit.jupiter.api.Assertions;
@@ -11,6 +13,8 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -137,5 +141,35 @@ public class AirQualityRealTimeServiceTest {
         Assertions.assertEquals(airQualityRealTime.getSidoName(), currentDustResponseDTO.getSidoName());
         Assertions.assertEquals(airQualityRealTime.getSo2Grade(), currentDustResponseDTO.getSo2Grade());
         Assertions.assertEquals(airQualityRealTime.getSo2Value(), currentDustResponseDTO.getSo2Value());
+    }
+
+    @DisplayName("베스트 10 조회 테스트")
+    @Test
+    public void selectBest10Test(){
+
+        // Given
+        Pageable pageable = PageRequest.of(0, 10);
+
+
+        // When
+        List<AirQualityRealTime> airQualityRealTimeList = airQualityRealTimeRepository.findBest10(pageable);
+
+        // Then
+        Assertions.assertEquals(10, airQualityRealTimeList.size());
+    }
+
+    @DisplayName("워스트 10 조회 테스트")
+    @Test
+    public void selectWorst10Test(){
+
+        // Given
+        Pageable pageable = PageRequest.of(0, 10);
+
+
+        // When
+        List<AirQualityRealTime> airQualityRealTimeList = airQualityRealTimeRepository.findWorst10(pageable);
+
+        // Then
+        Assertions.assertEquals(10, airQualityRealTimeList.size());
     }
 }
