@@ -6,8 +6,6 @@ import io.howstheairtoday.appairqualityexternalapi.service.AirQualityRealTimeSer
 import io.howstheairtoday.appairqualityexternalapi.service.PMForecastService;
 import io.howstheairtoday.appairqualityexternalapi.service.dto.response.PMForecastResponse;
 import lombok.RequiredArgsConstructor;
-
-import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;

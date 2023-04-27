@@ -1,8 +1,6 @@
 package io.howstheairtoday.airqualityappexternalapi.controller;
 
 import io.howstheairtoday.airqualityappexternalapi.common.AbstractRestDocsTests;
-
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
