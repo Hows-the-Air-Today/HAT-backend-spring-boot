@@ -1,8 +1,13 @@
 package io.howstheairtoday.appairqualityexternalapi.service;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -99,5 +104,27 @@ public class AirQualityRealTimeService {
             .pm25Grade(airQualityRealTime.getPm25Grade())
             .dataTime(airQualityRealTime.getDataTime())
             .build();
+    }
+
+    // 지역 랭킹 정보를 받아옴
+    public List<CurrentDustResponseDTO> findBest10() {
+        Pageable pageable = PageRequest.of(0, 10);
+
+        List<AirQualityRealTime> airQualityRealTimeList = airQualityRealTimeRepository.findBest10(pageable);
+        List<CurrentDustResponseDTO> currentDustResponseDTOList = new ArrayList<>();
+        for (AirQualityRealTime airQualityRealTime : airQualityRealTimeList) {
+            currentDustResponseDTOList.add(entityToDTO(airQualityRealTime));
+        }
+        return currentDustResponseDTOList;
+    }
+
+    public List<CurrentDustResponseDTO> findWorst10() {
+        Pageable pageable = PageRequest.of(0, 10);
+        List<AirQualityRealTime> airQualityRealTimeList = airQualityRealTimeRepository.findWorst10(pageable);
+        List<CurrentDustResponseDTO> currentDustResponseDTOList = new ArrayList<>();
+        for (AirQualityRealTime airQualityRealTime : airQualityRealTimeList) {
+            currentDustResponseDTOList.add(entityToDTO(airQualityRealTime));
+        }
+        return currentDustResponseDTOList;
     }
 }

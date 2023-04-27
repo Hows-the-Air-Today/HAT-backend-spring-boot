@@ -50,4 +50,15 @@ public class AirQualityControllerTest extends AbstractRestDocsTests {
                 .andExpect(jsonPath("$.data.pm25ForecastList").isNotEmpty())
                 .andDo(print());
     }
+
+    @DisplayName("랭킹 정보 조회")
+    @Test
+    public void getRanking() throws Exception{
+
+        // When
+        ResultActions resultActions = mockMvc.perform(get("/api/v1/airquality/ranking"));
+
+        // Then
+        resultActions.andExpect(status().isOk()).andDo(print());
+    }
 }
