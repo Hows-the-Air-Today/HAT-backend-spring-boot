@@ -1,0 +1,36 @@
+[[overview]]
+=== 실행 환경별 주소
+
+|===
+| 환경 | Host
+
+| Develop
+| `dev.api.{{site.domain}}`
+
+| Production
+| `api.{{site.domain}}`
+|===
+
+=== Header
+
+|===
+| name | 설명
+
+| `Authorization` | `Bearer {access_token}`
+| `Content-Type` | `application/json`
+|===
+
+=== 공통 Response Body
+
+|===
+| filed | 설명
+
+| `statusCode`
+| 응답 코드
+
+| `message`
+| 예외사항 내용 등 응답 메시지
+
+| `data`
+| 실제 반환될 응답 데이터
+|===
