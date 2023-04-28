@@ -20,6 +20,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.howstheairtoday.memberappexternalapi.common.AbstractRestDocsTests;
 import io.howstheairtoday.memberappexternalapi.service.dto.request.SignUpRequestDTO;
+import io.howstheairtoday.memberdomainrds.entity.LoginRole;
 import io.howstheairtoday.memberdomainrds.entity.Member;
 import io.howstheairtoday.memberdomainrds.repository.MemberRepository;
 
@@ -62,6 +63,34 @@ public class AuthControllerTest extends AbstractRestDocsTests {
             MockMvcRequestBuilders.post(BASE_URL + "/register")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(signUpRequestDTO))
+        );
+
+        // then
+        resultActions.andExpect(status().isOk()).andDo(print());
+    }
+
+    @DisplayName("회원 정보 조회")
+    @Test
+    public void readMemberTest() throws Exception {
+
+        // given
+        Member member = Member.builder()
+            .loginId("test")
+            .loginPassword("test123")
+            .email("test@test.com")
+            .nickname("테스트")
+            .memberProfileImage("default.jpg")
+            .loginRole(LoginRole.ROLE_USER)
+            .build();
+        memberRepository.save(member);
+
+        String accessToken = "example_access_token";
+
+        // when
+        ResultActions resultActions = mockMvc.perform(
+            MockMvcRequestBuilders.get(BASE_URL + "/" + member.getMemberId())
+                .header("Authorization", "Bearer " + accessToken)
+                .contentType(MediaType.APPLICATION_JSON)
         );
 
         // then
