@@ -29,6 +29,7 @@ public class PostResponseDto {
 
     @Getter
     @Builder
+    @AllArgsConstructor
     public static class PostDto {
         private UUID postId;
         private UUID memberId;
@@ -72,6 +73,21 @@ public class PostResponseDto {
         private String postImageUrl;
         private UUID memberId;
         private UUID postId;
+
+    }
+
+    @AllArgsConstructor
+    @Getter
+    @Builder
+    public static class PopularList {
+        // private final List<> popularList;
+        private UUID postId;
+        private UUID memberId;
+        private String content;
+        private String memberNickname;
+        private String region;
+        private String imageUrl;
+
 
     }
 }
