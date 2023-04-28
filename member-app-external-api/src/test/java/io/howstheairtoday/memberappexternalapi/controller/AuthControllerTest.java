@@ -19,6 +19,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.howstheairtoday.memberappexternalapi.common.AbstractRestDocsTests;
+import io.howstheairtoday.memberappexternalapi.service.dto.request.ModifyNicknameRequestDto;
 import io.howstheairtoday.memberappexternalapi.service.dto.request.SignUpRequestDTO;
 import io.howstheairtoday.memberdomainrds.entity.LoginRole;
 import io.howstheairtoday.memberdomainrds.entity.Member;
@@ -91,6 +92,39 @@ public class AuthControllerTest extends AbstractRestDocsTests {
             MockMvcRequestBuilders.get(BASE_URL + "/" + member.getMemberId())
                 .header("Authorization", "Bearer " + accessToken)
                 .contentType(MediaType.APPLICATION_JSON)
+        );
+
+        // then
+        resultActions.andExpect(status().isOk()).andDo(print());
+    }
+
+    @DisplayName("회원 닉네임 수정")
+    @Test
+    public void modifyNicknameTest() throws Exception {
+
+        // given
+        Member member = Member.builder()
+            .loginId("test")
+            .loginPassword("test123")
+            .email("test@test.com")
+            .nickname("테스트")
+            .memberProfileImage("default.jpg")
+            .loginRole(LoginRole.ROLE_USER)
+            .build();
+        memberRepository.save(member);
+
+        ModifyNicknameRequestDto requestDto = new ModifyNicknameRequestDto();
+        requestDto.setMemberId(member.getMemberId());
+        requestDto.setNickname("수정된 닉네임");
+
+        String accessToken = "example_access_token";
+
+        // when
+        ResultActions resultActions = mockMvc.perform(
+            MockMvcRequestBuilders.patch(BASE_URL + "/nickname")
+                .header("Authorization", "Bearer " + accessToken)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(requestDto))
         );
 
         // then
