@@ -19,6 +19,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.howstheairtoday.memberappexternalapi.common.AbstractRestDocsTests;
+import io.howstheairtoday.memberappexternalapi.service.dto.request.ChangePasswordRequestDto;
 import io.howstheairtoday.memberappexternalapi.service.dto.request.ModifyNicknameRequestDto;
 import io.howstheairtoday.memberappexternalapi.service.dto.request.SignUpRequestDTO;
 import io.howstheairtoday.memberdomainrds.entity.LoginRole;
@@ -129,5 +130,42 @@ public class AuthControllerTest extends AbstractRestDocsTests {
 
         // then
         resultActions.andExpect(status().isOk()).andDo(print());
+    }
+
+    @DisplayName("회원 비밀번호 변경")
+    @Test
+    public void changePasswordTest() throws Exception {
+
+        // given
+        Member member = Member.builder()
+            .loginId("test")
+            .loginPassword("test123")
+            .email("test@test.com")
+            .nickname("테스트")
+            .memberProfileImage("default.jpg")
+            .loginRole(LoginRole.ROLE_USER)
+            .build();
+        memberRepository.save(member);
+
+        ChangePasswordRequestDto requestDto = new ChangePasswordRequestDto();
+        requestDto.setMemberId(member.getMemberId());
+        requestDto.setLoginPassword("test321");
+        requestDto.setLoginPasswordCheck("test321"); // 새로운 비밀번호 확인
+
+        String accessToken = "example_access_token";
+
+        // when
+        ResultActions resultActions = mockMvc.perform(
+            MockMvcRequestBuilders.patch(BASE_URL + "/password")
+                .header("Authorization", "Bearer " + accessToken)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(requestDto))
+        );
+
+        // then
+        resultActions
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.msg").value("비밀번호 변경이 완료 되었습니다."))
+            .andDo(print());
     }
 }
