@@ -150,4 +150,16 @@ public class ExternalPostService {
                 .collect(Collectors.toList());
         return list;
     }
+
+    public List<PostResponseDto.PopularList> getPopularList(String region) {
+
+        List<Post> popularPosts = domainCommunityService.getPopularList(region);
+        List<PostResponseDto.PopularList> popularDtoList = popularPosts.stream()
+            .map(post -> {
+                return new PostResponseDto.PopularList(post.getId(), post.getMemberId(), post.getContent(),
+                    post.getMemberNickname(), post.getRegion(), post.getMemberImage());
+            })
+            .collect(Collectors.toList());
+        return popularDtoList;
+    }
 }

@@ -153,4 +153,8 @@ public class DomainCommunityService {
         return likeRepository.findLikeByPostIdAndMemberId(postId.getId(), memberId);
     }
 
+    public List<Post> getPopularList(String region) {
+
+        return postQslRepository.findBylikesList(region);
+    }
 }
