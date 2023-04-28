@@ -14,4 +14,5 @@ public interface PostQslRepository {
 
     List<Map<String, Object>> findByRegionList(String region, LocalDateTime createdAt, int limit);
 
+    List<Post> findBylikesList(String region);
 }

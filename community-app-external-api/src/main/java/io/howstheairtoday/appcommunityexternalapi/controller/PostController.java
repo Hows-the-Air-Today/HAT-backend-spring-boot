@@ -106,6 +106,18 @@ public class PostController {
             .build();
     }
 
+    @GetMapping("/get-popular")
+    public ApiResponse<Object> getPopularList(
+        @RequestParam("region") String region
+    ) {
+        List<PostResponseDto.PopularList> popularList = externalPostService.getPopularList(region);
+        return ApiResponse.<Object>builder()
+            .statusCode(HttpStatus.OK.value())
+            .msg("success")
+            .data(popularList)
+            .build();
+    }
+
     @GetMapping("my-page/{memberId}")
     public ApiResponse<Object> getDetailMyPagePost(@PathVariable UUID memberId
     ) {
