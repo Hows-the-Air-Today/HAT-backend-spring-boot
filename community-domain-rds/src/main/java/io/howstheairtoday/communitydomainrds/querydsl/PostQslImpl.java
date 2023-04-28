@@ -48,25 +48,15 @@ public class PostQslImpl extends QuerydslRepositorySupport implements PostQslRep
 
         BooleanBuilder builder = createPostQueryBuilder(region, createdAt);
 
-        // Post와 PostImage를 함께 가져오는 쿼리 작성
         JPQLQuery<Post> posts = jpaQueryFactory.selectFrom(post)
-            .leftJoin(post.imageArray, qPostImage).fetchJoin()
+            .leftJoin(post.imageArray, qPostImage)
             .where(builder)
             .orderBy(post.createdAt.desc())
             .limit(limit);
 
-        JPQLQuery<Post> popularPosts = jpaQueryFactory.selectFrom(post)
-            .leftJoin(post.likes, qLike).fetchJoin()
-            .where(post.region.eq(region))
-            .groupBy(post.id)
-            .having(qLike.count().gt(0))
-            .orderBy(qLike.count().desc())
-            .limit(5);
-
-        List<Post> popularPostList = popularPosts.fetch();
-
         // 조회한 게시물 및 이미지 배열 리스트를 반환
         List<Post> postList = posts.fetch();
+
 
         // 마지막 페이지 여부 판단
         boolean hasNext; // postList 개수가 limit 이상이면 다음 페이지가 있는 것으로 판단
@@ -90,10 +80,25 @@ public class PostQslImpl extends QuerydslRepositorySupport implements PostQslRep
                 resultMap.put("hasNext", hasNext && post.equals(postList.get(postList.size() - 1)));
                 resultMap.put("commentCount", post.getComment().size());
                 resultMap.put("likeCount", post.getLikes().size());
-                resultMap.put("popularPostList", popularPostList);
                 return resultMap;
             })
             .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<Post> findBylikesList(String region) {
+        List<Post> list = jpaQueryFactory
+            .selectDistinct(post)
+            .from(post)
+            .leftJoin(post.likes, qLike).fetchJoin()
+            .where(post.deletedAt.isNull(), post.region.eq(region), qLike.liked.isTrue())
+            .groupBy(post.id)
+            .having(qLike.count().gt(0))
+            .orderBy(qLike.count().desc(), post.createdAt.desc())
+            .limit(5)
+            .fetch();
+
+        return list;
     }
 
     private BooleanBuilder createPostQueryBuilder(String region, LocalDateTime createdAt) {
