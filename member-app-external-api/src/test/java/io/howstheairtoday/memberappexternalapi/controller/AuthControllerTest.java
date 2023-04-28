@@ -168,4 +168,32 @@ public class AuthControllerTest extends AbstractRestDocsTests {
             .andExpect(jsonPath("$.msg").value("비밀번호 변경이 완료 되었습니다."))
             .andDo(print());
     }
+
+    @DisplayName("회원탈퇴")
+    @Test
+    public void deleteMemberTest() throws Exception {
+
+        // given
+        Member member = Member.builder()
+            .loginId("test")
+            .loginPassword("test123")
+            .email("test@test.com")
+            .nickname("테스트")
+            .memberProfileImage("default.jpg")
+            .loginRole(LoginRole.ROLE_USER)
+            .build();
+        memberRepository.save(member);
+
+        String accessToken = "example_access_token";
+
+        // when
+        ResultActions resultActions = mockMvc.perform(
+            MockMvcRequestBuilders.delete(BASE_URL + "/" + member.getMemberId())
+                .header("Authorization", "Bearer " + accessToken)
+                .contentType(MediaType.APPLICATION_JSON)
+        );
+
+        // then
+        resultActions.andExpect(status().isOk()).andDo(print());
+    }
 }
