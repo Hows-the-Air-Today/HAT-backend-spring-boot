@@ -157,7 +157,7 @@ public class ExternalPostService {
         List<PostResponseDto.PopularList> popularDtoList = popularPosts.stream()
             .map(post -> {
                 return new PostResponseDto.PopularList(post.getId(), post.getMemberId(), post.getContent(),
-                    post.getMemberNickname(), post.getRegion(), post.getMemberImage());
+                    post.getMemberNickname(), post.getRegion(), post.getImageArray().get(0).getPostImageUrl());
             })
             .collect(Collectors.toList());
         return popularDtoList;

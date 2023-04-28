@@ -12,7 +12,7 @@ public class PostDomainResponseDto {
     private List<Map<String, Object>> data;
 
     @Builder
-    public PostDomainResponseDto(List<Map<String, Object>> data) {
+    public PostDomainResponseDto(List<Map<String, Object>> data ) {
         this.data = data;
     }
 }
