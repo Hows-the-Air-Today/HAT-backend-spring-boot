@@ -21,7 +21,7 @@ public class AirQualityControllerTest extends AbstractRestDocsTests {
 
     @DisplayName("대기질 실시간 조회")
     @Test
-    public void selectAirQualityRealTimeTest() throws Exception {
+    public void selectAirQualityRealTime() throws Exception {
 
         // Given
         double tmX = 200817.7459347529;
@@ -37,7 +37,7 @@ public class AirQualityControllerTest extends AbstractRestDocsTests {
 
     @DisplayName("대기질 주간 예보 조회")
     @Test
-    public void getAllPMForecastDataTest() throws Exception {
+    public void getAllPMForecastData() throws Exception {
 
         // when
         ResultActions resultActions = mockMvc.perform(get("/api/v1/airquality/forecast"));
@@ -51,9 +51,9 @@ public class AirQualityControllerTest extends AbstractRestDocsTests {
                 .andDo(print());
     }
 
-    @DisplayName("랭킹 정보 조회")
+    @DisplayName("대기질 실시간 랭킹 정보 조회")
     @Test
-    public void getRanking() throws Exception{
+    public void getAirQualityRanking() throws Exception {
 
         // When
         ResultActions resultActions = mockMvc.perform(get("/api/v1/airquality/ranking"));
