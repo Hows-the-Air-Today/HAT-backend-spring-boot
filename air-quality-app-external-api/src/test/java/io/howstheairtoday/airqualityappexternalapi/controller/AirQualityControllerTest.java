@@ -51,7 +51,7 @@ public class AirQualityControllerTest extends AbstractRestDocsTests {
                 .andDo(print());
     }
 
-    @DisplayName("랭킹 정보 조회")
+    @DisplayName("대기질 실시간 랭킹 정보 조회")
     @Test
     public void getAirQualityRanking() throws Exception {
 
