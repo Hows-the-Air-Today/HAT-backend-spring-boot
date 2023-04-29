@@ -9,7 +9,6 @@ import io.howstheairtoday.appairqualityexternalapi.service.dto.response.PMForeca
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -51,14 +50,6 @@ public class AirQualityController {
         List<CurrentDustResponseDTO> worstRankingList = airQualityRealTimeService.findWorst10();
 
         AirQualityRankingResponse airQualityRankingResponse = new AirQualityRankingResponse(bestRankingList, worstRankingList);
-        System.out.println(airQualityRankingResponse);
-
-        List<CurrentDustResponseDTO> combinedList = new ArrayList<>();
-        combinedList.addAll(bestRankingList);
-        combinedList.addAll(worstRankingList);
-
-        Map<String, List<CurrentDustResponseDTO>> data = new HashMap<>();
-        data.put("ranking", combinedList);
 
         return ApiResponse.success("대기질 랭킹 조회 성공. Best 10 & Worst 10", airQualityRankingResponse);
     }
