@@ -4,6 +4,7 @@ import io.howstheairtoday.airqualitydomainrds.dto.response.CurrentDustResponseDT
 import io.howstheairtoday.appairqualityexternalapi.common.ApiResponse;
 import io.howstheairtoday.appairqualityexternalapi.service.AirQualityRealTimeService;
 import io.howstheairtoday.appairqualityexternalapi.service.PMForecastService;
+import io.howstheairtoday.appairqualityexternalapi.service.dto.response.AirQualityRankingResponse;
 import io.howstheairtoday.appairqualityexternalapi.service.dto.response.PMForecastResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -44,17 +45,21 @@ public class AirQualityController {
     }
 
     @GetMapping("/ranking")
-    public Map<String, List<CurrentDustResponseDTO>> getRanking() {
-        List<CurrentDustResponseDTO> bestList = airQualityRealTimeService.findBest10();
-        List<CurrentDustResponseDTO> worstList = airQualityRealTimeService.findWorst10();
+    public ApiResponse<AirQualityRankingResponse> getRanking() {
+
+        List<CurrentDustResponseDTO> bestRankingList = airQualityRealTimeService.findBest10();
+        List<CurrentDustResponseDTO> worstRankingList = airQualityRealTimeService.findWorst10();
+
+        AirQualityRankingResponse airQualityRankingResponse = new AirQualityRankingResponse(bestRankingList, worstRankingList);
+        System.out.println(airQualityRankingResponse);
 
         List<CurrentDustResponseDTO> combinedList = new ArrayList<>();
-        combinedList.addAll(bestList);
-        combinedList.addAll(worstList);
+        combinedList.addAll(bestRankingList);
+        combinedList.addAll(worstRankingList);
 
         Map<String, List<CurrentDustResponseDTO>> data = new HashMap<>();
         data.put("ranking", combinedList);
 
-        return data;
+        return ApiResponse.success("대기질 랭킹 조회 성공. Best 10 & Worst 10", airQualityRankingResponse);
     }
 }
