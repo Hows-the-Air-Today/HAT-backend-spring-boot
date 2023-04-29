@@ -14,8 +14,12 @@ include::overview.adoc[]
 
 === 대기질 실시간 조회
 
-operation::air-quality-controller-test/select-air-quality-real-time-test[snippets='http-request,http-response']
+operation::air-quality-controller-test/select-air-quality-real-time[snippets='http-request,http-response']
 
 === 대기질 주간 예보 조회
 
-operation::air-quality-controller-test/get-all-pm-forecast-data-test[snippets='http-request,http-response']
+operation::air-quality-controller-test/get-all-pm-forecast-data[snippets='http-request,http-response']
+
+=== 대기질 랭킹 조회
+
+operation::air-quality-controller-test/get-air-quality-ranking[snippets='http-request,http-response']
