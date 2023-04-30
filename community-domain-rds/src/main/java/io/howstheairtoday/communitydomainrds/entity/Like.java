@@ -68,4 +68,8 @@ public class Like {
         return this;
     }
 
+    public boolean isLiked() {
+        return liked;
+    }
+
 }
