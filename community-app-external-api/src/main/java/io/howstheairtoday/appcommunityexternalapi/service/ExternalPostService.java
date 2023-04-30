@@ -114,6 +114,10 @@ public class ExternalPostService {
 
         Post getDetailPost = domainCommunityService.findById(postsId).orElseThrow(PostNotExistException::new);
 
+        int likeCount = (int)getDetailPost.getLikes().stream()
+            .filter(like -> like.getLiked())
+            .count();
+
         PostResponseDto.PostDto postDto = PostResponseDto.PostDto.builder()
             .postId(getDetailPost.getId())
             .region(getDetailPost.getRegion())
@@ -122,7 +126,11 @@ public class ExternalPostService {
             .memberImageUrl(getDetailPost.getMemberImage())
             .memberId(getDetailPost.getMemberId())
             .commentCount(getDetailPost.getComment().size())
-            .likeCount(getDetailPost.getLikes().size())
+            .likeCount(likeCount)
+            .likes(getDetailPost.getLikes().stream()
+                .map(like -> new PostResponseDto.LikeDto(
+                    like.getMemberId(), like.getLiked()
+                )).collect(Collectors.toList()))
             .memberNickname(getDetailPost.getMemberNickname())
             .content(getDetailPost.getContent())
             .deletedAt(getDetailPost.getDeletedAt())

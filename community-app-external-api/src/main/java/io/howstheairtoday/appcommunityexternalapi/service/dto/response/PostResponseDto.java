@@ -42,6 +42,8 @@ public class PostResponseDto {
         private int commentCount;
         private int likeCount;
 
+        private List<LikeDto> likes;
+
         private LocalDateTime createdAt;
         private LocalDateTime updatedAt;
         private LocalDateTime deletedAt;
@@ -89,6 +91,16 @@ public class PostResponseDto {
         private String imageUrl;
 
 
+    }
+
+    @Getter
+    @Builder
+    @AllArgsConstructor
+    public static class LikeDto {
+
+        private UUID memberId;
+
+        private Boolean Liked;
     }
 }
 
