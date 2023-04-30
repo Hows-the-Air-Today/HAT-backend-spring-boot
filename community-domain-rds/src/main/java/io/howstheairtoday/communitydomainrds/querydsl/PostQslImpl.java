@@ -20,6 +20,7 @@ import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.JPQLQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
+import io.howstheairtoday.communitydomainrds.entity.Like;
 import io.howstheairtoday.communitydomainrds.entity.Post;
 import io.howstheairtoday.communitydomainrds.entity.QComment;
 import io.howstheairtoday.communitydomainrds.entity.QLike;
@@ -79,7 +80,10 @@ public class PostQslImpl extends QuerydslRepositorySupport implements PostQslRep
                 resultMap.put("post", post);
                 resultMap.put("hasNext", hasNext && post.equals(postList.get(postList.size() - 1)));
                 resultMap.put("commentCount", post.getComment().size());
-                resultMap.put("likeCount", post.getLikes().size());
+                List<Like> likedLikes = post.getLikes().stream()
+                    .filter(Like::isLiked)
+                    .collect(Collectors.toList());
+                resultMap.put("likeCount", likedLikes.size());
                 return resultMap;
             })
             .collect(Collectors.toList());
