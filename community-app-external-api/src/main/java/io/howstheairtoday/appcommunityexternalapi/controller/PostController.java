@@ -1,9 +1,11 @@
 package io.howstheairtoday.appcommunityexternalapi.controller;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
+import org.apache.tomcat.util.http.fileupload.impl.FileSizeLimitExceededException;
 import org.springframework.http.HttpStatus;
 import org.springframework.lang.Nullable;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -17,17 +19,21 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartException;
 import org.springframework.web.multipart.MultipartFile;
 
 import io.howstheairtoday.appcommunityexternalapi.common.ApiResponse;
+import io.howstheairtoday.appcommunityexternalapi.exception.posts.PostImageFileSIzeExcetpion;
 import io.howstheairtoday.appcommunityexternalapi.exception.posts.PostNotMember;
 import io.howstheairtoday.appcommunityexternalapi.service.ExternalPostService;
 import io.howstheairtoday.appcommunityexternalapi.service.dto.request.PostRequestDto;
 import io.howstheairtoday.appcommunityexternalapi.service.dto.response.PostExternalDto;
 import io.howstheairtoday.appcommunityexternalapi.service.dto.response.PostResponseDto;
 import io.howstheairtoday.communitydomainrds.dto.DomainPostResponseDto;
+import io.howstheairtoday.communitydomainrds.entity.PostImage;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * 게시글 컨트롤러
@@ -38,6 +44,8 @@ import lombok.RequiredArgsConstructor;
 public class PostController {
     private final ExternalPostService externalPostService;
 
+    private static final int MAX_SIZE = 3145728;
+
     /**
      * 게시글을 생성
      *
@@ -45,10 +53,15 @@ public class PostController {
      * @return ApiResponse
      */
     @PostMapping(path = "/create-post")
+    @ExceptionHandler(MultipartException.class)
     public ApiResponse<Object> createPost(
         @RequestPart("saveRequestDto") final PostRequestDto.SaveRequestDto saveRequestDto,
-        @RequestPart("postImagesDto") final List<MultipartFile> postImagesDto) {
+        @RequestPart("postImagesDto") final List<MultipartFile> postImagesDto) throws PostImageFileSIzeExcetpion {
+        if (postImagesDto.get(0).getSize() > MAX_SIZE) {
+            throw new PostImageFileSIzeExcetpion();
+        }
         externalPostService.createPost(saveRequestDto, postImagesDto);
+
         return ApiResponse.<Object>builder()
             .statusCode(HttpStatus.CREATED.value())
             .msg("success")
@@ -61,7 +74,10 @@ public class PostController {
         @RequestPart(value = "postImagesDto", required = false) final List<MultipartFile> postImagesDto,
         @RequestPart(value = "stringImagesDto", required = false) @Nullable final String stringImagesDto,
         @PathVariable UUID postsId
-    ) {
+    ) throws PostImageFileSIzeExcetpion {
+        if (postImagesDto != null && postImagesDto.get(0).getSize() > MAX_SIZE) {
+            throw new PostImageFileSIzeExcetpion();
+        }
         externalPostService.updatePost(saveRequestDto, postsId, postImagesDto, stringImagesDto);
         return ApiResponse.<Object>builder()
             .statusCode(HttpStatus.OK.value())
