@@ -14,7 +14,7 @@ public enum ErrorMessage {
     NOT_MEMBER_ID(HttpStatus.NOT_FOUND, "멤버 아이디가 없습니다."),
     UPLOAD_FAIL_INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "업로드를 실패하였습니다."),
 
-    UPLOAD_FAIL_SIZE(HttpStatus.NOT_FOUND, "사진 크기를 3MB 이하로 맞춰주세요.");
+    UPLOAD_FAIL_SIZE(HttpStatus.BAD_REQUEST, "사진 크기를 3MB 이하로 맞춰주세요.");
 
     private final HttpStatus status;
     private final String description;
