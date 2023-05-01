@@ -20,6 +20,7 @@ import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.JPQLQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
+import io.howstheairtoday.communitydomainrds.entity.Comment;
 import io.howstheairtoday.communitydomainrds.entity.Like;
 import io.howstheairtoday.communitydomainrds.entity.Post;
 import io.howstheairtoday.communitydomainrds.entity.QComment;
@@ -58,7 +59,6 @@ public class PostQslImpl extends QuerydslRepositorySupport implements PostQslRep
         // 조회한 게시물 및 이미지 배열 리스트를 반환
         List<Post> postList = posts.fetch();
 
-
         // 마지막 페이지 여부 판단
         boolean hasNext; // postList 개수가 limit 이상이면 다음 페이지가 있는 것으로 판단
 
@@ -79,7 +79,10 @@ public class PostQslImpl extends QuerydslRepositorySupport implements PostQslRep
                 Map<String, Object> resultMap = new HashMap<>();
                 resultMap.put("post", post);
                 resultMap.put("hasNext", hasNext && post.equals(postList.get(postList.size() - 1)));
-                resultMap.put("commentCount", post.getComment().size());
+                int comments = post.getComment().stream()
+                    .filter(i -> i.getDeletedAt() == null)
+                    .collect(Collectors.toList()).size();
+                resultMap.put("commentCount", comments);
                 List<Like> likedLikes = post.getLikes().stream()
                     .filter(Like::isLiked)
                     .collect(Collectors.toList());
