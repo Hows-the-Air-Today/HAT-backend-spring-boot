@@ -118,6 +118,10 @@ public class ExternalPostService {
             .filter(like -> like.getLiked())
             .count();
 
+        int Commentcount = (int)getDetailPost.getComment().stream()
+            .filter(comment -> comment.getDeletedAt() == null)
+            .count();
+
         PostResponseDto.PostDto postDto = PostResponseDto.PostDto.builder()
             .postId(getDetailPost.getId())
             .region(getDetailPost.getRegion())
@@ -125,7 +129,7 @@ public class ExternalPostService {
             .content(getDetailPost.getContent())
             .memberImageUrl(getDetailPost.getMemberImage())
             .memberId(getDetailPost.getMemberId())
-            .commentCount(getDetailPost.getComment().size())
+            .commentCount(Commentcount)
             .likeCount(likeCount)
             .likes(getDetailPost.getLikes().stream()
                 .map(like -> new PostResponseDto.LikeDto(
