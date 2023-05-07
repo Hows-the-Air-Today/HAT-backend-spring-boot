@@ -5,7 +5,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import java.io.File;
 import java.io.FileInputStream;
 
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -64,7 +63,7 @@ public class PostControllerTest {
     }
 
     @BeforeEach
-    public void getPostUUID(){
+    public void getPostUUID() {
 
         saveRequestDto = PostRequestDto.SaveRequestDto.builder()
             .region("beforeEach 지역1")
@@ -88,11 +87,11 @@ public class PostControllerTest {
 
     }
 
+    @DisplayName("게시글작성에 성공")
     @Test
-    @DisplayName("게시글작성에 성공한다.")
     public void CreatePost_Success() throws Exception {
 
-        final String fileName = "qr.jpeg";
+        final String fileName = "test.jpeg";
         File newFile = new File(getClass().getClassLoader().getResource("qr.jpeg").getFile());
 
         MockMultipartFile file = new MockMultipartFile("file", fileName, MediaType.IMAGE_JPEG_VALUE,
@@ -115,8 +114,8 @@ public class PostControllerTest {
             .andExpect(MockMvcResultMatchers.jsonPath("$.msg").value("success"));
     }
 
+    @DisplayName("생성된 게시글을 삭제")
     @Test
-    @DisplayName("생성된 게시글을 삭제한다")
     public void DeletePost_Success() throws Exception {
 
         mockMvc.perform(
@@ -129,8 +128,8 @@ public class PostControllerTest {
             .andExpect(MockMvcResultMatchers.jsonPath("$.msg").value("success"));
     }
 
-    @Test
     @DisplayName("생성된 게시글의 상세")
+    @Test
     public void DetailPost_Success() throws Exception {
         mockMvc.perform(
                 MockMvcRequestBuilders.get(API_V1_POST + "/" + "post-detail/" + PostUUID)
@@ -142,8 +141,8 @@ public class PostControllerTest {
 
     }
 
-    @Test
     @DisplayName("게시글 전체 조회")
+    @Test
     public void getPost_Success() throws Exception {
         mockMvc.perform(
                 MockMvcRequestBuilders.get(API_V1_POST + "/")
@@ -158,8 +157,8 @@ public class PostControllerTest {
 
     }
 
-    @Test
     @DisplayName("게시글 지역에 따른 인기글 조회")
+    @Test
     public void getPopularList_Success() throws Exception {
         mockMvc.perform(
                 MockMvcRequestBuilders.get(API_V1_POST + "/get-popular")
@@ -173,8 +172,8 @@ public class PostControllerTest {
 
     }
 
+    @DisplayName("내가 작성한 게시글을 조회")
     @Test
-    @DisplayName("내가 작성한 게시글을 조회한다")
     public void getMyPost_Success() throws Exception {
         mockMvc.perform(
                 MockMvcRequestBuilders.get(API_V1_POST + "/my-page/" + member_uuid)
